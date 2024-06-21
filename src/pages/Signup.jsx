@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import loginImg from "../assets/E-learning3.jpg";
 import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
+import FormSwitch from "../components/FormSwitch";
+import { toast } from "react-toastify";
+import axios from "axios";
 
 
 
@@ -14,10 +18,31 @@ const Signup = () => {
         getValues,
       } = useForm();
 
+      const [isTutor, setIsTutor] = useState(false)
+      const navigate = useNavigate()
       const onSubmit = async (data) => {
-        console.log(data);
-    
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const config = {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+        const formData = {
+            ... data,
+            "is_tutor" : isTutor
+        }
+
+        try {
+            const response = await axios.post("http://127.0.0.1:8000/accounts/signup/", formData, config)
+            if (response.status === 201){
+                toast.success(response.data.message)
+
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error("Sign up failed")
+            navigate('/login')
+        }
+        
         reset();
       };
   return (
@@ -33,7 +58,11 @@ const Signup = () => {
           onSubmit={handleSubmit(onSubmit)}
           className="max-w-[400px] w-full mx-auto bg-white p-8"
         >
-          <h2 className="text-4xl font-bold text-center py-4">Login</h2>
+            <span className="flex justify-center relative">
+
+        <FormSwitch isTutor={isTutor} setIsTutor={setIsTutor}/>
+            </span>
+          <h2 className="text-4xl font-bold text-center py-4">{isTutor? "Tutor " : "Student "}Sign Up</h2>
           <div className="flex flex-col mb-4">
             <label htmlFor="">Email</label>
             <input
@@ -48,12 +77,18 @@ const Signup = () => {
             )}
           </div>
           <div className="flex flex-col mb-4">
-            <label htmlFor="">First Name</label>
+            <label htmlFor="first_name">First Name</label>
             <input
               {...register("first_name", {
                 required: "First Name is required",
-              })}
-              type="first_name"
+                validate: {
+                    noSpaces: value => !/\s/.test(value) || "First Name cannot contain spaces",
+                    noNumbers: value => !/\d/.test(value) || "First Name cannot contain numbers",
+                    noSpecialChars: value => /^[A-Za-z]+$/.test(value) || "First Name cannot contain special characters",
+                  },
+              },
+            )}
+              type="text"
               className="border relative bg-gray-100 p-2"
             />
             {errors.first_name && (
@@ -61,12 +96,17 @@ const Signup = () => {
             )}
           </div>
           <div className="flex flex-col mb-4">
-            <label htmlFor="">Last Name</label>
+            <label htmlFor="last_name">Last Name</label>
             <input
               {...register("last_name", {
                 required: "Last Name is required",
+                validate: {
+                    noSpaces: value => !/\s/.test(value) || "Last Name cannot contain spaces",
+                    noNumbers: value => !/\d/.test(value) || "Last Name cannot contain numbers",
+                    noSpecialChars: value => /^[A-Za-z]+$/.test(value) || "Last Name cannot contain special characters",
+                  },
               })}
-              type="last_name"
+              type="text"
               className="border relative bg-gray-100 p-2"
             />
             {errors.last_name && (
@@ -74,7 +114,7 @@ const Signup = () => {
             )}
           </div>
           <div className="flex flex-col ">
-            <label htmlFor="">Password</label>
+            <label htmlFor="password">Password</label>
             <input
               {...register("password", {
                 required: "Password is required",
@@ -99,9 +139,9 @@ const Signup = () => {
             )}
           </div>
           <div className="flex flex-col ">
-            <label htmlFor="">Confirm Password</label>
+            <label htmlFor="confirm_password">Confirm Password</label>
             <input
-              {...register("password", {
+              {...register("confirm_password", {
                 required: "Password confirmation is required",
                 minLength: {
                   value: 8,
@@ -113,25 +153,29 @@ const Signup = () => {
                     hasLowerCase: value => /[a-z]/.test(value) || "Password must contain at least one lowercase letter",
                     hasNumber: value => /\d/.test(value) || "Password must contain at least one number",
                     hasSpecialChar: value => /[!@#$%^&*(),.?":{}|<>]/.test(value) || "Password must contain at least one special character",
+                    matchesPassword: value =>  value === getValues("password") || "Passwords must match"
               
                 }
               })}
               type="password"
               className="border relative bg-gray-100 p-2"
             />
-            {errors.password && (
-                <p className="text-red-500 relative">{errors.password.message}</p>
+            {errors.confirm_password && (
+                <p className="text-red-500 relative">{errors.confirm_password.message}</p>
             )}
           </div>
           <button
             disabled={isSubmitting}
             className="w-full py-3 mt-8 bg-green-600 hover:bg-green-500 relative text-white"
           >
-            Sign In
+            Sign Up
           </button>
 
           <p className="text-center mt-4 relative">
-            Don't have an account? Sign up
+            Already have an account? {" "}
+             <Link to={"/login"}>
+            Sign In
+            </Link> 
           </p>
           <div className="flex justify-center">
             <p className="border shadow-lg hover:shadow-2xl px-6 py-2 relative flex item-center ">

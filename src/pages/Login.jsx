@@ -2,6 +2,7 @@ import React from "react";
 import { FcGoogle } from "react-icons/fc";
 import loginImg from "../assets/E-learning3.jpg";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const {
@@ -79,7 +80,10 @@ const Login = () => {
           </button>
 
           <p className="text-center mt-4 relative">
-            Don't have an account? Sign up
+            Don't have an account?{" "}
+            <Link to={"/signup"}>
+            Sign up
+            </Link>
           </p>
           <div className="flex justify-center">
             <p className="border shadow-lg hover:shadow-2xl px-6 py-2 relative flex item-center ">
