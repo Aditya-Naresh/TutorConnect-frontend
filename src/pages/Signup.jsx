@@ -50,12 +50,7 @@ const Signup = () => {
         reset();
       };
   return (
-    <div className="relative w-full h-screen db-zinc-900/90">
-      <img
-        className="absolute w-full h-full object-cover mix-blend-overlay"
-        src={loginImg}
-        alt="/"
-      />
+   
 
       <div className="flex justify-center items-center h-full">
         <form
@@ -188,7 +183,6 @@ const Signup = () => {
           </div>
         </form>
       </div>
-    </div>
   )
 }
 
