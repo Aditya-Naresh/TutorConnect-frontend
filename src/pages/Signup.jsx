@@ -35,12 +35,16 @@ const Signup = () => {
             const response = await axios.post("http://127.0.0.1:8000/accounts/signup/", formData, config)
             if (response.status === 201){
                 toast.success(response.data.message)
+                navigate('/login')
 
             }
         } catch (error) {
-            console.log(error);
-            toast.error("Sign up failed")
-            navigate('/login')
+            if(error.response.data.message){
+              toast.error(error.response.data.message)
+              navigate('/login')
+            }else{
+              toast.error("Sign up failed")
+            }
         }
         
         reset();
