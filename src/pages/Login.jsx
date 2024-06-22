@@ -3,6 +3,10 @@ import { FcGoogle } from "react-icons/fc";
 import loginImg from "../assets/E-learning3.jpg";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
+import axios from "axios";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../redux/slices/authSlice";
 
 const Login = () => {
   const {
@@ -13,11 +17,28 @@ const Login = () => {
     getValues,
   } = useForm();
 
+  const dispatch = useDispatch()
   const onSubmit = async (data) => {
-    console.log(data);
-
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    reset();
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/accounts/login/", data)
+      if (response.status === 200) {
+        dispatch(loginSuccess(response.data));
+        toast.success(`${response.data.full_name} has successfully logged in`);
+        reset();
+      } else {
+        toast.error("Login Failed. Please try again.");
+      }
+      console.log(response);
+    } catch (error) {
+      if (error.response.status === 403) {
+        toast.error("Incorrect email or password. Please try again.");
+      } else {
+        toast.error("Login Failed. Please try again.");
+      }
+      console.log(error);
+    
+    }
+  
   };
 
   return (
@@ -71,10 +92,15 @@ const Login = () => {
           >
             Sign In
           </button>
-
           <p className="text-center mt-4 relative">
+          <Link to={"/forgot-password"} className="text-blue-700">
+          Forgot your password?{" "}
+            
+          </Link>
+        </p>
+          <p className="text-center mt-2 relative">
             Don't have an account?{" "}
-            <Link to={"/signup"}>
+            <Link to={"/signup"} className="text-indigo-700">
             Sign up
             </Link>
           </p>
