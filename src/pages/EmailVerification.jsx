@@ -1,15 +1,24 @@
+import axios from "axios";
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const EmailVerification = () => {
+    const navigate = useNavigate()
     const {uid, token} = useParams()
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         const data = {
             "uid" : uid,
             "token": token
         }
-        console.log(data);
+        try {
+            const response = await axios.post("http://127.0.0.1:8000/accounts/verify-email/", data)
+            toast.success(response.data.message)
+            navigate('/login')
+        } catch (error) {
+            toast.error("Invalid confirmation link")
+        }
     }
   return (
     <div className="flex justify-center items-center h-full">
