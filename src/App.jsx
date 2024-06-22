@@ -12,6 +12,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 import store from './redux/store.jsx'
 import ForgotPassword from "./pages/ForgotPassword.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 
 const App = () => {
   let persistor = persistStore(store);
@@ -30,6 +31,7 @@ const App = () => {
                   element={<EmailVerification />}
                 />
                 <Route path="/forgot-password" element={<ForgotPassword/>} />
+                <Route path='/reset-password/:uid/:token' element={<ResetPassword />} />
               </Routes>
             </GuestLayout>
           </Router>
