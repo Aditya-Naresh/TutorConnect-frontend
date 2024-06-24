@@ -1,8 +1,7 @@
 import React from "react";
 import { FcGoogle } from "react-icons/fc";
-import loginImg from "../assets/E-learning3.jpg";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -18,22 +17,23 @@ const Login = () => {
   } = useForm();
 
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const onSubmit = async (data) => {
     try {
       const response = await axios.post("http://127.0.0.1:8000/accounts/login/", data)
       if (response.status === 200) {
         dispatch(loginSuccess(response.data));
         toast.success(`${response.data.full_name} has successfully logged in`);
+        navigate('/')
         reset();
       } else {
         toast.error("Login Failed. Please try again.");
       }
-      console.log(response);
     } catch (error) {
       if (error.response.status === 403) {
         toast.error("Incorrect email or password. Please try again.");
       } else {
-        toast.error("Login Failed. Please try again.");
+        toast.error(error.response.data.detail);
       }
       console.log(error);
     
@@ -105,9 +105,9 @@ const Login = () => {
             </Link>
           </p>
           <div className="flex justify-center">
-            <p className="border shadow-lg hover:shadow-2xl px-6 py-2 relative flex item-center ">
+            {/* <p className="border shadow-lg hover:shadow-2xl px-6 py-2 relative flex item-center ">
               <FcGoogle className="mr-2 mt-1" /> Continue with google
-            </p>
+            </p> */}
           </div>
         </form>
       </div>
