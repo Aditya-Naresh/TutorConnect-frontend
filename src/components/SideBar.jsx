@@ -11,7 +11,7 @@ const TutorSideBar = () => {
     <div className="relative bg-gradient-to-br from-black via-blue-900  to-indigo-500 border border-slate-500 w-full h-full">
       <div className="text-white p-4 flex flex-col relative">
       <div className="border-b  border-b-blue-800 py-2 flex justify-center ">
-          <Link to={"/user-management/TUTOR"} className="cursor-pointer">
+          <Link to={"/"} className="cursor-pointer">
             Upcoming Schedule
           </Link>
         </div>
