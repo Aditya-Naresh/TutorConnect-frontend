@@ -13,7 +13,7 @@ const Logout = () => {
         navigate('/login')
     }
   return (
-    <span className='cursor-pointer text-white font-bold' onClick={handleLogout}>Logout</span>
+    <span className='cursor-pointer block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900 ' onClick={handleLogout}>Logout</span>
   )
 }
 

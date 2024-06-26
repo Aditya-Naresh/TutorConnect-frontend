@@ -19,6 +19,7 @@ import HomePage from "./pages/HomePage.jsx";
 import PrivateRoute from "./HigherOrderComponents/PrivateRoute.jsx";
 import AdminPrivateRoute from "./HigherOrderComponents/AdminPrivateRoute.jsx";
 import UserManagement from "./pages/admin/UserManagement.jsx";
+import Profile from "./pages/Profile.jsx";
 
 const App = () => {
   let persistor = persistStore(store);
@@ -47,6 +48,7 @@ const App = () => {
               <Route element={<PrivateRoute />}>
                 <Route element={<UserLayout />}>
                   <Route path="/" element={<Dashboard />} />
+                  <Route path="/profile" element={<Profile />} />
                 </Route>
               </Route>
 
