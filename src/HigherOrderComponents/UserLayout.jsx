@@ -77,7 +77,7 @@ const UserLayout = () => {
           </div>
         )}
 
-        <div className="hidden lg:flex relative w-3/5 z-2 justify-center">
+        <div className="hidden lg:flex relative w-3/5 z-22 justify-center">
           <Outlet />
         </div>
         {showNotification && (

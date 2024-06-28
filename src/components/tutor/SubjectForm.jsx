@@ -4,29 +4,31 @@ import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { BsPlus } from "react-icons/bs";
 import { axiosPost } from "../../axios";
-const SubjectForm = ({reRender}) => {
+const SubjectForm = ({ reRender }) => {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
-    
   } = useForm();
 
-  const token = useSelector((state) => state.auth.access)
+  const token = useSelector((state) => state.auth.access);
   const onSubmit = async (formData) => {
-
     try {
       const response = await axiosPost("accounts/subject/", formData, token);
-        console.log(response);
-        if (response.status === 201){
-
-            toast.success('The subject was added')
-            reRender(`${formData}`)
-            reset();
-        }else{
-            toast.error("The subject is already in the list")
-        }
+      console.log(response);
+      if (response.status === 201) {
+        await axiosPatch(
+          `accounts/profile/${user_id}`,
+          { is_approved: false },
+          token
+        );
+        toast.success("The subject was added");
+        reRender(`${formData}`);
+        reset();
+      } else {
+        toast.error("The subject is already in the list");
+      }
     } catch (error) {
       console.error("Error adding subject:", error);
       toast.error("Error adding subject");
@@ -45,7 +47,11 @@ const SubjectForm = ({reRender}) => {
           placeholder="Subject Name"
           className="border p-2 rounded w-full"
         />
-        <button type="submit" className="bg-blue-500 text-white p-2 rounded cursor-pointer" >
+        <button
+          type="submit"
+          className="bg-blue-500 text-white p-2 rounded cursor-pointer"
+          disabled = {isSubmitting}
+        >
           <BsPlus />
         </button>
       </div>

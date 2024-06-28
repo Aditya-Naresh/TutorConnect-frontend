@@ -20,6 +20,7 @@ import PrivateRoute from "./HigherOrderComponents/PrivateRoute.jsx";
 import AdminPrivateRoute from "./HigherOrderComponents/AdminPrivateRoute.jsx";
 import UserManagement from "./pages/admin/UserManagement.jsx";
 import Profile from "./pages/Profile.jsx";
+import ApproveTutor from "./pages/admin/ApproveTutor.jsx";
 
 const App = () => {
   let persistor = persistStore(store);
@@ -58,6 +59,7 @@ const App = () => {
                     path="/user-management/:role"
                     element={<UserManagement />}
                   />
+                  <Route path="/approve-tutor" element={<ApproveTutor/>} />
                 </Route>
               </Route>
             </Routes>

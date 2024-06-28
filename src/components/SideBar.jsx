@@ -8,7 +8,7 @@ const StudentSideBar = () => {
 
 const TutorSideBar = () => {
   return (
-    <div className="relative bg-gradient-to-br from-black via-blue-900  to-indigo-500 border border-slate-500 w-full h-full">
+    <div className="relative bg-gradient-to-bl from-black via-blue-900  to-green-500 border border-slate-500 w-full h-full">
       <div className="text-white p-4 flex flex-col relative">
       <div className="border-b  border-b-blue-800 py-2 flex justify-center ">
           <Link to={"/"} className="cursor-pointer">
@@ -34,7 +34,7 @@ const TutorSideBar = () => {
 
 const AdminSideBar = () => {
   return (
-    <div className="relative bg-gradient-to-br from-black via-red-900  to-rose-700 border border-slate-500 w-full h-full">
+    <div className="relative bg-gradient-to-br from-black via-blue-900  to-rose-700 border border-slate-500 w-full h-full">
       <div className="text-white p-4 flex flex-col relative">
         <div className="border-b  border-b-red-400 py-2 flex justify-center ">
           <Link to={"/user-management/TUTOR"} className="cursor-pointer">
@@ -46,7 +46,9 @@ const AdminSideBar = () => {
             Students
           </Link>
         </div>
+        <Link to={'/approve-tutor'} className="cursor-pointer">
         <div className="py-2 flex justify-center">Approve Tutor</div>
+        </Link>
       </div>
     </div>
   );

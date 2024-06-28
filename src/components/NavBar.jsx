@@ -38,7 +38,7 @@ const StudentNavBar = () => {
 
 const TutorNavBar = () => {
   return (
-    <div className="bg-gradient-to-tr from-black via-indigo-900 to-blue-700 sticky top-0 z-[20] mx-auto flex w-full items-center justify-between p-8 h-full">
+    <div className="bg-gradient-to-br from-black via-indigo-900 to-blue-700 sticky top-0 z-[20] mx-auto flex w-full items-center justify-between p-8 h-full">
     <NavBarItems />
     </div>
   );
@@ -46,7 +46,7 @@ const TutorNavBar = () => {
 
 const AdminNavBar = () => {
   return (
-    <div className="bg-gradient-to-tr from-black via-red-900 to-rose-800  z-[20] mx-auto flex w-full items-center justify-between p-8 h-full">
+    <div className="bg-gradient-to-tr from-black via-blue-900 to-rose-800  z-[20] mx-auto flex w-full items-center justify-between p-8 h-full">
       <NavBarItems />
     </div>
   );
