@@ -22,8 +22,8 @@ const NavBarItems = () => {
   <div className="relative flex items-center text-white">
     <FaMessage size={30} className="text-yellow-100 mr-4" />
     <FaBell size={30} className="text-yellow-500 mr-4" onClick={() => dispatch(toggleNotification())} />
-    <FaUser size={30} className="text-gray-500 mr-2"  onClick={() => dispatch(toggleMenu())}/>{" "}
-    <span className="hidden md:block mr-4" onClick={() => dispatch(toggleMenu())}>{username}</span>
+    <FaUser size={30} className="text-gray-500 mr-2 cursor-pointer"  onClick={() => dispatch(toggleMenu())}/>{" "}
+    <span className="hidden md:block mr-4 cursor-pointer" onClick={() => dispatch(toggleMenu())}>{username}</span>
   </div>
     </>
   )

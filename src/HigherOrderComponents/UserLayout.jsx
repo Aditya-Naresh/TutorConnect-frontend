@@ -58,7 +58,7 @@ const UserLayout = () => {
           </div>
         </div>
         {!showSideBar && (
-          <div className="flex justify-center lg:hidden">
+          <div className="relative flex justify-center lg:hidden">
             <div className="absolute">
             <Outlet/>
 
@@ -77,7 +77,7 @@ const UserLayout = () => {
           </div>
         )}
 
-        <div className="hidden lg:flex relative w-3/5 justify-center">
+        <div className="hidden lg:flex relative w-3/5 z-2 justify-center">
           <Outlet />
         </div>
         {showNotification && (
@@ -91,7 +91,7 @@ const UserLayout = () => {
           </div>
         )}
       </div>
-      <div className="relative w-full h-1/6">
+      <div className="relative w-full h-[100px] z-0 md:h-1/6">
         <Footer />
       </div>
     </div>

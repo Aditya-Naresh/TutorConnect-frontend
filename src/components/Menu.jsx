@@ -1,18 +1,15 @@
 import React from "react";
 import Logout from "./Logout";
-import { toggleMenu } from "../redux/slices/profileSlice"
-import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 const Menu = () => {
-    const dispatch = useDispatch()
   return (
     <div
       className="py-1"
       role="menu"
       aria-orientation="vertical"
       aria-labelledby="options-menu"
-      
+
     >
       <Link
         to={"/profile"}

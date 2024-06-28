@@ -1,12 +1,14 @@
 import React from 'react'
-import SubjectForm from '../components/tutor/SubjectForm'
+import { useSelector } from 'react-redux'
+import TutorProfile from '../components/tutor/TutorProfile'
 
 const Profile = () => {
+  const role = useSelector((state) => state.auth.role)
   return (
     <div>
-       Add Profile Form later
+      Common Profile form
 
-       <SubjectForm />
+      {role === 'TUTOR' && <TutorProfile />}
     </div>
   )
 }

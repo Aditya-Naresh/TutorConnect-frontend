@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.6.0",
     "@reduxjs/toolkit": "^2.2.5",
     "axios": "^1.7.2",
     "react": "^18.3.1",
@@ -20,7 +21,8 @@
     "react-router-dom": "^6.23.1",
     "react-toastify": "^10.0.5",
     "react-typed": "^2.0.12",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "yup": "^1.4.0"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",

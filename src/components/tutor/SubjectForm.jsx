@@ -1,60 +1,55 @@
-import React from 'react';
-import { useForm, useFieldArray, Controller } from 'react-hook-form';
-import { PiPlusBold } from 'react-icons/pi';
+import React from "react";
+import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { BsPlus } from "react-icons/bs";
+import { axiosPost } from "../../axios";
+const SubjectForm = ({reRender}) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+    
+  } = useForm();
 
-const SubjectForm = () => {
-  const { control, handleSubmit } = useForm({
-    defaultValues: {
-      subjects: [{ name: '' }]
+  const token = useSelector((state) => state.auth.access)
+  const onSubmit = async (formData) => {
+
+    try {
+      const response = await axiosPost("accounts/subject/", formData, token);
+        console.log(response);
+        if (response.status === 201){
+
+            toast.success('The subject was added')
+            reRender(`${formData}`)
+            reset();
+        }else{
+            toast.error("The subject is already in the list")
+        }
+    } catch (error) {
+      console.error("Error adding subject:", error);
+      toast.error("Error adding subject");
     }
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'subjects'
-  });
-
-  const onSubmit = (data) => {
-    console.log(data);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      {fields.map((field, index) => (
-        <div key={field.id} className="flex items-center space-x-2">
-          <Controller
-            control={control}
-            name={`subjects[${index}].name`}
-            render={({ field }) => (
-              <input
-                {...field}
-                placeholder={`Subject ${index + 1}`}
-                className="border p-2 rounded w-full"
-              />
-            )}
-          />
-          <button
-            type="button"
-            onClick={() => remove(index)}
-            className="bg-red-500 text-white p-2 rounded"
-          >
-            Remove
-          </button>
-        </div>
-      ))}
-      <button
-        type="button"
-        onClick={() => append({ name: '' })}
-        className="bg-blue-500 text-white p-2 rounded mt-2"
-      >
-        <PiPlusBold />
-      </button>
-      <button
-        type="submit"
-        className="bg-green-500 text-white p-2 rounded mt-2"
-      >
-        Submit
-      </button>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="relative max-w-[400px] w-full mx-auto bg-emerald-200  shadow-lg ring-2 ring-gray-300 ring-offset-2 ring-offset-gray-100"
+    >
+      <div className="flex items-center space-x-2">
+        <input
+          type="text"
+          {...register("name", { required: true })}
+          placeholder="Subject Name"
+          className="border p-2 rounded w-full"
+        />
+        <button type="submit" className="bg-blue-500 text-white p-2 rounded cursor-pointer" >
+          <BsPlus />
+        </button>
+      </div>
+      {errors.name && <p className="text-red-500">Subject name is required</p>}
     </form>
   );
 };
