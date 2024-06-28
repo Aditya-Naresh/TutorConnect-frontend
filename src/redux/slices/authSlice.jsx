@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
+  id:"",
   email: "",
   full_name: "",
   role: "",
@@ -14,9 +15,10 @@ const authSlice = createSlice({
     initialState,
     reducers: {
       loginSuccess: (state, action) => {
-        const { email, full_name, role, access_token, refresh_token } = action.payload;
+        const { id, email, full_name, role, access_token, refresh_token } = action.payload;
         return {
           ...state,
+          id,
           email,
           full_name,
           role,

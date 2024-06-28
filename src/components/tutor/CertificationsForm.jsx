@@ -5,6 +5,7 @@ import * as yup from 'yup';
 import { axiosPost } from '../../axios';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import axiosPatch from '../../axios/axiosPatch';
 
 const schema = yup.object().shape({
   title: yup.string().required('Certificate title is required'),
@@ -38,6 +39,8 @@ const CertificationsForm = ({reRender}) => {
     resolver: yupResolver(schema),
   });
 
+  const user_id = useSelector((state) => state.auth.id)
+
   const token = useSelector((state) => state.auth.access);
   const onSubmit = async (data) => {
     const formData = new FormData();
@@ -48,7 +51,10 @@ const CertificationsForm = ({reRender}) => {
     try {
       const response = await axiosPost('accounts/certificates/', formData, token);
       console.log(response.data);
-      toast.success("certificate added")
+      if( response.status === 201){
+        toast.success("certificate added")
+        await axiosPatch(`accounts/profile/${user_id}`,{"is_approved" : false}, token)
+      }
       reRender('Certificate Added')
       reset();
     } catch (error) {
