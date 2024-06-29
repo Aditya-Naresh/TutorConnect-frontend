@@ -1,8 +1,9 @@
 import React from "react";
 import BlockButton from "./BlockButton";
 import UnblockButton from "./UnblockButton";
+import UserDetails from "./UserDetails";
 
-const UserManagementTable = ({ data, reRender }) => {
+const UserManagementTable = ({ data, reRender, blockUser, showCard }) => {
   return (
     <table className="relative border border-white">
       <thead>
@@ -20,7 +21,7 @@ const UserManagementTable = ({ data, reRender }) => {
             key={index}
             className={index % 2 === 0 ? "bg-gray-300" : "bg-gray-200"}
           >
-            <td className=" border px-4 py-2 border-white">{user.email}</td>
+            <td className="border px-4 py-2 border-white">{user.email}</td>
             <td className="hidden md:table-cell border px-4 py-2 border-white">
               {user.first_name}
             </td>
@@ -30,13 +31,16 @@ const UserManagementTable = ({ data, reRender }) => {
             </td>
 
             <td className="border px-4 py-2 border-white">
+              {blockUser? 
               <div>
                 {user.is_blocked ? (
                   <UnblockButton id={user.id} reRender={reRender} />
                 ) : (
                   <BlockButton id={user.id} reRender={reRender} />
                 )}
-              </div>
+              </div> :
+              <UserDetails id={user.id} showCard={showCard} />
+              }
             </td>
           </tr>
         ))}

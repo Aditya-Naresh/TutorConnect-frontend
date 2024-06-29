@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { BsPlus } from "react-icons/bs";
-import { axiosPost } from "../../axios";
+import { axiosPatch, axiosPost } from "../../axios";
 const SubjectForm = ({ reRender }) => {
   const {
     register,
@@ -13,6 +13,7 @@ const SubjectForm = ({ reRender }) => {
   } = useForm();
 
   const token = useSelector((state) => state.auth.access);
+  const user_id = useSelector((state) => state.auth.id)
   const onSubmit = async (formData) => {
     try {
       const response = await axiosPost("accounts/subject/", formData, token);

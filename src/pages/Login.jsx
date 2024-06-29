@@ -22,7 +22,6 @@ const Login = () => {
     try {
       const response = await axios.post("http://127.0.0.1:8000/accounts/login/", data)
       if (response.status === 200) {
-        console.log(response.data);
         dispatch(loginSuccess(response.data));
         toast.success(`${response.data.full_name} has successfully logged in`);
         navigate('/')

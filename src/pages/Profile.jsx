@@ -33,9 +33,13 @@ const Profile = () => {
   const onSubmit = async (data) => {
     console.log(data);
     try {
-      const response = await axiosPatch(`accounts/profile/${user_id}`, data, token);
+      const response = await axiosPatch(
+        `accounts/profile/${user_id}`,
+        data,
+        token
+      );
       console.log(response);
-      toast.success('User details updated')
+      toast.success("User details updated");
     } catch (error) {
       console.log(error);
     }
@@ -48,7 +52,9 @@ const Profile = () => {
           onClick={() => setShowTutorProfile(!showTutorProfile)}
           className="bg-slate-500 text-white font-bold py-2 px-4 rounded hover:bg-slate-600 -mt-4 mb-1"
         >
-          {showTutorProfile ? "Show User Details" : "Show Subjects and Certifications"}
+          {showTutorProfile
+            ? "Show User Details"
+            : "Show Subjects and Certifications"}
         </button>
       )}
       {showTutorProfile ? (
@@ -92,7 +98,9 @@ const Profile = () => {
               className="border relative bg-gray-100 p-2"
             />
             {errors.first_name && (
-              <p className="text-red-500 relative">{errors.first_name.message}</p>
+              <p className="text-red-500 relative">
+                {errors.first_name.message}
+              </p>
             )}
           </div>
           <div className="flex flex-col mb-4">
@@ -114,9 +122,32 @@ const Profile = () => {
               className="border relative bg-gray-100 p-2"
             />
             {errors.last_name && (
-              <p className="text-red-500 relative">{errors.last_name.message}</p>
+              <p className="text-red-500 relative">
+                {errors.last_name.message}
+              </p>
             )}
           </div>
+          {role === "TUTOR" && (
+            <div className="flex flex-col mb-4">
+              <label htmlFor="rate">Rate per Hour</label>
+              <input
+                {...register("rate", {
+                  required: "Rate is required",
+                  pattern: {
+                    value: /^\d+(\.\d{1,2})?$/,
+                    message:
+                      "Rate must be a decimal with up to 2 digits after the point",
+                  },
+                })}
+                type="number"
+                step="0.01"
+                className="border relative bg-gray-100 p-2"
+              />
+              {errors.rate && (
+                <p className="text-red-500 relative">{errors.rate.message}</p>
+              )}
+            </div>
+          )}
           <div className="flex flex-col mb-4">
             <button
               className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 cursor-pointer"

@@ -42,7 +42,7 @@ const UserManagement = () => {
   }, [role, render]);
   return (
     <div className="relative">
-      <UserManagementTable data={data} reRender={reRender}/>
+      <UserManagementTable data={data} reRender={reRender} blockUser={true}/>
     </div>
   );
 };
