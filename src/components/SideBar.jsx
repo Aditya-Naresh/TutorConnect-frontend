@@ -16,7 +16,7 @@ const TutorSideBar = () => {
           </Link>
         </div>
         <div className="border-b  border-b-blue-800 py-2 flex justify-center ">
-          <Link to={"/user-management/TUTOR"} className="cursor-pointer">
+          <Link to={"/timeslots"} className="cursor-pointer">
             Create Time Slots
           </Link>
         </div>

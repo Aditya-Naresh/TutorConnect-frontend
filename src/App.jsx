@@ -21,6 +21,9 @@ import AdminPrivateRoute from "./HigherOrderComponents/AdminPrivateRoute.jsx";
 import UserManagement from "./pages/admin/UserManagement.jsx";
 import Profile from "./pages/Profile.jsx";
 import ApproveTutor from "./pages/admin/ApproveTutor.jsx";
+import TutorTimeSlots from "./pages/tutor/TutorTimeSlots.jsx";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 const App = () => {
   let persistor = persistStore(store);
@@ -50,6 +53,7 @@ const App = () => {
                 <Route element={<UserLayout />}>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/profile" element={<Profile />} />
+                  <Route path="/timeslots" element={<TutorTimeSlots />} />
                 </Route>
               </Route>
 
