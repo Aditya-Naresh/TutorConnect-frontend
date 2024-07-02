@@ -8,11 +8,15 @@ const TimeSlotForm = ({date_id, reRender}) => {
   const { register, handleSubmit } = useForm();
   const auth = useSelector((state) => state.auth)
   const onSubmit = async (data) => {
+    const formData = {
+      ...data,
+      "date" : date_id
+    }
     try {
-      const response = await axiosPost(`timeslots/timeSlots/${date_id}`, data, auth.access)
+      const response = await axiosPost(`timeslots/timeSlots/${date_id}`, formData, auth.access)
       console.log(response);
       toast.success("time slot added")
-      reRender("time slot added")
+      reRender(`time slot added ${response.data.id}`)
     } catch (error) {
       console.log(error);
     }

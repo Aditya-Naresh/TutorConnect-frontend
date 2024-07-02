@@ -53,7 +53,7 @@ const CertificationsForm = ({reRender}) => {
       console.log(response.data);
       if( response.status === 201){
         toast.success("certificate added")
-        await axiosPatch(`accounts/profile/${user_id}`,{"is_approved" : false}, token)
+        await axiosPatch(`accounts/profile/${user_id}`,{"is_approved" : false, "is_submitted":true}, token)
       }
       reRender('Certificate Added')
       reset();

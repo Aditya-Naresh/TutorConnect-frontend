@@ -3,7 +3,27 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 const StudentSideBar = () => {
-  return <div>StudentSideBar</div>;
+  return <div className="relative bg-gradient-to-bl from-black via-emerald-900  to-green-500 border border-slate-500 w-full h-full">
+    <div className="text-white p-4 flex flex-col relative">
+      <div className="border-b  border-b-emerald-800 py-2 flex justify-center ">
+          <Link to={"/"} className="cursor-pointer">
+            Booked Sessions
+          </Link>
+        </div>
+        <div className="border-b  border-b-emerald-800 py-2 flex justify-center ">
+          <Link to={"/tutorlist"} className="cursor-pointer">
+            List Tutors
+          </Link>
+        </div>
+        <div className="border-b  border-b-emerald-800 py-2 flex justify-center ">
+          <Link to={"/user-management/TUTOR"} className="cursor-pointer">
+            Previous Sessions
+          </Link>
+        </div>
+        
+      
+      </div>
+  </div>;
 };
 
 const TutorSideBar = () => {

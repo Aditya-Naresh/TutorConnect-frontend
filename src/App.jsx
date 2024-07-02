@@ -24,6 +24,12 @@ import ApproveTutor from "./pages/admin/ApproveTutor.jsx";
 import TutorTimeSlots from "./pages/tutor/TutorTimeSlots.jsx";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Tutorlist from "./pages/student/Tutorlist.jsx";
+import Wallet from "./pages/Wallet.jsx";
+import BookTimeSlots from "./pages/student/BookTimeSlots.jsx";
+
+
+
 
 const App = () => {
   let persistor = persistStore(store);
@@ -54,6 +60,9 @@ const App = () => {
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/timeslots" element={<TutorTimeSlots />} />
+                  <Route path="/tutorlist" element={<Tutorlist/>} />
+                  <Route path="/book-slots/:tutor_id" element={<BookTimeSlots/>} />
+                  <Route path="/wallet" element={<Wallet />} />
                 </Route>
               </Route>
 

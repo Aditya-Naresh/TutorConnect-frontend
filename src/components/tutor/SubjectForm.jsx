@@ -21,7 +21,7 @@ const SubjectForm = ({ reRender }) => {
       if (response.status === 201) {
         await axiosPatch(
           `accounts/profile/${user_id}`,
-          { is_approved: false },
+          { is_approved: false, is_submitted:true },
           token
         );
         toast.success("The subject was added");
