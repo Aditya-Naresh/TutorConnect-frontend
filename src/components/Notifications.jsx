@@ -1,18 +1,29 @@
 import React from "react";
+import { useSelector } from "react-redux";
 
-const Notifications = () => {
-  const notifications = [
-    "Admin have approved your profile",
-    "Aditya has made a request",
-  ];
+const Notifications = ({ notifications, setReqId }) => {
+  const auth = useSelector((state) => state.auth);
+  const { role } = auth;
+
+  const validNotifications = Array.isArray(notifications) ? notifications : [];
+
   return (
-    <div className="notifications bg-lime-200 p-4 rounded-md shadow-md">
-      {notifications.length === 0 ? (
-        <p>There are no notifications</p>
-      ) : (
+    <div className="notifications z-20 bg-lime-200 p-4 rounded-md shadow-md ">
+      {validNotifications &&(
         <ul>
-          {notifications.map((notification, index) => (
-            <li key={index} className={`${index === notifications.length - 1 ? '' : 'pb-4'} text-sm`}>{notification}</li>
+          {validNotifications.map((notification, index) => (
+            <li
+              key={index}
+              className={`text-sm cursor-pointer`}
+              onClick={() => setReqId( notification.id)}
+            >
+              {role === "TUTOR" && (
+                <span>{notification.student_name} has created a request</span>
+              )}
+              {role === "STUDENT" && (
+                <span>{notification.tutor_name} has {notification.is_accepted ? " accepted your request" : " rejected your request"}</span>
+              )}
+            </li>
           ))}
         </ul>
       )}

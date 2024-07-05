@@ -5,8 +5,9 @@ import Slider from "react-slick";
 import { axiosGet } from "../../axios";
 import { useSelector } from "react-redux";
 import { CgClose } from "react-icons/cg";
+import { useParams } from "react-router-dom";
 
-const TutorTimeSlots = () => {
+const BookTimeSlots = () => {
   const [selectedDates, setSelectedDates] = useState([]);
   const [render, setRender] = useState('')
   const settings = {
@@ -18,11 +19,11 @@ const TutorTimeSlots = () => {
   };
 
   const auth = useSelector((state) => state.auth);
-
+  const {tutor_id} = useParams()
   useEffect(() => {
     const fetchDates = async () => {
       try {
-        const response = await axiosGet(`timeslots/available-dates/${auth.id}`, auth.access);
+        const response = await axiosGet(`timeslots/available-dates/${tutor_id}`, auth.access);
         console.log(response);
         setSelectedDates(response.data);
       } catch (error) {
@@ -36,16 +37,9 @@ const TutorTimeSlots = () => {
     setRender(value)
   }
 
-  const [showForm, setShowForm] = useState(false)
   return (
-    auth.role === 'TUTOR' &&
+    auth.role === 'STUDENT' &&
     <div className="container mx-auto">
-      <div className="flex justify-center items-center">
-      <button className={showForm? `bg-black text-red-500  mb-4 p-4 flex justify-center max-w-32`: `bg-slate-300 text-fuchsia-950 mb-4 p-4 flex justify-center max-w-32`} onClick={() => setShowForm(!showForm)}>{showForm? <CgClose/> : "Add Date"}</button>
-
-      </div>
-      {showForm ?
-      <AddDateForm />:
       <div className="flex justify-center h-72">
         <Slider {...settings} className="bg-gray-100 p-2 rounded-lg shadow-lg w-screen max-w-screen-lg h-full">
           {selectedDates.length > 0 ? (
@@ -55,9 +49,9 @@ const TutorTimeSlots = () => {
           )}
         </Slider>
       </div>
-  }
+
     </div>
   );
 };
 
-export default TutorTimeSlots;
+export default BookTimeSlots;

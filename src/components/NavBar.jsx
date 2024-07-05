@@ -9,6 +9,7 @@ import { FaMessage } from "react-icons/fa6";
 
 import { toggleNotification } from "../redux/slices/notificationSlice";
 import { toggleMenu } from "../redux/slices/profileSlice"
+import { axiosGet } from "../axios";
 
 
 const NavBarItems = () => {
@@ -30,7 +31,7 @@ const NavBarItems = () => {
 }
 const StudentNavBar = () => {
   return (
-    <div className="bg-gradient-to-tr from-black via-emerald-700 to-green-500 sticky top-0 z-[20] mx-auto flex w-full items-center justify-between p-8 h-full">
+    <div className="bg-gradient-to-tr from-black via-emerald-900 to-green-700 sticky top-0 z-[20] mx-auto flex w-full items-center justify-between p-8 h-full">
       <NavBarItems />
     </div>
   );
@@ -55,8 +56,12 @@ const AdminNavBar = () => {
 const NavBar = () => {
   const role = useSelector((state) => state.auth.role);
   const dispatch = useDispatch();
+  const token = useSelector((state) => state.auth.access)
+ 
+  
   useEffect(() => {
     dispatch(refreshAccessToken());
+      
   }, [dispatch]);
   if (role === "STUDENT") {
     return <StudentNavBar />;
