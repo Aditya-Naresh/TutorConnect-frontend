@@ -28,7 +28,7 @@ const StudentSideBar = () => {
 
 const TutorSideBar = () => {
   return (
-    <div className="relative bg-gradient-to-bl from-black via-blue-900  to-green-500 border border-slate-500 w-full h-full">
+    <div className="relative bg-gradient-to-bl from-black via-blue-900  to-emerald-500 border border-slate-500 w-full h-full">
       <div className="text-white p-4 flex flex-col relative">
       <div className="border-b  border-b-blue-800 py-2 flex justify-center ">
           <Link to={"/"} className="cursor-pointer">

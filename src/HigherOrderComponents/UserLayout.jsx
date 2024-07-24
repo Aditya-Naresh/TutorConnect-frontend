@@ -31,17 +31,17 @@ const UserLayout = () => {
     setShowSideBar(!showSideBar);
   };
 
-  const fetchNotifications = async () => {
-    try {
-      const response = await axiosGet("timeslots/tuition-request/", access);
-      setNotifications(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const fetchNotifications = async () => {
+  //   try {
+  //     const response = await axiosGet("timeslots/tuition-request/", access);
+  //     setNotifications(response.data);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }; To redo
 
   useEffect(() => {
-    fetchNotifications();
+    // fetchNotifications();
   }, [showReqForm]);
 
   const showNotification = useSelector((state) => state.notifications.enabled);
@@ -65,7 +65,7 @@ const UserLayout = () => {
       <div className="relative w-full h-1/6">
         <NavBar />
       </div>
-      <div className="relative lg:flex flex-row w-full  h-4/6 ">
+      <div className="relative lg:flex flex-row w-full  h-5/6 ">
         <div className="relative hidden lg:block w-1/5 h-full ">
           <SideBar />
         </div>
@@ -97,7 +97,7 @@ const UserLayout = () => {
               </div>
             )}
             {showProfileMenu && (
-              <div className="origin-top-right absolute right-0 z-20 -mt-16 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+              <div className="origin-top-right absolute lg:hidden right-0 z-20 -mt-8 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                 <Menu />
               </div>
             )}
@@ -114,12 +114,12 @@ const UserLayout = () => {
           <Outlet />
         </div>
         {showNotification && (
-          <div className="origin-top-right hidden  lg:flex absolute right-28  z-20 -mt-16 w-56 rounded-md ring-1 ring-black ring-opacity-5 bg-lime-200">
+          <div className="origin-top-right hidden  lg:flex absolute right-28  z-20 -mt-8 w-56 rounded-md ring-1 ring-black ring-opacity-5 bg-lime-200">
             <Notifications notifications={notifications} setReqId={reqHandle} />
           </div>
         )}
         {showProfileMenu && (
-          <div className="origin-top-right absolute right-0 z-20 -mt-16 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+          <div className="origin-top-right hidden lg:flex absolute right-0 z-20 -mt-8 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
             <Menu />
           </div>
         )}
@@ -129,7 +129,7 @@ const UserLayout = () => {
           </div>
         )}
       </div>
-      <div className="relative w-full h-[100px] z-0 md:h-1/6">
+      <div className="relative w-full h-[100px] z-0">
         <Footer />
       </div>
     </div>

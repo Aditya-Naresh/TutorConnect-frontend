@@ -28,7 +28,8 @@ import Tutorlist from "./pages/student/Tutorlist.jsx";
 import Wallet from "./pages/Wallet.jsx";
 import BookTimeSlots from "./pages/student/BookTimeSlots.jsx";
 
-
+import './app.css'
+import TimeSlotDetails from "./components/TimeSlotDetails.jsx";
 
 
 const App = () => {
@@ -63,6 +64,7 @@ const App = () => {
                   <Route path="/tutorlist" element={<Tutorlist/>} />
                   <Route path="/book-slots/:tutor_id" element={<BookTimeSlots/>} />
                   <Route path="/wallet" element={<Wallet />} />
+                  <Route path="/timeslot-details/:id" element={<TimeSlotDetails />} />
                 </Route>
               </Route>
 

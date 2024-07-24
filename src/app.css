@@ -1,0 +1,19 @@
+a.AVAILABLE{
+    background-color: green;
+    border: 2px solid darkgreen;
+  
+  }
+  
+  a.Open{
+    background-color: red;
+    border: 2px solid darkred;
+  }
+  
+  a.BOOKED{
+    background-color: blue;
+    border: 2px solid rgb(2, 3, 80);
+  }
+  
+  .fc-event{
+    cursor: pointer;
+  }

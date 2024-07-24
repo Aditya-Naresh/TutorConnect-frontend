@@ -16,6 +16,9 @@ const axiosGet = async (endpoint, token) => {
         
     } catch (error) {
         console.log(error);
+        if(error.response.status === 404){
+            return {"message": "Not Found", "status":404}
+        }
     }
 }
 
