@@ -20,7 +20,6 @@ const Tutorlist = () => {
       }
       const response = await axiosGet(url, auth.access);
       setTutors(response.data);
-      console.log(response.data);
     } catch (error) {
       console.log(error);
     }

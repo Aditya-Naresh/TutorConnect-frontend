@@ -4,6 +4,7 @@ import Calendar from '../components/Calendar'
 
 const Dashboard = () => {
     const{ role }= useSelector((state) => state.auth)
+    const wallet = useSelector((state) => state.wallet.id)
   return (
     <div className='w-full h-[600px] overflow-auto'>
       <div className='flex justify-center items-center'>

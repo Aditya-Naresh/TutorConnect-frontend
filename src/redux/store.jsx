@@ -3,6 +3,7 @@ import authReducer from "./slices/authSlice"
 import storage from "redux-persist/lib/storage";
 import notificationReducer from './slices/notificationSlice'
 import profileReducer from './slices/profileSlice'
+import walletReducer from './slices/walletSlice'
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 
 const persistConfig = {
@@ -15,6 +16,7 @@ const reducer = combineReducers({
   auth: authReducer,
   notifications: notificationReducer,
   profile: profileReducer,
+  wallet: walletReducer
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);

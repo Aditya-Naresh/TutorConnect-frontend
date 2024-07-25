@@ -4,11 +4,15 @@ import { axiosGet } from "../axios";
 import { useSelector } from "react-redux";
 import { Box } from "@mui/material";
 import dayjs from "dayjs";
+import BookSlot from "./student/BookSlot";
+import MySelectForm from "./forms/createform/MySelectForm";
 
 const TimeSlotDetails = () => {
   const [loading, setLoading] = useState(true);
+  const [render, setRender] = useState([]);
   const { id } = useParams();
-  const {role, access} = useSelector((state) => state.auth);
+  const { role, access } = useSelector((state) => state.auth);
+  const { balance } = useSelector((state) => state.wallet.balance);
   const [event, setEvent] = useState();
   const getData = async () => {
     const response = await axiosGet(`timeslots/${id}`, access);
@@ -17,9 +21,12 @@ const TimeSlotDetails = () => {
     setLoading(false);
   };
 
+  const getSubject = async () => {
+    const response = await axiosGet(``)
+  }
   useEffect(() => {
     getData();
-  }, []);
+  }, [render]);
   return (
     <div>
       {loading ? (
@@ -80,8 +87,8 @@ const TimeSlotDetails = () => {
               <Box sx={{ marginLeft: "10px" }}>
                 {dayjs(event.end).format("hh:mm A")}
               </Box>
-              </Box>
-              <Box
+            </Box>
+            <Box
               sx={{
                 marginBottom: "10px",
                 display: "flex",
@@ -89,40 +96,61 @@ const TimeSlotDetails = () => {
               }}
             >
               <Box sx={{ fontWeight: "bold" }}>Tutor:</Box>
-              <Box sx={{ marginLeft: "10px" }}>
-                {event.tutor_name}
-              </Box>
-              </Box>
-              {event.title === "BOOKED" && 
+              <Box sx={{ marginLeft: "10px" }}>{event.tutor_name}</Box>
+            </Box>
+            {event.title === "BOOKED" && (
               <>
-               <Box
-              sx={{
-                marginBottom: "10px",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Box sx={{ fontWeight: "bold" }}>Booked By:</Box>
-              <Box sx={{ marginLeft: "10px" }}>
-                {event.student_name}
-              </Box>
-              </Box>
-              <Box
-              sx={{
-                marginBottom: "10px",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <Box sx={{ fontWeight: "bold" }}>Subject:</Box>
-              <Box sx={{ marginLeft: "10px" }}>
-                {event.subject}
-              </Box>
-              </Box>
+                <Box
+                  sx={{
+                    marginBottom: "10px",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box sx={{ fontWeight: "bold" }}>Booked By:</Box>
+                  <Box sx={{ marginLeft: "10px" }}>{event.student_name}</Box>
+                </Box>
+                <Box
+                  sx={{
+                    marginBottom: "10px",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box sx={{ fontWeight: "bold" }}>Subject:</Box>
+                  <Box sx={{ marginLeft: "10px" }}>{event.subject}</Box>
+                </Box>
               </>
-              }
-          {/* Design the Cancel and Booking Logic */}
+            )}
+            {role === "STUDENT" && (
+              <>
+                <Box
+                  sx={{
+                    marginBottom: "10px",
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <Box sx={{ fontWeight: "bold" }}>Rate:</Box>
+                  <Box
+                    sx={{
+                      marginLeft: "10px",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {event.rate}
+                  </Box>
+                </Box>
+              </>
+            )}
           </Box>
+          {role === "STUDENT" && event.title === "AVAILABLE" && (
+            <BookSlot
+              slot_id={event.id}
+              setRender={setRender}
+              rate={event.rate}
+            />
+          )}
         </>
       )}
     </div>

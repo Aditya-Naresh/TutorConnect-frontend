@@ -1,25 +1,30 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { axiosPatch } from '../../axios'
+import { debitMoney } from '../../redux/slices/walletSlice'
 
-const BookSlot = ({slot_id}) => {
+const BookSlot = ({slot_id, setRender, rate}) => {
     const auth = useSelector((state) => state.auth)
-
+    const dispatch = useDispatch()
     const handleBook = async () =>{
         const formData = {
-            "is_booked" : true,
-            "booked_by" : auth.id
+            "className" : "BOOKED",
+            "student" : auth.id
         }
 
         try {
-            const response = await axiosPatch(`timeslots/BooktimeSlots/${slot_id}`, formData, auth.access)
+            const response = await axiosPatch(`timeslots/${slot_id}`, formData, auth.access)
             console.log(response);
+            if (response.status === 200){
+                dispatch(debitMoney(rate))
+            }
+            setRender(response)
         } catch (error) {
             console.log(error);
         }
     }
   return (
-    <button className='bg-green-500 text-white font-bold text-sm p-2'
+    <button className='bg-green-700 text-white font-bold text-sm p-2'
     onClick={handleBook}
     >Book</button>
   )

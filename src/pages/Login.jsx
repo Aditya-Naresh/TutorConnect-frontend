@@ -104,11 +104,11 @@ const Login = () => {
             Sign up
             </Link>
           </p>
-          <div className="flex justify-center">
+          {/* <div className="flex justify-center">
             <p className="border shadow-lg hover:shadow-2xl px-6 py-2 relative flex item-center ">
               <FcGoogle className="mr-2 mt-1" /> Continue with google
             </p>
-          </div>
+          </div> */}
         </form>
       </div>
   );

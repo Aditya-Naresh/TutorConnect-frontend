@@ -70,14 +70,16 @@ export default function MyModal({
             Create a time slot on {dayjs(myDate).format("MMMM-DD-YYYY")}
           </Typography>
           <form onSubmit={submissionHandler}>
+            {role === "ADMIN" &&
             <Box sx={{ marginBottom: "20px" }}>
               <MySelectForm
                 label={"Status"}
                 name={"className"}
                 onChange={handleChange}
                 value={formData.className}
-              />
+                />
             </Box>
+              }
 
             <Box sx={{ marginBottom: "20px" }}>
               <MyDatePicker

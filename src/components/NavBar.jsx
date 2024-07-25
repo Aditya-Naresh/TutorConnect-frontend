@@ -9,12 +9,15 @@ import { FaMessage } from "react-icons/fa6";
 
 import { toggleNotification } from "../redux/slices/notificationSlice";
 import { toggleMenu } from "../redux/slices/profileSlice"
-import { axiosGet } from "../axios";
+import { fetchWalletDetails } from "../redux/slices/walletSlice";
 
 
 const NavBarItems = () => {
   const username = useSelector((state) => state.auth.full_name)
   const dispatch = useDispatch()
+  useEffect(() => {
+    dispatch(fetchWalletDetails())
+  }, [])
   return(
     <>
     <Link to={"/"}>
