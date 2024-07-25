@@ -81,6 +81,18 @@ const TimeSlotDetails = () => {
                 {dayjs(event.end).format("hh:mm A")}
               </Box>
               </Box>
+              <Box
+              sx={{
+                marginBottom: "10px",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <Box sx={{ fontWeight: "bold" }}>Tutor:</Box>
+              <Box sx={{ marginLeft: "10px" }}>
+                {event.tutor_name}
+              </Box>
+              </Box>
               {event.title === "BOOKED" && 
               <>
                <Box
@@ -109,9 +121,8 @@ const TimeSlotDetails = () => {
               </Box>
               </>
               }
-          </Box>
           {/* Design the Cancel and Booking Logic */}
-          {role === "TUTOR" && "Cancel"}
+          </Box>
         </>
       )}
     </div>

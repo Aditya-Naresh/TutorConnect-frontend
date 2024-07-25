@@ -31,17 +31,17 @@ const UserLayout = () => {
     setShowSideBar(!showSideBar);
   };
 
-  // const fetchNotifications = async () => {
-  //   try {
-  //     const response = await axiosGet("timeslots/tuition-request/", access);
-  //     setNotifications(response.data);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }; To redo
+  const fetchNotifications = async () => {
+    try {
+      const response = await axiosGet("timeslots/tuition-request/", access);
+      setNotifications(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    // fetchNotifications();
+    fetchNotifications();
   }, [showReqForm]);
 
   const showNotification = useSelector((state) => state.notifications.enabled);

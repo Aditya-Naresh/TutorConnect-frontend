@@ -8,6 +8,7 @@ import MultiSelectForm from "./forms/MultiSelectForm";
 import DatePickerForm from "./forms/DatePickerForm";
 import dayjs from "dayjs";
 import MyModal from "./utils/Modal";
+import { useParams } from "react-router-dom";
 
 
 const Calendar = () => {
@@ -31,7 +32,7 @@ const Calendar = () => {
     }) 
   }
 
-  const auth = useSelector((state) => state.auth);
+  const {access, role} = useSelector((state) => state.auth);
   const [events, setEvents] = useState([]);
   const [status, setStatus] = useState([])
   const [loading, setLoading] = useState(true)
@@ -55,19 +56,29 @@ const Calendar = () => {
     (!fromDate || dayjs(event.start).isAfter(fromDate,"day")) &&
     (!toDate || dayjs(event.start).isBefore(toDate,"day"))
   })
-  const fetchEvents = async () => {
-    const response = await axiosGet("timeslots/tutor_timeslots/", auth.access);
+  const fetchEvents = async (url) => {
+    const response = await axiosGet(url, access);
     setEvents(response.data);
     setStatus([...new Set(response.data.map((event) => event.className))])
     setSelectedStatus([...new Set(response.data.map((event) => event.className))])
     setLoading(false)
   };
 
+  
 
+  let url
+  if(role === 'TUTOR'){
+    url = 'timeslots/tutor_timeslots/'
+  }else if (role === 'STUDENT' && window.location.href.includes('/book-slots/')){
+    const {tutor_id} = useParams()
+    url = `timeslots/tutor_timeslots/${tutor_id}`
+  }else if (role === 'STUDENT'){
+    url = 'timeslots/student_timeslots/'
+  }
 
   useEffect(() => {
-    fetchEvents();
-  }, [render, auth.access]);
+    fetchEvents(url)
+  }, [render, access]);
 
 
 

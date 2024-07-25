@@ -3,10 +3,13 @@ import { useSelector } from 'react-redux'
 import Calendar from '../components/Calendar'
 
 const Dashboard = () => {
-    const role = useSelector((state) => state.auth.role)
+    const{ role }= useSelector((state) => state.auth)
   return (
     <div className='w-full h-[600px] overflow-auto'>
-      <Calendar />
+      <div className='flex justify-center items-center'>
+          <h1 className='font-bold text-3xl lg:text-5xl '>{role === "ADMIN" ? "Site Analytics" : "Sessions"}</h1>
+      </div>
+      {role === "ADMIN" ? <p>Site Analytics after completing everything</p> : <Calendar />}
     </div>
   )
 }
