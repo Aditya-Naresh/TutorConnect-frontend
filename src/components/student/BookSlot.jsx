@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { axiosPatch } from '../../axios'
-import { debitMoney } from '../../redux/slices/walletSlice'
+import { withdrawMoney } from '../../redux/slices/walletSlice'
 
 const BookSlot = ({slot_id, setRender, rate}) => {
     const auth = useSelector((state) => state.auth)
@@ -16,7 +16,7 @@ const BookSlot = ({slot_id, setRender, rate}) => {
             const response = await axiosPatch(`timeslots/${slot_id}`, formData, auth.access)
             console.log(response);
             if (response.status === 200){
-                dispatch(debitMoney(rate))
+                dispatch(withdrawMoney(rate))
             }
             setRender(response)
         } catch (error) {

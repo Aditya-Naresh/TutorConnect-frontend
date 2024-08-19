@@ -10,129 +10,188 @@ import dayjs from "dayjs";
 import MyModal from "./utils/Modal";
 import { useParams } from "react-router-dom";
 
-
 const Calendar = () => {
   const [formData, setFormData] = useState({
-    className: '',
-    start: '',
-  })
+    className: "",
+    start: "",
+  });
 
-  const [render, setRender] = useState('')
+  const [render, setRender] = useState("");
 
   const reRender = (value) => {
-    setRender(value)
-  }
+    setRender(value);
+  };
 
   const handleChange = (e) => {
-    e.preventDefault()
-    const {name, value} = e.target
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name] : value
-    }) 
-  }
+      [name]: value,
+    });
+  };
 
-  const {access, role} = useSelector((state) => state.auth);
+  const { access, role } = useSelector((state) => state.auth);
   const [events, setEvents] = useState([]);
-  const [status, setStatus] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [selectedStatus, setSelectedStatus] = useState([])
-  const [fromDate, setFromDate] = useState(null)
+  const [status, setStatus] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedStatus, setSelectedStatus] = useState([]);
+  const [fromDate, setFromDate] = useState(null);
 
-
-
-  
   const fromDateChange = (newDate) => {
-    setFromDate(newDate)
-  }
-  const [toDate, setToDate] = useState(null)
+    setFromDate(newDate);
+  };
+  const [toDate, setToDate] = useState(null);
 
   const toDateChange = (newDate) => {
-    setToDate(newDate)
-  }
+    setToDate(newDate);
+  };
 
   const filteredEvents = events.filter((event) => {
-    return selectedStatus.includes(event.className) &&
-    (!fromDate || dayjs(event.start).isAfter(fromDate,"day")) &&
-    (!toDate || dayjs(event.start).isBefore(toDate,"day"))
-  })
+    return (
+      selectedStatus.includes(event.className) &&
+      (!fromDate || dayjs(event.start).isAfter(fromDate, "day")) &&
+      (!toDate || dayjs(event.start).isBefore(toDate, "day"))
+    );
+  });
   const fetchEvents = async (url) => {
     const response = await axiosGet(url, access);
     setEvents(response.data);
-    setStatus([...new Set(response.data.map((event) => event.className))])
-    setSelectedStatus([...new Set(response.data.map((event) => event.className))])
-    setLoading(false)
+    setStatus([...new Set(response.data.map((event) => event.className))]);
+    setSelectedStatus([
+      ...new Set(response.data.map((event) => event.className)),
+    ]);
+    setLoading(false);
   };
+  // Today's session Count
+  const today = dayjs().format("YYYY-MM-DD");
+  const todaySessionCount = events.filter(
+    (event) =>
+      dayjs(event.start).format("YYYY-MM-DD") === today &&
+      event.className === "BOOKED"
+  ).length;
 
-  
-
-  let url
-  if(role === 'TUTOR'){
-    url = 'timeslots/tutor_timeslots/'
-  }else if (role === 'STUDENT' && window.location.href.includes('/book-slots/')){
-    const {tutor_id} = useParams()
-    url = `timeslots/tutor_timeslots/${tutor_id}`
-  }else if (role === 'STUDENT'){
-    url = 'timeslots/student_timeslots/'
+  let url;
+  if (role === "TUTOR") {
+    url = "timeslots/tutor_timeslots/";
+  } else if (
+    role === "STUDENT" &&
+    window.location.href.includes("/book-slots/")
+  ) {
+    const { tutor_id } = useParams();
+    url = `timeslots/tutor_timeslots/${tutor_id}`;
+  } else if (role === "STUDENT") {
+    url = "timeslots/student_timeslots/";
   }
 
   useEffect(() => {
-    fetchEvents(url)
+    fetchEvents(url);
   }, [render, access]);
-
-
 
   // Modal
   const [open, setOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState([false])
+  const [selectedDate, setSelectedDate] = useState([false]);
   const handleOpen = (info) => {
-    setOpen(true)
-    setSelectedDate(info.dateStr)
+    setOpen(true);
+    setSelectedDate(info.dateStr);
     setFormData({
-      className: '',
+      className: "",
       start: dayjs(info.dateStr),
-    })
-  }
+    });
+  };
   const handleClose = () => {
-    setOpen(false)
+    setOpen(false);
     setFormData({
-      className: '',
-      start: '',
-    })
-  }
+      className: "",
+      start: "",
+    });
+  };
 
   return (
     <div>
-      { loading ? <p>Loading the data</p>:
-
+      {loading ? (
+        <p>Loading the data</p>
+      ) : (
         <>
-        <MyModal handleChange={handleChange} formData={formData} open={open} handleClose={handleClose} myDate={selectedDate} reRender={reRender}/>
-        <Box
-        sx={{
-          boxShadow: 3,
-          padding: "20px",
-          display: "flex",
-          justifyContent: "space-evenly",
-          marginBottom: "20px",
-        }}
-        >
-        <Box sx={{backgroundColor:"#d1e2eb", width:{xs:"100%", md:"30%"}} }>
-          <MultiSelectForm label={"Status"} options={status} setSelectedValue={setSelectedStatus} selectedValue={selectedStatus}/>
-        </Box>
-        <Box sx={{backgroundColor:"#d1e2eb", width:"30%",  paddingTop:"1px", paddingBottom:"8px", paddingX:"8px"}} className="hidden md:block">
-          <DatePickerForm label={"From Date"} value={fromDate} setValue={fromDateChange}/>
-        </Box>
-        <Box sx={{backgroundColor:"#d1e2eb", width:"30%",  paddingTop:"1px", paddingBottom:"8px", paddingX:"8px"}} className="hidden md:block">
-          <DatePickerForm label={"To Date"} value={toDate} setValue={toDateChange} />
-        </Box>
-      </Box>
-      <Box sx={{ boxShadow: 3, padding: "20px" }}>
-        <MyCalendar events={filteredEvents} dayClickAction={handleOpen} />;
-      </Box>
-          </>
-  }
+          <MyModal
+            handleChange={handleChange}
+            formData={formData}
+            open={open}
+            handleClose={handleClose}
+            myDate={selectedDate}
+            reRender={reRender}
+          />
+          <Box
+            sx={{
+              boxShadow: 3,
+              padding: "20px",
+              display: "flex",
+              justifyContent: "space-evenly",
+              marginBottom: "20px",
+            }}
+          >
+            {role === "TUTOR" && (
+              <>
+                <Box
+                  sx={{
+                    backgroundColor: "#d1e2eb",
+                    width: { xs: "100%", md: "30%" },
+                  }}
+                >
+                  <MultiSelectForm
+                    label={"Status"}
+                    options={status}
+                    setSelectedValue={setSelectedStatus}
+                    selectedValue={selectedStatus}
+                  />
+                </Box>
+                <Box
+                  sx={{
+                    backgroundColor: "#d1e2eb",
+                    width: "30%",
+                    paddingTop: "1px",
+                    paddingBottom: "8px",
+                    paddingX: "8px",
+                  }}
+                  className="hidden md:block"
+                >
+                  <DatePickerForm
+                    label={"From Date"}
+                    value={fromDate}
+                    setValue={fromDateChange}
+                  />
+                </Box>
+                <Box
+                  sx={{
+                    backgroundColor: "#d1e2eb",
+                    width: "30%",
+                    paddingTop: "1px",
+                    paddingBottom: "8px",
+                    paddingX: "8px",
+                  }}
+                  className="hidden md:block"
+                >
+                  <DatePickerForm
+                    label={"To Date"}
+                    value={toDate}
+                    setValue={toDateChange}
+                  />
+                </Box>
+              </>
+            )}
+            {role === "STUDENT" && (
+              <h3>Today's Booked Sessions: {todaySessionCount}</h3>
+            )}
+          </Box>
+          <Box sx={{ boxShadow: 3, height: "calc(100vh - 200px)" }}>
+            <MyCalendar
+              events={filteredEvents}
+              dayClickAction={role === "TUTOR" ? handleOpen : ""}
+            />
+          </Box>
+        </>
+      )}
     </div>
-  )
+  );
 };
 
 export default Calendar;

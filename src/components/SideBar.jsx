@@ -66,9 +66,9 @@ const AdminSideBar = () => {
             Students
           </Link>
         </div>
-        <Link to={'/approve-tutor'} className="cursor-pointer">
+        {/* <Link to={'/approve-tutor'} className="cursor-pointer">
         <div className="py-2 flex justify-center">Approve Tutor</div>
-        </Link>
+        </Link> */}
       </div>
     </div>
   );

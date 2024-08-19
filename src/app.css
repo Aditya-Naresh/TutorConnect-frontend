@@ -17,3 +17,11 @@ a.AVAILABLE{
   .fc-event{
     cursor: pointer;
   }
+
+  .fc {
+    height: 100%;
+  }
+  
+  .fc-view-harness {
+    height: 100% !important;
+  }

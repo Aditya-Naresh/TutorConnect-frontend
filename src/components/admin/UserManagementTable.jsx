@@ -1,52 +1,139 @@
-import React from "react";
-import BlockButton from "./BlockButton";
+import * as React from "react";
+import { useState } from "react";
+import { styled } from "@mui/material/styles";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
+import Paper from "@mui/material/Paper";
+import TablePagination from "@mui/material/TablePagination";
+import TextField from "@mui/material/TextField"; // Import TextField for search input
 import UnblockButton from "./UnblockButton";
+import BlockButton from "./BlockButton";
+import VerifiedIcon from '@mui/icons-material/Verified';
+import CancelIcon from '@mui/icons-material/Cancel';
 import UserDetails from "./UserDetails";
 
-const UserManagementTable = ({ data, reRender, blockUser, showCard }) => {
-  return (
-    <table className="relative border border-white">
-      <thead>
-        <tr className="font-bold text-amber-100 ">
-          <th className="px-4 py-2 border border-white">Email</th>
-          <th className="hidden md:table-cell px-4 py-2 border border-white">First Name</th>
-          <th className="hidden md:table-cell py-2 border border-white">Last Name</th>
-          <th className="hidden md:table-cell py-2 border border-white">Auth Provider</th>
-          <th className="py-2 border border-white">Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        {data.map((user, index) => (
-          <tr
-            key={index}
-            className={index % 2 === 0 ? "bg-gray-300" : "bg-gray-200"}
-          >
-            <td className="border px-4 py-2 border-white">{user.email}</td>
-            <td className="hidden md:table-cell border px-4 py-2 border-white">
-              {user.first_name}
-            </td>
-            <td className="hidden md:table-cell border px-4 py-2 border-white">{user.last_name}</td>
-            <td className="hidden md:table-cell border px-4 py-2 border-white">
-              {user.auth_provider}
-            </td>
+const StyledTableCell = styled(TableCell)({
+  "&.MuiTableCell-head": {
+    backgroundColor: "#000000", // Black background
+    color: "#ffffff", // White text
+  },
+  "&.MuiTableCell-body": {
+    fontSize: 14,
+  },
+});
 
-            <td className="border px-4 py-2 border-white">
-              {blockUser? 
-              <div>
-                {user.is_blocked ? (
-                  <UnblockButton id={user.id} reRender={reRender} />
-                ) : (
-                  <BlockButton id={user.id} reRender={reRender} />
-                )}
-              </div> :
-              <UserDetails id={user.id} showCard={showCard} />
-              }
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
+const StyledTableRow = styled(TableRow)({
+  "&:nth-of-type(odd)": {
+    backgroundColor: "#f5f5f5", // Light grey background
+  },
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
+});
+
+export default function CustomizedTables({ data, reRender, label, showCard }) {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value.toLowerCase());
+    setPage(0); // Reset to first page when searching
+  };
+
+  // Filter data based on search query
+  const filteredData = data.filter((row) =>
+    row.first_name.toLowerCase().includes(searchQuery) ||
+    row.last_name.toLowerCase().includes(searchQuery)
   );
-};
 
-export default UserManagementTable;
+  const paginatedData = filteredData.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
+
+  return (
+    <TableContainer component={Paper}>
+      {/* Add a search bar */}
+      <TextField
+        label="Search by Name"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchQuery}
+        onChange={handleSearchChange}
+      />
+      <Table sx={{ minWidth: 700 }} aria-label="customized table">
+        <TableHead>
+          <TableRow>
+            <StyledTableCell colSpan={label === "Tutor Management" ? 7 : 5} align="center">
+              {label}
+            </StyledTableCell>
+          </TableRow>
+          <TableRow>
+            <StyledTableCell>Email</StyledTableCell>
+            <StyledTableCell align="right">First Name</StyledTableCell>
+            <StyledTableCell align="right">Last Name</StyledTableCell>
+            <StyledTableCell align="right">Auth Provider</StyledTableCell>
+            {label === "Tutor Management" && (
+              <>
+                <StyledTableCell align="right">Approved</StyledTableCell>
+                <StyledTableCell align="right">User Details</StyledTableCell>
+              </>
+            )}
+            <StyledTableCell align="right">Action</StyledTableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {paginatedData.map((row) => (
+            <StyledTableRow key={row.email}>
+              <StyledTableCell component="th" scope="row">
+                {row.email}
+              </StyledTableCell>
+              <StyledTableCell align="right">{row.first_name}</StyledTableCell>
+              <StyledTableCell align="right">{row.last_name}</StyledTableCell>
+              <StyledTableCell align="right">
+                {row.auth_provider}
+              </StyledTableCell>
+              {label === "Tutor Management" && (
+                <>
+                  <StyledTableCell align="right">{row.is_approved ? <VerifiedIcon color="green"/> : <CancelIcon/>}</StyledTableCell>
+                  <StyledTableCell align="right"><UserDetails id={row.id}  showCard={showCard}/></StyledTableCell>
+                </>
+              )}
+              <StyledTableCell align="right">
+                {row.is_blocked ? (
+                  <UnblockButton id={row.id} reRender={reRender} />
+                ) : (
+                  <BlockButton id={row.id} reRender={reRender} />
+                )}
+              </StyledTableCell>
+            </StyledTableRow>
+          ))}
+        </TableBody>
+      </Table>
+      <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
+        component="div"
+        count={filteredData.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+    </TableContainer>
+  );
+}

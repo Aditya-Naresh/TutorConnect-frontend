@@ -1,20 +1,30 @@
 import React, { useEffect, useState } from "react";
 import { axiosGet } from "../../axios";
 import { useSelector } from "react-redux";
-import Slider from "react-slick";
-import TutorCard from '../../components/TutorCard'
+import { useNavigate } from "react-router-dom";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  TablePagination,
+  Button,
+} from "@mui/material";
 import SearchBar from "../../components/student/SearchBar";
-import RequestForm from "../../components/student/RequestForm";
 
 const Tutorlist = () => {
   const [tutors, setTutors] = useState([]);
   const auth = useSelector((state) => state.auth);
-  const [showRequestForm, setShowRequestForm] = useState(false)
-  const [tutorSubjects, setTutorSubjects] = useState({})
-  const [tutorId, setTutorId] = useState()
-  const fetchTutors = async (keyword = '') => {
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const navigate = useNavigate();
+
+  const fetchTutors = async (keyword = "") => {
     try {
-      let url = 'timeslots/tutor-list/';
+      let url = "timeslots/tutor-list/";
       if (keyword) {
         url += `?keyword=${keyword}`;
       }
@@ -24,7 +34,7 @@ const Tutorlist = () => {
       console.log(error);
     }
   };
-  
+
   const handleSearch = (keyword) => {
     fetchTutors(keyword);
   };
@@ -33,33 +43,72 @@ const Tutorlist = () => {
     fetchTutors();
   }, []);
 
-  const sliderSettings = {
-    dots: true,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleRequestTutor = (tutorId) => {
+    navigate(`/book-slots/${tutorId}`);
   };
 
   return (
     <div className="tutor-list">
-      <h2 className="text-cyan-200 font-bold flex justify-center">Tutors List</h2>
+      <h2 className="font-bold text-3xl lg:text-5xl flex justify-center">Tutors List</h2>
       <div className="flex justify-center mb-4">
         <SearchBar onSearch={handleSearch} />
       </div>
-      <div className="flex  justify-center h-72">
-      {
-        showRequestForm?
-        <RequestForm tutorId = {tutorId} subjects={tutorSubjects}/>
-        :
-        <Slider {...sliderSettings} className="bg-gray-100 p-2 rounded-lg shadow-lg w-screen max-w-screen-lg h-full">
-        {tutors.map((tutor) => (
-          <div key={tutor.id}>
-            <TutorCard data={tutor} setShowRequestForm={setShowRequestForm} setTutorSubjects={setTutorSubjects} setTutorId={setTutorId}/>
-          </div>
-        ))}
-      </Slider>}
+      <div className="flex justify-center h-72">
+        <Paper>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow sx={{backgroundColor:"#b0f7d5",}}>
+                  <TableCell>Tutor</TableCell>
+                  <TableCell>Subjects</TableCell>
+                  <TableCell>Rate</TableCell>
+                  <TableCell>Actions</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {tutors
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((tutor) => (
+                    <TableRow key={tutor.id}>
+                      <TableCell>
+                        {tutor.first_name} {tutor.last_name}
+                      </TableCell>
+                      <TableCell>
+                        {tutor.subjects.map((subject) => subject.name).join(", ")}
+                      </TableCell>
+                      <TableCell>{tutor.rate}</TableCell>
+                      <TableCell>
+                        <Button
+                          variant="contained"
+                          color="primary"
+                          onClick={() => handleRequestTutor(tutor.id)}
+                        >
+                          Request Tutor
+                        </Button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <TablePagination
+            component="div"
+            count={tutors.length}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        </Paper>
       </div>
     </div>
   );

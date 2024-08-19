@@ -21,7 +21,6 @@ import AdminPrivateRoute from "./HigherOrderComponents/AdminPrivateRoute.jsx";
 import UserManagement from "./pages/admin/UserManagement.jsx";
 import Profile from "./pages/Profile.jsx";
 import ApproveTutor from "./pages/admin/ApproveTutor.jsx";
-import TutorTimeSlots from "./pages/tutor/TutorTimeSlots.jsx";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Tutorlist from "./pages/student/Tutorlist.jsx";
@@ -30,6 +29,7 @@ import BookTimeSlots from "./pages/student/BookTimeSlots.jsx";
 
 import './app.css'
 import TimeSlotDetails from "./components/TimeSlotDetails.jsx";
+import CreateTimeSlots from "./pages/tutor/CreateTimeSlots.jsx";
 
 
 const App = () => {
@@ -60,7 +60,7 @@ const App = () => {
                 <Route element={<UserLayout />}>
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/profile" element={<Profile />} />
-                  <Route path="/timeslots" element={<TutorTimeSlots />} />
+                  <Route path="/timeslots" element={<CreateTimeSlots />} />
                   <Route path="/tutorlist" element={<Tutorlist/>} />
                   <Route path="/book-slots/:tutor_id" element={<BookTimeSlots/>} />
                   <Route path="/wallet" element={<Wallet />} />

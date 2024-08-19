@@ -3,6 +3,7 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { MobileDateTimePicker } from '@mui/x-date-pickers/MobileDateTimePicker';
 import "dayjs/locale/en-in"
 import dayjs from 'dayjs';
 
@@ -12,8 +13,8 @@ export default function MyDatePicker({label, value, name, onChange}) {
   }
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='en-in'>
-      <DemoContainer components={['DateTimePicker']}>
-        <DateTimePicker
+      <DemoContainer components={['MobileDateTimePicker']}>
+        <MobileDateTimePicker
          sx={{width:"100%"}}
          label={label}
          inputFormat="DD/MM/YYYY hh:mm A"         

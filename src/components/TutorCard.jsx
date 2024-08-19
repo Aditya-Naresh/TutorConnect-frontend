@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { axiosGet } from "../axios";
 import ApproveTutor from "./admin/ApproveTutor";
 
-const TutorCard = ({ id, data, setShowRequestForm, setTutorSubjects, setTutorId }) => {
+const TutorCard = ({ id, data, setShowRequestForm, setTutorSubjects, setTutorId, closeCard }) => {
   const auth = useSelector((state) => state.auth);
   const [tutor, setTutor] = useState({});
   const [subjects, setSubjects] = useState([]);
@@ -13,9 +13,10 @@ const TutorCard = ({ id, data, setShowRequestForm, setTutorSubjects, setTutorId 
   const handleClick = (e) => {
     e.preventDefault();
     setShowRequestForm(true);
-    setTutorSubjects(data.subjects)
-    setTutorId(data.id)
+    setTutorSubjects(data?.subjects || []);
+    setTutorId(data?.id || null);
   };
+
   const fetchData = async () => {
     try {
       const response = await axiosGet(
@@ -25,16 +26,16 @@ const TutorCard = ({ id, data, setShowRequestForm, setTutorSubjects, setTutorId 
       if (response.status === 200) {
         setTutor(response.data);
         try {
-          const cert_res = await axiosGet(
+          const certRes = await axiosGet(
             `useradmin/certificates/${id}`,
             auth.access
           );
-          setCertifications(cert_res.data);
-          const sub_res = await axiosGet(
+          setCertifications(certRes.data);
+          const subRes = await axiosGet(
             `useradmin/subjects/${id}`,
             auth.access
           );
-          setSubjects(sub_res.data);
+          setSubjects(subRes.data);
         } catch (error) {
           console.log(error);
         }
@@ -43,11 +44,13 @@ const TutorCard = ({ id, data, setShowRequestForm, setTutorSubjects, setTutorId 
       console.log(error);
     }
   };
+
   useEffect(() => {
     if (auth.role === "ADMIN") {
       fetchData();
     } 
   }, []);
+
   return (
     <div className="max-w-sm w-full mx-auto bg-lime-100 p-8 shadow-lg rounded-md">
       <h2 className="text-2xl font-bold mb-2">
@@ -62,16 +65,16 @@ const TutorCard = ({ id, data, setShowRequestForm, setTutorSubjects, setTutorId 
 
       <p className="text-gray-600 mb-4">
         <span className="font-semibold">Subjects:</span>{" "}
-        {role === "ADMIN"?
-        subjects?.map((subject) => subject.name).join(", "):
-        data.subjects?.map((subject) => subject.name).join(", ")
-      }
-
+        {role === "ADMIN"
+          ? subjects?.map((subject) => subject.name).join(", ")
+          : data?.subjects?.map((subject) => subject.name).join(", ")}
       </p>
+
       <p className="text-gray-600 mb-4">
         <span className="font-semibold">Rate per hour:</span>{" "}
-        {role === "ADMIN" ? `${tutor.rate}` : `${data.rate}`}
+        {role === "ADMIN" ? tutor?.rate || "N/A" : data?.rate || "N/A"}
       </p>
+
       {role === "ADMIN" && (
         <table className="min-w-full bg-white">
           <thead>
@@ -92,8 +95,9 @@ const TutorCard = ({ id, data, setShowRequestForm, setTutorSubjects, setTutorId 
           </tbody>
         </table>
       )}
+
       <div className="flex justify-center mt-4">
-        {role === "ADMIN" && <ApproveTutor id={tutor.id} />}
+        {role === "ADMIN" && data?.is_approved && <ApproveTutor id={tutor.id} />}
         {role === "STUDENT" && (
           <button
             className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
@@ -102,6 +106,14 @@ const TutorCard = ({ id, data, setShowRequestForm, setTutorSubjects, setTutorId 
             Request Tutor
           </button>
         )}
+      </div>
+      <div className="flex justify-center mt-4">
+        <button
+          className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
+          onClick={closeCard}
+        >
+          Close
+        </button>
       </div>
     </div>
   );

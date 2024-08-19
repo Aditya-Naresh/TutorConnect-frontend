@@ -47,22 +47,8 @@ const UserLayout = () => {
   const showNotification = useSelector((state) => state.notifications.enabled);
   const showProfileMenu = useSelector((state) => state.profile.enabled);
   return (
-    <div className="relative w-full h-screen bg-slate-700">
-      {role === "ADMIN" && (
-        <img
-          className="absolute w-full h-full object-cover mix-blend-overlay"
-          src={adminImg}
-          alt="background"
-        />
-      )}
-      {role === "TUTOR" && (
-        <img
-          className="absolute w-full h-full object-cover mix-blend-overlay"
-          src={tutorImg}
-          alt="background"
-        />
-      )}
-      <div className="relative w-full h-1/6">
+    <div className="relative w-full h-screen bg-slate-50">
+      <div className="relative w-full h-[100px]">
         <NavBar />
       </div>
       <div className="relative lg:flex flex-row w-full  h-5/6 ">
@@ -79,13 +65,13 @@ const UserLayout = () => {
             {showSideBar ? (
               <AiOutlineClose size={20} color="white" />
             ) : (
-              <AiOutlineMenu size={20} color="white" />
+              <AiOutlineMenu size={20} color="black" />
             )}
           </div>
         </div>
         {!showSideBar && (
           <div className="relative flex justify-center lg:hidden">
-            <div className="absolute">
+            <div className="absolute h-auto">
               <Outlet />
             </div>
             {showNotification && (
@@ -110,7 +96,7 @@ const UserLayout = () => {
           </div>
         )}
 
-        <div className="hidden lg:flex relative w-3/5 z-22 justify-center">
+        <div className="hidden lg:flex relative w-3/5 z-22 justify-center h-full overflow-hidden">
           <Outlet />
         </div>
         {showNotification && (
@@ -124,7 +110,7 @@ const UserLayout = () => {
           </div>
         )}
         {showReqForm && (
-          <div className="hidden lg:block" >
+          <div className="hidden lg:block">
             <TuitionRequest id={reqId} setShowReqForm={setShowReqFrom} />
           </div>
         )}

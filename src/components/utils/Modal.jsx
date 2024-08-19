@@ -31,32 +31,40 @@ export default function MyModal({
   handleChange,
 }) {
   const { id, role, access } = useSelector((state) => state.auth);
+
+  // Ensure formData.start is a valid dayjs object
+  const startDate = dayjs(formData.start).format("YYYY-MM-DD HH:mm");
+  console.log("startdate", startDate);
+
   const createTimeSlot = async (event) => {
     event.preventDefault();
-    const startDate = dayjs(formData.start["$d"]).format("YYYY-MM-DD HH:mm:ss");
     const data = {
-      title: "AVAILABLE", //formData.className,
-      className: "AVAILABLE", //formData.className,
+      title: "AVAILABLE", // or use formData.className
+      className: "AVAILABLE", // or use formData.className
       tutor: id,
       start: startDate,
       student: null,
       end: null,
     };
-    const response = await axiosPost(
-      "timeslots/tutor_timeslots/",
-      data,
-      access
-    );
-    if (response.status === 201) {
-      reRender(`created ${response.data.id}`);
-      toast.info("Time Slot Created")
+
+    try {
+      const response = await axiosPost(
+        "timeslots/tutor_timeslots/",
+        data,
+        access
+      );
+      if (response.status === 201) {
+        reRender(`created ${response.data.id}`);
+        toast.info("Time Slot Created");
+      }
+    } catch (error) {
+      console.error("Error creating time slot:", error);
+      toast.error("Failed to create time slot");
     }
   };
 
-  let submissionHandler;
-  if (role === "TUTOR") {
-    submissionHandler = createTimeSlot;
-  }
+  let submissionHandler = role === "TUTOR" ? createTimeSlot : undefined;
+
   return (
     <div>
       <Modal
@@ -70,17 +78,16 @@ export default function MyModal({
             Create a time slot on {dayjs(myDate).format("MMMM-DD-YYYY")}
           </Typography>
           <form onSubmit={submissionHandler}>
-            {role === "ADMIN" &&
-            <Box sx={{ marginBottom: "20px" }}>
-              <MySelectForm
-                label={"Status"}
-                name={"className"}
-                onChange={handleChange}
-                value={formData.className}
+            {role === "ADMIN" && (
+              <Box sx={{ marginBottom: "20px" }}>
+                <MySelectForm
+                  label={"Status"}
+                  name={"className"}
+                  onChange={handleChange}
+                  value={formData.className}
                 />
-            </Box>
-              }
-
+              </Box>
+            )}
             <Box sx={{ marginBottom: "20px" }}>
               <MyDatePicker
                 label={"Start Date"}
@@ -89,7 +96,6 @@ export default function MyModal({
                 value={formData.start}
               />
             </Box>
-
             <Box sx={{ marginBottom: "20px" }}>
               <MyButton label={"Submit"} type={"submit"} />
             </Box>
