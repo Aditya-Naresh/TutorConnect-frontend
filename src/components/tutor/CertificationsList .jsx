@@ -40,7 +40,7 @@ const CertificationsList = ({update}) => {
   }
   return (
     <div className="relative">
-      <h2 className="text-xl text-lime-200 font-bold mb-4">Certifications :</h2>
+      <h2 className="text-xl text-lime-900 font-bold mb-4">Certifications :</h2>
       <table className="min-w-full bg-white border border-gray-200">
         <thead>
           <tr>

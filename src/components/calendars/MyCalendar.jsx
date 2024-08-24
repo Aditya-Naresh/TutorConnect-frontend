@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -32,6 +32,7 @@ export default function MyCalendar({ events, dayClickAction }) {
     }
   };
 
+ 
   return (
     <FullCalendar
       plugins={[dayGridPlugin, timeGridPlugin, listPlugin, multiMonthPlugin, interactionPlugin]}
@@ -51,7 +52,7 @@ export default function MyCalendar({ events, dayClickAction }) {
       selectConstraint={{
         start: now,
       }}
-       height="100%"
+       height="79%"
     />
   );
 }

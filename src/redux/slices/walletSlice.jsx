@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
-
+// Redesign required
 export const fetchWalletDetails = createAsyncThunk(
   'wallet/fetchDetails',
   async (_, { getState, rejectWithValue }) => {

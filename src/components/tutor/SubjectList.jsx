@@ -44,18 +44,18 @@ const SubjectList = () => {
   return (
     <div>
       <div className="flex justify-between">
-        <h2 className="font-bold text-emerald-100 text-md md:text-xl">Subjects: </h2>
+        <h2 className="font-bold text-emerald-900 text-md md:text-xl">Subjects: </h2>
         <button
           type="submit"
           className={`${
             showForm ? "bg-red-500" : "bg-blue-500"
-          } text-white p-2 rounded`}
+          } text-black p-2 rounded`}
           onClick={() => setShowForm(!showForm)}
         >
           {showForm ? <CgClose /> : <BsPlus />}
         </button>
       </div>
-      <ul className="text-white p-4 flex">
+      <ul className="text-black p-4 flex">
         {data.map((subject) => (
           <li key={subject.id} className="flex flex-row m-2 text-sm md:text-md">
             {subject.name}{" "}
