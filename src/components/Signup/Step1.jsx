@@ -15,7 +15,7 @@ const Step1 = ({setCurrentStep , isTutor}) => {
         if (isTutor) {
           setCurrentStep(2)
         }else{
-          setCurrentStep(3)
+          setCurrentStep(5)
         }
     }
   return (

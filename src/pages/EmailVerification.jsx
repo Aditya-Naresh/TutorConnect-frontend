@@ -17,6 +17,8 @@ const EmailVerification = () => {
             toast.success(response.data.message)
             navigate('/login')
         } catch (error) {
+          console.log(error);
+          
             toast.error("Invalid confirmation link")
         }
     }

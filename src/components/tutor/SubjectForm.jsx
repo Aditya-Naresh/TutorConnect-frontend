@@ -1,9 +1,12 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { BsPlus } from "react-icons/bs";
-import { axiosPatch, axiosPost } from "../../axios";
+import { addSubject } from "../../redux/slices/signUpSlice";
+import { axiosPost } from "../../axios";
+import { toast } from "react-toastify";
+
 const SubjectForm = ({ reRender }) => {
   const {
     register,
@@ -12,52 +15,67 @@ const SubjectForm = ({ reRender }) => {
     formState: { errors, isSubmitting },
   } = useForm();
 
-  const token = useSelector((state) => state.auth.access);
-  const user_id = useSelector((state) => state.auth.id)
+  const dispatch = useDispatch();
+
   const onSubmit = async (formData) => {
-    try {
-      const response = await axiosPost("accounts/subject/", formData, token);
-      console.log(response);
-      if (response.status === 201) {
-        await axiosPatch(
-          `accounts/profile/${user_id}`,
-          { is_approved: false, is_submitted:true },
-          token
-        );
-        toast.success("The subject was added");
-        reRender(`${formData}`);
-        reset();
-      } else {
-        toast.error("The subject is already in the list");
-      }
-    } catch (error) {
-      console.error("Error adding subject:", error);
-      toast.error("Error adding subject");
+    dispatch(addSubject(formData.name));
+    reset();
+  };
+
+  const token = useSelector((state) => state.auth.access);
+  const onAccountSubmit = async (formData) => {
+    const response = await axiosPost("accounts/subject/", formData, token);
+    console.log(response.data);
+    if (response.status === 201) {
+      reRender(`${response.data.id} added`);
+    } else {
+      toast.info(response.data.detail);
     }
   };
 
+  const handleFormSubmit = (data) => {
+    if (token) {
+      onAccountSubmit(data);
+    } else {
+      onSubmit(data);
+    }
+  };
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="relative max-w-[400px] w-full mx-auto bg-emerald-200  shadow-lg ring-2 ring-gray-300 ring-offset-2 ring-offset-gray-100"
+    <Box
+      component="form"
+      onSubmit={handleSubmit(handleFormSubmit)}
+      sx={{
+        maxWidth: 400,
+        mx: "auto",
+        p: 2,
+        bgcolor: "emerald-200",
+        boxShadow: 2,
+        borderRadius: 1,
+        border: "2px solid",
+        borderColor: "grey.300",
+        position: "relative",
+      }}
     >
-      <div className="flex items-center space-x-2">
-        <input
-          type="text"
-          {...register("name", { required: true })}
-          placeholder="Subject Name"
-          className="border p-2 rounded w-full"
+      <Box display="flex" alignItems="center" gap={2}>
+        <TextField
+          {...register("name", { required: "Subject name is required" })}
+          label="Subject Name"
+          variant="outlined"
+          fullWidth
+          error={!!errors.name}
+          helperText={errors.name ? errors.name.message : ""}
         />
-        <button
+        <Button
           type="submit"
-          className="bg-blue-500 text-white p-2 rounded cursor-pointer"
-          disabled = {isSubmitting}
+          variant="contained"
+          color="primary"
+          disabled={isSubmitting}
+          sx={{ minWidth: 50 }}
         >
           <BsPlus />
-        </button>
-      </div>
-      {errors.name && <p className="text-red-500">Subject name is required</p>}
-    </form>
+        </Button>
+      </Box>
+    </Box>
   );
 };
 

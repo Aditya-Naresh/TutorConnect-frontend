@@ -2,11 +2,14 @@ import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { axiosPost } from '../../axios';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import axiosPatch from '../../axios/axiosPatch';
+import { addCertification } from '../../redux/slices/signUpSlice';
+import { axiosPatch, axiosPost } from '../../axios';
+import { Box, Button, TextField, Typography } from '@mui/material';
+import { FilePresent } from '@mui/icons-material';
 
+// Schema validation with yup
 const schema = yup.object().shape({
   title: yup.string().required('Certificate title is required'),
   image: yup
@@ -17,9 +20,9 @@ const schema = yup.object().shape({
         const fileName = value[0].name;
         const fileExtension = fileName.split('.').pop().toLowerCase();
         return (
-          fileType === 'image/jpeg' || 
-          fileType === 'image/jpg' || 
-          fileExtension === 'jpeg' || 
+          fileType === 'image/jpeg' ||
+          fileType === 'image/jpg' ||
+          fileExtension === 'jpeg' ||
           fileExtension === 'jpg'
         );
       }
@@ -28,7 +31,17 @@ const schema = yup.object().shape({
     .required('Certificate image is required'),
 });
 
-const CertificationsForm = ({reRender}) => {
+// Utility function to convert image to Base64
+const convertToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = (error) => reject(error);
+  });
+};
+
+const CertificationsForm = ({ reRender, show }) => {
   const {
     register,
     handleSubmit,
@@ -39,71 +52,130 @@ const CertificationsForm = ({reRender}) => {
     resolver: yupResolver(schema),
   });
 
+  const dispatch = useDispatch();
+
+  const onSubmit = async (data) => {
+    try {
+      const base64Image = await convertToBase64(data.image[0]);
+
+      const certificationData = {
+        title: data.title,
+        image: base64Image,
+      };
+
+      dispatch(addCertification(certificationData));
+      toast.success('Certification added successfully!');
+      reset();
+      // reRender("uploaded"); 
+    } catch (error) {
+      console.error('Error converting image to Base64:', error);
+      toast.error('Failed to add certification.');
+    }
+  };
+
   const user_id = useSelector((state) => state.auth.id)
 
-  const token = useSelector((state) => state.auth.access);
-  const onSubmit = async (data) => {
-    const formData = new FormData();
-    formData.append('title', data.title);
-    formData.append('image', data.image[0]);
-
+  const token = useSelector((state) => state.auth.access)
+  const onAccountSubmit = async (data) => {
+    const formData = new FormData()
+    formData.append('title', data.title)
+    formData.append('image', data.image[0])
     
     try {
-      const response = await axiosPost('accounts/certificates/', formData, token);
-      console.log(response.data);
+      const response = await axiosPost('accounts/certificates/', formData, token)
+      console.log(response);
+      
       if( response.status === 201){
         toast.success("certificate added")
         await axiosPatch(`accounts/profile/${user_id}`,{"is_approved" : false, "is_submitted":true}, token)
       }
-      reRender('Certificate Added')
-      reset();
+      reRender(`${response.data.id} added`)
+      toast.success("Certificate Added")
+      reset()
+      show(false)
     } catch (error) {
-      console.error('Error uploading certificate:', error);
+      console.log("err", error);
+    }
+  }
+
+  const handleFormSubmit = (data) => {
+    if (token) {
+      onAccountSubmit(data);      
+    } else {
+      onSubmit(data);
     }
   };
-
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="relative max-w-[400px] w-full mx-auto bg-slate-400 p-8 shadow-lg ring-2 ring-gray-300 ring-offset-2 ring-offset-gray-100 pb-4"
+    <Box
+      component="form"
+      onSubmit={handleSubmit(handleFormSubmit)}
+      encType="multipart/form-data"
+      sx={{
+        maxWidth: 400,
+        mx: "auto",
+        p: 3,
+        bgcolor: "background.paper",
+        boxShadow: 3,
+        borderRadius: 1,
+        border: "2px solid",
+        borderColor: "grey.300",
+        position: "relative",
+      }}
     >
-      <div className="mb-4">
-        <label htmlFor="title" className="block text-gray-700 font-bold mb-2">
-          Certificate Title
-        </label>
-        <input
-          id="title"
-          type="text"
-          {...register('title')}
-          className="border p-2 rounded w-full bg-slate-200"
-        />
-        {errors.title && <p className="text-red-500">{errors.title.message}</p>}
-      </div>
-      <div className="mb-4">
-        <label htmlFor="image" className="block text-gray-700 font-bold mb-2">
-          Certificate Image (JPEG only)
-        </label>
+      <Box mb={3}>
         <Controller
+          name="title"
           control={control}
-          name="image"
-          render={({ field: { onChange, onBlur, ref } }) => (
-            <input
-              id="image"
-              type="file"
-              accept="image/jpeg, image/jpg"
-              onChange={(e) => onChange(e.target.files)}
-              onBlur={onBlur}
-              ref={ref}
-              className="border p-2 rounded w-full"
+          defaultValue=""
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Certificate Title"
+              variant="outlined"
+              fullWidth
+              error={!!errors.title}
+              helperText={errors.title ? errors.title.message : ""}
             />
           )}
         />
-        {errors.image && <p className="text-red-500">{errors.image.message}</p>}
-      </div>
-      <button type="submit" className="bg-blue-500 text-white p-2 rounded">
-        Submit
-      </button>
-    </form>
+      </Box>
+      <Box mb={3}>
+        <Controller
+          name="image"
+          control={control}
+          render={({ field }) => (
+            <Button
+              variant="outlined"
+              component="label"
+              fullWidth
+              color={errors.image ? "error" : "primary"}
+            >
+              Upload Certificate Image (JPEG only)
+              <input
+                type="file"
+                accept="image/jpeg, image/jpg"
+                hidden
+                onChange={(e) => field.onChange(e.target.files)}
+              />
+            </Button>
+          )}
+        />
+        {errors.image && (
+          <Typography color="error" variant="body2">
+            {errors.image.message}
+          </Typography>
+        )}
+      </Box>
+      <Button
+        type="submit"
+        variant="contained"
+        color="primary"
+        fullWidth
+        sx={{ mt: 2 }}
+      >
+        Add Certification
+      </Button>
+    </Box>
   );
 };
 

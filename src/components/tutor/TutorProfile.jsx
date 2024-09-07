@@ -26,14 +26,17 @@ const TutorProfile = () => {
       </div>
       {showCertificateForm ? (
         <div className="relative">
-          <CertificationsForm reRender={reRender}/>
+          <CertificationsForm reRender={reRender} show={setShowCertificateForm}/>
         </div>
       ) : (
         <div className="relative">
           <div className="relative">
             <CertificationsList update={update} />
           </div>
+          <div className="relative mt-4">
           <SubjectList />
+
+          </div>
         </div>
       )}
     </div>

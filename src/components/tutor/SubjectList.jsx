@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { axiosGet } from "../../axios";
 import { useSelector } from "react-redux";
+import { List, ListItem, ListItemText, IconButton, Typography, Button, Box } from "@mui/material";
 import { BiTrash } from "react-icons/bi";
-import axiosDelete from "../../axios/axiosDelete";
-import SubjectForm from "./SubjectForm";
-import { toast } from "react-toastify";
 import { BsPlus } from "react-icons/bs";
 import { CgClose } from "react-icons/cg";
+import { toast } from "react-toastify";
+import { axiosGet, axiosDelete } from "../../axios";
+import SubjectForm from "./SubjectForm";
 
 const SubjectList = () => {
   const token = useSelector((state) => state.auth.access);
   const [data, setData] = useState([]);
   const [render, setRender] = useState("");
   const [showForm, setShowForm] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -32,7 +33,6 @@ const SubjectList = () => {
   const onDelete = async (id) => {
     try {
       const response = await axiosDelete(`accounts/subject/${id}`, token);
-      console.log(response);
       if (response.status === 204) {
         setRender(`Deleted ${id}`);
         toast.success("Subject was deleted");
@@ -41,37 +41,36 @@ const SubjectList = () => {
       console.log(error);
     }
   };
+
   return (
-    <div>
-      <div className="flex justify-between">
-        <h2 className="font-bold text-emerald-900 text-md md:text-xl">Subjects: </h2>
-        <button
-          type="submit"
-          className={`${
-            showForm ? "bg-red-500" : "bg-blue-500"
-          } text-black p-2 rounded`}
+    <Box>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Typography variant="h6" color="primary">Subjects:</Typography>
+        <Button
+          variant="contained"
+          color={showForm ? "error" : "primary"}
           onClick={() => setShowForm(!showForm)}
+          startIcon={showForm ? <CgClose /> : <BsPlus />}
         >
-          {showForm ? <CgClose /> : <BsPlus />}
-        </button>
-      </div>
-      <ul className="text-black p-4 flex">
+          {showForm ? "Close" : "Add"}
+        </Button>
+      </Box>
+      <List>
         {data.map((subject) => (
-          <li key={subject.id} className="flex flex-row m-2 text-sm md:text-md">
-            {subject.name}{" "}
-            <button
-              className="ml-2 bg-red-500 text-sm rounded"
-              onClick={() => onDelete(subject.id)}
-            >
-              <BiTrash color="white" />
-            </button>
-          </li>
+          <ListItem
+            key={subject.id}
+            secondaryAction={
+              <IconButton edge="end" color="error" onClick={() => onDelete(subject.id)}>
+                <BiTrash />
+              </IconButton>
+            }
+          >
+            <ListItemText primary={subject.name} />
+          </ListItem>
         ))}
-      </ul>
-      <div className="relative">
-        {showForm && <SubjectForm reRender={reRender} />}
-      </div>
-    </div>
+      </List>
+      {showForm && <SubjectForm reRender={reRender} />}
+    </Box>
   );
 };
 
