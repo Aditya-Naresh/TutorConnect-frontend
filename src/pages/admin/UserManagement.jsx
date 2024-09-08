@@ -23,11 +23,12 @@ const UserManagement = () => {
     setRender(value);
   };
 
-  const url = role === "TUTOR" 
-    ? "http://127.0.0.1:8000/useradmin/tutor-list/" 
-    : "http://127.0.0.1:8000/useradmin/student-list/";
+  const url =
+    role === "TUTOR"
+      ? "http://127.0.0.1:8000/useradmin/tutor-list/"
+      : "http://127.0.0.1:8000/useradmin/student-list/";
 
-  const label = role === "TUTOR" ? "Tutor Management" : "Student Management";
+  const label = role === "TUTOR" ? "Tutor" : "Student";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -45,14 +46,23 @@ const UserManagement = () => {
   }, [url, token, render]);
 
   const closeCard = () => {
-    setShowTutor(false)
-  }
+    setShowTutor(false);
+  };
   return (
     <div className="relative">
+      <header className="bg-gray-100 p-4 shadow-md mb-4 flex justify-center">
+        <h1 className="text-xl font-bold">{label} Management</h1>
+      </header>
+
       {showTutor ? (
-        <TutorCard id={id} closeCard={closeCard}/>
+        <TutorCard id={id} closeCard={closeCard} />
       ) : (
-        <UserManagementTable data={data} reRender={reRender} label={label} showCard={showCard} />
+        <UserManagementTable
+          data={data}
+          reRender={reRender}
+          label={label+"s"}
+          showCard={showCard}
+        />
       )}
     </div>
   );

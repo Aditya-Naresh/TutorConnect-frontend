@@ -2,6 +2,7 @@ import React from "react";
 import { axiosPatch } from "../../axios";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ApproveTutor = ({id}) => {
   const token = useSelector((state) => state.auth.access)
@@ -11,6 +12,7 @@ const ApproveTutor = ({id}) => {
       const response = await axiosPatch(`useradmin/update-user/${id}`, {"is_approved" : true}, token)
       console.log(response);
       if (response.status === 200){
+        toast.success("Tutor Approved")
         navigate('/')
       }
     } catch (error) {

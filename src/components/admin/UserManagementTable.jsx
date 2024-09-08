@@ -67,7 +67,7 @@ export default function CustomizedTables({ data, reRender, label, showCard }) {
 
   return (
     <TableContainer component={Paper}>
-      {/* Add a search bar */}
+      {/*search bar */}
       <TextField
         label="Search by Name"
         variant="outlined"
@@ -79,7 +79,7 @@ export default function CustomizedTables({ data, reRender, label, showCard }) {
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
           <TableRow>
-            <StyledTableCell colSpan={label === "Tutor Management" ? 7 : 5} align="center">
+            <StyledTableCell colSpan={label === "Tutors" ? 7 : 5} align="center">
               {label}
             </StyledTableCell>
           </TableRow>
@@ -88,7 +88,7 @@ export default function CustomizedTables({ data, reRender, label, showCard }) {
             <StyledTableCell align="right">First Name</StyledTableCell>
             <StyledTableCell align="right">Last Name</StyledTableCell>
             <StyledTableCell align="right">Auth Provider</StyledTableCell>
-            {label === "Tutor Management" && (
+            {label === "Tutors" && (
               <>
                 <StyledTableCell align="right">Approved</StyledTableCell>
                 <StyledTableCell align="right">User Details</StyledTableCell>
@@ -108,7 +108,7 @@ export default function CustomizedTables({ data, reRender, label, showCard }) {
               <StyledTableCell align="right">
                 {row.auth_provider}
               </StyledTableCell>
-              {label === "Tutor Management" && (
+              {label === "Tutors" && (
                 <>
                   <StyledTableCell align="right">{row.is_approved ? <VerifiedIcon color="green"/> : <CancelIcon/>}</StyledTableCell>
                   <StyledTableCell align="right"><UserDetails id={row.id}  showCard={showCard}/></StyledTableCell>

@@ -2,8 +2,29 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { axiosGet } from "../axios";
 import ApproveTutor from "./admin/ApproveTutor";
+import {
+  Card,
+  CardContent,
+  CardActions,
+  Typography,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
 
-const TutorCard = ({ id, data, setShowRequestForm, setTutorSubjects, setTutorId, closeCard }) => {
+const TutorCard = ({
+  id,
+  data,
+  setShowRequestForm,
+  setTutorSubjects,
+  setTutorId,
+  closeCard,
+}) => {
   const auth = useSelector((state) => state.auth);
   const [tutor, setTutor] = useState({});
   const [subjects, setSubjects] = useState([]);
@@ -19,22 +40,13 @@ const TutorCard = ({ id, data, setShowRequestForm, setTutorSubjects, setTutorId,
 
   const fetchData = async () => {
     try {
-      const response = await axiosGet(
-        `useradmin/update-user/${id}`,
-        auth.access
-      );
+      const response = await axiosGet(`useradmin/update-user/${id}`, auth.access);
       if (response.status === 200) {
         setTutor(response.data);
         try {
-          const certRes = await axiosGet(
-            `useradmin/certificates/${id}`,
-            auth.access
-          );
+          const certRes = await axiosGet(`useradmin/certificates/${id}`, auth.access);
           setCertifications(certRes.data);
-          const subRes = await axiosGet(
-            `useradmin/subjects/${id}`,
-            auth.access
-          );
+          const subRes = await axiosGet(`useradmin/subjects/${id}`, auth.access);
           setSubjects(subRes.data);
         } catch (error) {
           console.log(error);
@@ -48,74 +60,69 @@ const TutorCard = ({ id, data, setShowRequestForm, setTutorSubjects, setTutorId,
   useEffect(() => {
     if (auth.role === "ADMIN") {
       fetchData();
-    } 
+    }
   }, []);
 
   return (
-    <div className="max-w-sm w-full mx-auto bg-lime-100 p-8 shadow-lg rounded-md">
-      <h2 className="text-2xl font-bold mb-2">
-        {role === "ADMIN"
-          ? tutor.first_name && tutor.last_name
-            ? `${tutor.first_name} ${tutor.last_name}`
-            : "Loading..."
-          : data.first_name && data.last_name
-          ? `${data.first_name} ${data.last_name}`
-          : "Loading..."}
-      </h2>
+    <Card sx={{ maxWidth: 600, margin: "auto", padding: 2, boxShadow: 3 }}>
+      <CardContent>
+        <Typography variant="h5" component="div" gutterBottom>
+          {role === "ADMIN"
+            ? tutor.first_name && tutor.last_name
+              ? `${tutor.first_name} ${tutor.last_name}`
+              : "Loading..."
+            : data.first_name && data.last_name
+            ? `${data.first_name} ${data.last_name}`
+            : "Loading..."}
+        </Typography>
 
-      <p className="text-gray-600 mb-4">
-        <span className="font-semibold">Subjects:</span>{" "}
-        {role === "ADMIN"
-          ? subjects?.map((subject) => subject.name).join(", ")
-          : data?.subjects?.map((subject) => subject.name).join(", ")}
-      </p>
+        <Typography variant="body2" color="text.secondary" paragraph>
+          <strong>Subjects:</strong>{" "}
+          {role === "ADMIN"
+            ? subjects?.map((subject) => subject.name).join(", ")
+            : data?.subjects?.map((subject) => subject.name).join(", ")}
+        </Typography>
 
-      <p className="text-gray-600 mb-4">
-        <span className="font-semibold">Rate per hour:</span>{" "}
-        {role === "ADMIN" ? tutor?.rate || "N/A" : data?.rate || "N/A"}
-      </p>
+        <Typography variant="body2" color="text.secondary" paragraph>
+          <strong>Rate per hour:</strong> {role === "ADMIN" ? tutor?.rate || "N/A" : data?.rate || "N/A"}
+        </Typography>
 
-      {role === "ADMIN" && (
-        <table className="min-w-full bg-white">
-          <thead>
-            <tr>
-              <th className="py-2 px-4 bg-gray-200">Certification</th>
-              <th className="py-2 px-4 bg-gray-200">Image</th>
-            </tr>
-          </thead>
-          <tbody>
-            {certifications.map((cert, index) => (
-              <tr key={index} className="text-gray-700">
-                <td className="py-2 px-4 border">{cert.title}</td>
-                <td className="py-2 px-4 border">
-                  <img src={cert.image} alt="" />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
-
-      <div className="flex justify-center mt-4">
-        {role === "ADMIN" && data?.is_approved && <ApproveTutor id={tutor.id} />}
-        {role === "STUDENT" && (
-          <button
-            className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-600"
-            onClick={(e) => handleClick(e)}
-          >
-            Request Tutor
-          </button>
+        {role === "ADMIN" && (
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Certification</TableCell>
+                  <TableCell>Image</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {certifications.map((cert, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{cert.title}</TableCell>
+                    <TableCell>
+                      <img src={cert.image} alt={cert.title} style={{ maxWidth: 100 }} />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
         )}
-      </div>
-      <div className="flex justify-center mt-4">
-        <button
-          className="bg-red-500 text-white py-2 px-4 rounded hover:bg-red-600"
-          onClick={closeCard}
-        >
+      </CardContent>
+
+      <CardActions sx={{ justifyContent: "center" }}>
+        {role === "ADMIN" && !tutor?.is_approved && <ApproveTutor id={tutor.id} />}
+        {role === "STUDENT" && (
+          <Button variant="contained" color="success" onClick={handleClick}>
+            Request Tutor
+          </Button>
+        )}
+        <Button variant="contained" color="error" onClick={closeCard}>
           Close
-        </button>
-      </div>
-    </div>
+        </Button>
+      </CardActions>
+    </Card>
   );
 };
 

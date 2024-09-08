@@ -29,7 +29,7 @@ const Step5 = () => {
 };
 
   return (
-    <div className='relative'>
+    <div className='relative flex justify-center'>
       <button 
         onClick={handleSignup} 
         className="bg-green-500 text-white font-bold py-2 px-4 rounded-full hover:bg-green-600 cursor-pointer"
