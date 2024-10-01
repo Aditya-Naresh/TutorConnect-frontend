@@ -11,6 +11,9 @@ import {
   MenuItem,
   Typography,
   Stack,
+  Paper,
+  Grid,
+  Alert,
 } from "@mui/material";
 import dayjs from "dayjs";
 import BookSlot from "./student/BookSlot";
@@ -18,34 +21,32 @@ import GoBackButton from "./GoBackButton";
 
 const TimeSlotDetails = () => {
   const [loading, setLoading] = useState(true);
-  const [render, setRender] = useState([]);
-  const { id } = useParams();
-  const { role, access } = useSelector((state) => state.auth);
   const [event, setEvent] = useState(null);
   const [subjectList, setSubjectList] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState("");
+  const [error, setError] = useState(null);
+  const [render, setRender] = useState("")
+  const { id } = useParams();
+  const { role, access } = useSelector((state) => state.auth);
 
-  const getData = async () => {
+  const fetchTimeSlotData = async () => {
+    setLoading(true);
     try {
       const response = await axiosGet(`timeslots/${id}`, access);
-      console.log(response.data);
       setEvent(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error("Failed to fetch time slot details:", error);
+    } catch (err) {
+      console.error("Failed to fetch time slot details:", err);
+      setError("Failed to load time slot details");
+    } finally {
       setLoading(false);
     }
   };
 
-  const getSubject = async () => {
+  const fetchSubjects = async () => {
+    if (!event?.tutor) return;
     try {
-      if (event && event.tutor) {
-        const response = await axiosGet(
-          `timeslots/tutor-list/${event.tutor}`,
-          access
-        );
-        setSubjectList(response.data[0].subjects || []);
-      }
+      const response = await axiosGet(`timeslots/tutor-list/${event.tutor}`, access);
+      setSubjectList(response.data[0]?.subjects || []);
     } catch (error) {
       console.error("Failed to fetch subjects:", error);
       setSubjectList([]);
@@ -53,133 +54,97 @@ const TimeSlotDetails = () => {
   };
 
   useEffect(() => {
-    getData();
+    fetchTimeSlotData();
   }, [render]);
 
   useEffect(() => {
-    if (event) {
-      getSubject();
-    }
+    if (event) fetchSubjects();
   }, [event]);
 
   const handleSubjectChange = (event) => {
     setSelectedSubject(event.target.value);
-    console.log("subject", event.target.value);
   };
 
+  const renderLoadingState = () => (
+    <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <CircularProgress />
+    </Box>
+  );
+
+  const renderErrorState = () => (
+    <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+      <Alert severity="error">{error}</Alert>
+    </Box>
+  );
+
+  const renderTimeSlotDetails = () => (
+    <Paper elevation={3} sx={{ padding: "20px", borderRadius: "8px", maxWidth: "600px", mx: "auto", mt: 4 }}>
+      <Typography variant="h5" fontWeight="bold" gutterBottom>
+        Time Slot Details
+      </Typography>
+      <Stack spacing={2}>
+        <DetailRow label="Status" value={event.title} color={event.title === "AVAILABLE" ? "green" : "red"} />
+        <DetailRow label="Start Time" value={dayjs(event.start).format("hh:mm A")} />
+        <DetailRow label="End Time" value={dayjs(event.end).format("hh:mm A")} />
+        <DetailRow label="Tutor" value={event.tutor_name} />
+
+        {event.title === "BOOKED" && (
+          <>
+            <DetailRow label="Booked By" value={event.student_name} />
+            <DetailRow label="Subject" value={event.subject_name} />
+          </>
+        )}
+
+        {role === "STUDENT" && (
+          <DetailRow label="Rate" value={`₹${event.rate}`} bold />
+        )}
+
+        {role === "STUDENT" && event.title === "AVAILABLE" && (
+          <>
+            {subjectList.length > 0 ? (
+              <FormControl fullWidth>
+                <InputLabel>Select Subject</InputLabel>
+                <Select value={selectedSubject} label="Select Subject" onChange={handleSubjectChange}>
+                  {subjectList.map((subject) => (
+                    <MenuItem key={subject.id} value={subject.id}>
+                      {subject.name}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            ) : (
+              <CircularProgress />
+            )}
+            <BookSlot
+              slot_id={event.id}
+              rate={event.rate}
+              selectedSubject={selectedSubject}
+              setRender={setRender}
+            />
+          </>
+        )}
+
+        <GoBackButton />
+      </Stack>
+    </Paper>
+  );
+
   return (
-    <div className="min-h-screen">
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        <Box
-          sx={{
-            boxShadow: 3,
-            padding: "20px",
-            marginBottom: "20px",
-            marginTop: "10px",
-            borderRadius: "8px",
-            backgroundColor: "#fffff",
-            width: "100%",
-            maxWidth: "400px",
-          }}
-        >
-          <Typography variant="h6" component="div" gutterBottom>
-            Time Slot Details
-          </Typography>
-          <Stack spacing={2}>
-            <Box display="flex" alignItems="center">
-              <Typography fontWeight="bold">Status:</Typography>
-              <Typography
-                sx={{
-                  marginLeft: "10px",
-                  color: event.title === "AVAILABLE" ? "#00b020" : "red",
-                  fontWeight: "bold",
-                }}
-              >
-                {event.title}
-              </Typography>
-            </Box>
-
-            <Box display="flex" alignItems="center">
-              <Typography fontWeight="bold">Start Time:</Typography>
-              <Typography sx={{ marginLeft: "10px" }}>
-                {dayjs(event.start).format("hh:mm A")}
-              </Typography>
-            </Box>
-
-            <Box display="flex" alignItems="center">
-              <Typography fontWeight="bold">End Time:</Typography>
-              <Typography sx={{ marginLeft: "10px" }}>
-                {dayjs(event.end).format("hh:mm A")}
-              </Typography>
-            </Box>
-
-            <Box display="flex" alignItems="center">
-              <Typography fontWeight="bold">Tutor:</Typography>
-              <Typography sx={{ marginLeft: "10px" }}>{event.tutor_name}</Typography>
-            </Box>
-
-            {event.title === "BOOKED" && (
-              <>
-                <Box display="flex" alignItems="center">
-                  <Typography fontWeight="bold">Booked By:</Typography>
-                  <Typography sx={{ marginLeft: "10px" }}>{event.student_name}</Typography>
-                </Box>
-
-                <Box display="flex" alignItems="center">
-                  <Typography fontWeight="bold">Subject:</Typography>
-                  <Typography sx={{ marginLeft: "10px" }}>{event.subject_name}</Typography>
-                </Box>
-              </>
-            )}
-
-            {role === "STUDENT" && (
-              <Box display="flex" alignItems="center">
-                <Typography fontWeight="bold">Rate:</Typography>
-                <Typography sx={{ marginLeft: "10px", fontWeight: "bold" }}>
-                  {event.rate}
-                </Typography>
-              </Box>
-            )}
-
-            {role === "STUDENT" && event.title === "AVAILABLE" && (
-              <>
-                {subjectList.length > 0 ? (
-                  <FormControl fullWidth sx={{ mt: 2 }}>
-                    <InputLabel>Select Subject</InputLabel>
-                    <Select
-                      value={selectedSubject}
-                      label="Select Subject"
-                      onChange={handleSubjectChange}
-                    >
-                      {subjectList.map((subject) => (
-                        <MenuItem key={subject.id} value={subject.id}>
-                          {subject.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                ) : (
-                  <CircularProgress />
-                )}
-                <BookSlot
-                  slot_id={event.id}
-                  setRender={setRender}
-                  rate={event.rate}
-                  selectedSubject={selectedSubject}
-                />
-              </>
-            )}
-
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-              <GoBackButton />
-            </Box>
-          </Stack>
-        </Box>
-      )}
-    </div>
+    <Box className="min-h-screen" sx={{ padding: 2 }}>
+      {loading ? renderLoadingState() : error ? renderErrorState() : renderTimeSlotDetails()}
+    </Box>
   );
 };
+
+const DetailRow = ({ label, value, color, bold }) => (
+  <Grid container spacing={1} alignItems="center">
+    <Grid item xs={4}>
+      <Typography fontWeight="bold">{label}:</Typography>
+    </Grid>
+    <Grid item xs={8}>
+      <Typography sx={{ fontWeight: bold ? "bold" : "normal", color: color || "inherit" }}>{value}</Typography>
+    </Grid>
+  </Grid>
+);
 
 export default TimeSlotDetails;

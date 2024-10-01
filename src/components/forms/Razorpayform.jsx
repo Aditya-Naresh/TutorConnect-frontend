@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import Axios from "axios";
 import { Button, TextField, Typography, Container, Box } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { depositMoney } from "../../redux/thunk/walletThunk";
 
 const Razorpayform = () => {
-  const name = useSelector((state) => state.auth.full_name)
+  const name = useSelector((state) => state.auth.full_name);
   const [amount, setAmount] = useState("");
-  const server = 'http://127.0.0.1:8000'
+  const server = "http://127.0.0.1:8000";
+
+  const dispatch = useDispatch();
+  const { balance } = useSelector((state) => state.wallet);
 
   const handlePaymentSuccess = async (response) => {
     try {
@@ -23,10 +27,12 @@ const Razorpayform = () => {
         },
       });
 
-      console.log("Payment validated!", res.data);
-    //   Add Wallet updation code here
-      toast.success(`Rs. ${amount} has been added to your wallet`)
-      setName("");
+      console.log("Payment validated!");
+
+      // Wallet update
+      dispatch(depositMoney(parseFloat(amount)));
+
+      toast.success(`Rs. ${amount} has been added to your wallet`);
       setAmount("");
     } catch (error) {
       console.error("Error during payment validation:", error.response || error);
@@ -99,14 +105,21 @@ const Razorpayform = () => {
     <Container
       maxWidth="sm"
       className="bg-white p-8 rounded-lg shadow-lg mt-16"
+      style={{
+        background:
+          "linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7)), linear-gradient(135deg, #d9f99d, #bbf7d0)",
+        borderRadius: "16px",
+        boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+      }}
     >
       <Typography
         variant="h4"
         align="center"
         gutterBottom
         className="text-blue-600 font-semibold"
+        style={{ fontSize: "1.8rem", color: "#2563eb" }} // Blue color for title
       >
-        Payment Page
+        Add Money to Wallet
       </Typography>
 
       <form>
@@ -118,7 +131,8 @@ const Razorpayform = () => {
             value={name}
             className="mb-4"
             InputLabelProps={{ className: "text-gray-500" }}
-            InputProps={{readOnly: true}}
+            InputProps={{ readOnly: true }}
+            style={{ backgroundColor: "#f9fafb" }} // Light background for input
           />
         </Box>
 
@@ -132,6 +146,7 @@ const Razorpayform = () => {
             onChange={(e) => setAmount(e.target.value)}
             className="mb-4"
             InputLabelProps={{ className: "text-gray-500" }}
+            style={{ backgroundColor: "#f9fafb" }} // Light background for input
           />
         </Box>
 
@@ -141,6 +156,13 @@ const Razorpayform = () => {
           fullWidth
           onClick={showRazorpay}
           className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"
+          style={{
+            backgroundColor: "#3b82f6",
+            padding: "12px",
+            fontSize: "1rem",
+            fontWeight: "bold",
+            transition: "background-color 0.3s ease",
+          }}
         >
           Pay with Razorpay
         </Button>

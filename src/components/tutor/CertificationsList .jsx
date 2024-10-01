@@ -1,36 +1,46 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Typography } from '@mui/material';
-import { styled } from '@mui/system';
-import { BiTrash } from 'react-icons/bi';
-import { axiosGet, axiosDelete } from '../../axios';
-import { toast } from 'react-toastify';
+import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Typography,
+} from "@mui/material";
+import { styled } from "@mui/system";
+import { BiTrash } from "react-icons/bi";
+import { axiosGet, axiosDelete } from "../../axios";
+import { toast } from "react-toastify";
 
 const StyledTableContainer = styled(TableContainer)({
   marginTop: 20,
 });
 
 const StyledTableCell = styled(TableCell)({
-  fontWeight: 'bold',
+  fontWeight: "bold",
 });
 
-const StyledImage = styled('img')({
-  maxHeight: 60,
-  objectFit: 'cover',
+const StyledImage = styled("img")({
+  maxHeight: 100,
+  objectFit: "cover",
 });
 
 const CertificationsList = ({ update }) => {
   const [certificates, setCertificates] = useState([]);
   const token = useSelector((state) => state.auth.access);
-  const [render, setRender] = useState('');
+  const [render, setRender] = useState("");
 
   useEffect(() => {
     const fetchCertificates = async () => {
       try {
-        const response = await axiosGet('accounts/certificates/', token);
+        const response = await axiosGet("accounts/certificates/", token);
         setCertificates(response.data);
       } catch (error) {
-        console.error('Error fetching certificates:', error);
+        console.error("Error fetching certificates:", error);
       }
     };
 
@@ -41,7 +51,7 @@ const CertificationsList = ({ update }) => {
     try {
       const response = await axiosDelete(`accounts/certificates/${id}`, token);
       if (response.status === 204) {
-        toast.success('Deleted the certificate');
+        toast.success("Deleted the certificate");
         setRender(`Deleted ${id}`);
       }
     } catch (error) {
@@ -67,7 +77,12 @@ const CertificationsList = ({ update }) => {
             <TableRow key={cert.id}>
               <TableCell>{cert.title}</TableCell>
               <TableCell>
-                <StyledImage src={cert.image} alt={cert.title || "Certification Image"} />
+                <a href={cert.image} target="_blank" rel="noopener noreferrer">
+                  <StyledImage
+                    src={cert.image}
+                    alt={cert.title || "Certification Image"}
+                  />
+                </a>{" "}
               </TableCell>
               <TableCell>
                 <IconButton onClick={() => onDelete(cert.id)} color="secondary">

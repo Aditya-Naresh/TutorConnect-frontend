@@ -14,7 +14,9 @@ const axiosPatch = async (endpoint, data, token) => {
         return response
         
     } catch (error) {
-        console.log(error);
+        console.log("patch err", error);
+        
+        return(error.response);
     }
 }
 
