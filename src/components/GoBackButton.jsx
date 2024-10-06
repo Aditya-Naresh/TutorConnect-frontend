@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const GoBackButton = () => {
   const navigate = useNavigate();
@@ -12,13 +13,13 @@ const GoBackButton = () => {
   return (
     <Button
       variant="contained"
-      color="primary"
       onClick={handleGoBack}
+      startIcon={<ArrowBackIcon />}
+      className="!bg-blue-500 !text-white !px-4 !py-2 !rounded-md !hover:bg-blue-600 !focus:ring-4 !focus:ring-blue-300 !shadow-lg"
       sx={{
-        textTransform: 'none', 
-        boxShadow: 2, 
+        textTransform: 'none',
         '&:hover': {
-          backgroundColor: 'primary.dark', 
+          backgroundColor: 'blue.700',
         },
       }}
     >

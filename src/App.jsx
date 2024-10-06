@@ -30,6 +30,7 @@ import BookTimeSlots from "./pages/student/BookTimeSlots.jsx";
 import './app.css'
 import TimeSlotDetails from "./components/TimeSlotDetails.jsx";
 import CreateTimeSlots from "./pages/tutor/CreateTimeSlots.jsx";
+import TimeSlotDetailsPage from "./pages/TimeSlotDetailsPage.jsx";
 
 
 const App = () => {
@@ -64,7 +65,7 @@ const App = () => {
                   <Route path="/tutorlist" element={<Tutorlist/>} />
                   <Route path="/book-slots/:tutor_id" element={<BookTimeSlots/>} />
                   <Route path="/wallet" element={<Wallet />} />
-                  <Route path="/timeslot-details/:id" element={<TimeSlotDetails />} />
+                  <Route path="/timeslot-details/:id" element={<TimeSlotDetailsPage />} />
                 </Route>
               </Route>
 

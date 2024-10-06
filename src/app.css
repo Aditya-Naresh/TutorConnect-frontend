@@ -4,7 +4,7 @@ a.AVAILABLE{
   
   }
   
-  a.Open{
+  a.CANCELLED{
     background-color: red;
     border: 2px solid darkred;
   }
@@ -14,6 +14,9 @@ a.AVAILABLE{
     border: 2px solid rgb(2, 3, 80);
   }
   
+ 
+
+
   .fc-event{
     cursor: pointer;
   }

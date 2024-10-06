@@ -4,8 +4,9 @@ import { axiosPatch } from '../../axios'
 import { toast } from 'react-toastify'
 import { withdrawMoney } from '../../redux/thunk/walletThunk'
 import { useNavigate } from 'react-router-dom'
+import { setRender } from '../../redux/slices/timeSlotSlice'
 
-const BookSlot = ({slot_id, setRender, rate, selectedSubject}) => {
+const BookSlot = ({slot_id, rate, selectedSubject}) => {
     const auth = useSelector((state) => state.auth)
     const {balance} = useSelector((state) => state.wallet)
     const dispatch = useDispatch()
@@ -24,8 +25,8 @@ const BookSlot = ({slot_id, setRender, rate, selectedSubject}) => {
         try {
             const response = await axiosPatch(`timeslots/book-timeslot/${slot_id}`, formData, auth.access)
             console.log("response",response);
-            // setRender(response.data.id)
             if (response.status === 200){
+                dispatch(setRender(`Booked ${response.data.id}`))
                 dispatch(withdrawMoney({ amount: rate, time_slot: slot_id }));                
                 toast.info("Time Slot has been booked")
                 navigate('/tutorlist')
@@ -33,7 +34,6 @@ const BookSlot = ({slot_id, setRender, rate, selectedSubject}) => {
                 toast.error("Tutor or TimeSlot is unavailable please try another one")
                 navigate('/tutorlist')
             }
-            setRender(response)
         } catch (error) {
             console.log("error",error);
         }

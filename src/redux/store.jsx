@@ -5,6 +5,7 @@ import notificationReducer from './slices/notificationSlice'
 import profileReducer from './slices/profileSlice'
 import walletReducer from './slices/walletSlice'
 import signUpReducer from './slices/signUpSlice'
+import timeSlotReducer from'./slices/timeSlotSlice'
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 
 const persistConfig = {
@@ -14,11 +15,12 @@ const persistConfig = {
 };
 
 const reducer = combineReducers({
+  timeSlot: timeSlotReducer,
   auth: authReducer,
   notifications: notificationReducer,
   profile: profileReducer,
   wallet: walletReducer,
-  signup: signUpReducer
+  signup: signUpReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);
