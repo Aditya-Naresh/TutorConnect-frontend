@@ -40,13 +40,22 @@ const TutorCard = ({
 
   const fetchData = async () => {
     try {
-      const response = await axiosGet(`useradmin/update-user/${id}`, auth.access);
+      const response = await axiosGet(
+        `useradmin/update-user/${id}`,
+        auth.access
+      );
       if (response.status === 200) {
         setTutor(response.data);
         try {
-          const certRes = await axiosGet(`useradmin/certificates/${id}`, auth.access);
+          const certRes = await axiosGet(
+            `useradmin/certificates/${id}`,
+            auth.access
+          );
           setCertifications(certRes.data);
-          const subRes = await axiosGet(`useradmin/subjects/${id}`, auth.access);
+          const subRes = await axiosGet(
+            `useradmin/subjects/${id}`,
+            auth.access
+          );
           setSubjects(subRes.data);
         } catch (error) {
           console.log(error);
@@ -84,7 +93,8 @@ const TutorCard = ({
         </Typography>
 
         <Typography variant="body2" color="text.secondary" paragraph>
-          <strong>Rate per hour:</strong> {role === "ADMIN" ? tutor?.rate || "N/A" : data?.rate || "N/A"}
+          <strong>Rate per hour:</strong>{" "}
+          {role === "ADMIN" ? tutor?.rate || "N/A" : data?.rate || "N/A"}
         </Typography>
 
         {role === "ADMIN" && (
@@ -101,7 +111,17 @@ const TutorCard = ({
                   <TableRow key={index}>
                     <TableCell>{cert.title}</TableCell>
                     <TableCell>
-                      <img src={cert.image} alt={cert.title} style={{ maxWidth: 100 }} />
+                      <a
+                        href={cert.image}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={cert.image}
+                          alt={cert.title}
+                          style={{ maxWidth: 100 }}
+                        />
+                      </a>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -112,7 +132,9 @@ const TutorCard = ({
       </CardContent>
 
       <CardActions sx={{ justifyContent: "center" }}>
-        {role === "ADMIN" && !tutor?.is_approved && <ApproveTutor id={tutor.id} />}
+        {role === "ADMIN" && !tutor?.is_approved && (
+          <ApproveTutor id={tutor.id} />
+        )}
         {role === "STUDENT" && (
           <Button variant="contained" color="success" onClick={handleClick}>
             Request Tutor

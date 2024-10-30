@@ -18,6 +18,7 @@ const Step5 = () => {
         if (signup.fulfilled.match(res)) {
             console.log("Signup successful:", res.payload);
             toast.success("Signup successful! Please check your email for verification.");
+            navigate('/login')
         } else if (signup.rejected.match(res)) {
             const errorMessage = res.payload ;
             toast.error(errorMessage); 

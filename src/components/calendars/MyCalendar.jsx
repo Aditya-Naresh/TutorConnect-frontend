@@ -36,14 +36,14 @@ export default function MyCalendar({ events, dayClickAction }) {
   return (
     <FullCalendar
       plugins={[dayGridPlugin, timeGridPlugin, listPlugin, multiMonthPlugin, interactionPlugin]}
-      initialView="timeGridDay"
+      initialView="dayGridMonth"
       events={events}
       eventClick={eventClickAction}
       dateClick={handleDateClick}
       headerToolbar={{
         left: 'prev,next',
         center: 'title',
-        right: 'timeGridDay,timeGridWeek,dayGridMonth',
+        right: 'dayGridMonth,timeGridWeek,timeGridDay',
       }}
       validRange={{
         start: today,

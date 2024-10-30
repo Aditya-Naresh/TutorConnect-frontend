@@ -66,7 +66,7 @@ const CertificationsForm = ({ reRender, show }) => {
       dispatch(addCertification(certificationData));
       toast.success('Certification added successfully!');
       reset();
-      // reRender("uploaded"); 
+      reRender("uploaded"); 
     } catch (error) {
       console.error('Error converting image to Base64:', error);
       toast.error('Failed to add certification.');

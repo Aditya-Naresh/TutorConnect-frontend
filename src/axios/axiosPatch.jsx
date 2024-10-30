@@ -1,5 +1,4 @@
 import axios from 'axios'
-import React from 'react'
 
 
 const axiosPatch = async (endpoint, data, token) => {
@@ -15,7 +14,9 @@ const axiosPatch = async (endpoint, data, token) => {
         return response
         
     } catch (error) {
-        console.log(error);
+        console.log("patch err", error);
+        
+        return(error.response);
     }
 }
 

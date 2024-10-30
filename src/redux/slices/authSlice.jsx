@@ -34,6 +34,9 @@ const authSlice = createSlice({
       refreshAuthToken: (state, action) => {
         state.access = action.payload.access;
       },
+      updateRole: (state, action) => {
+        state.role = action.payload
+      }
     },
   });
   
@@ -59,6 +62,6 @@ const authSlice = createSlice({
   };
   
 
-export const { loginSuccess, logOut, refreshAuthToken } = authSlice.actions;
+export const { loginSuccess, logOut, refreshAuthToken, updateRole } = authSlice.actions;
 
 export default authSlice.reducer;

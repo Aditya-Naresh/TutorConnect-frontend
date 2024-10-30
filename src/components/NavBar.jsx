@@ -9,7 +9,7 @@ import { FaMessage } from "react-icons/fa6";
 
 import { toggleNotification } from "../redux/slices/notificationSlice";
 import { toggleMenu } from "../redux/slices/profileSlice"
-import { fetchWalletDetails } from "../redux/slices/walletSlice";
+import { fetchWalletDetails } from "../redux/thunk/walletThunk";
 
 
 const NavBarItems = () => {

@@ -32,15 +32,13 @@ export default function MyModal({
 }) {
   const { id, role, access } = useSelector((state) => state.auth);
 
-  // Ensure formData.start is a valid dayjs object
   const startDate = dayjs(formData.start).format("YYYY-MM-DD HH:mm");
-  console.log("startdate", startDate);
 
   const createTimeSlot = async (event) => {
     event.preventDefault();
     const data = {
-      title: "AVAILABLE", // or use formData.className
-      className: "AVAILABLE", // or use formData.className
+      title: "AVAILABLE", 
+      className: "AVAILABLE", 
       tutor: id,
       start: startDate,
       student: null,

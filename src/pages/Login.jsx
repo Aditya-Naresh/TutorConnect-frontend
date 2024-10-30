@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "../redux/slices/authSlice";
+import GoogleAuth from "../components/Signup/GoogleAuth";
 
 const Login = () => {
   const {
@@ -104,11 +105,8 @@ const Login = () => {
             Sign up
             </Link>
           </p>
-          {/* <div className="flex justify-center">
-            <p className="border shadow-lg hover:shadow-2xl px-6 py-2 relative flex item-center ">
-              <FcGoogle className="mr-2 mt-1" /> Continue with google
-            </p>
-          </div> */}
+        <GoogleAuth />
+          
         </form>
       </div>
   );
