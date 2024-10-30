@@ -32,6 +32,8 @@ const GoogleAuth = () => {
             dispatch(loginSuccess(response.data))
             toast.success(`${response.data.full_name} logged in`)
             navigate('/')
+        } else if(response.status === 403){
+          toast.error("User Blocked Please contact the Admin")
         }
         
         

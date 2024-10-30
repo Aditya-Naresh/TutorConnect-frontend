@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { axiosGet, axiosPatch } from "../axios";
 import { toast } from "react-toastify";
 
-const Profile = () => {
+const Profile = ({new_role}) => {
   const role = useSelector((state) => state.auth.role);
   const token = useSelector((state) => state.auth.access);
   const [showTutorProfile, setShowTutorProfile] = useState(false);
@@ -47,7 +47,7 @@ const Profile = () => {
 
   return (
     <div className="relative">
-      {role === "TUTOR" && (
+      {(role === "TUTOR" || new_role ) && (
         <button
           onClick={() => setShowTutorProfile(!showTutorProfile)}
           className="bg-slate-500 text-white font-bold py-2 px-4 rounded hover:bg-slate-600 -mt-4 mb-1"
@@ -127,7 +127,7 @@ const Profile = () => {
               </p>
             )}
           </div>
-          {role === "TUTOR" && (
+          {(role === "TUTOR" || new_role) && (
             <div className="flex flex-col mb-4">
               <label htmlFor="rate">Rate per Hour</label>
               <input

@@ -12,8 +12,7 @@ import { toggleNotification } from "../redux/slices/notificationSlice";
 import TuitionRequest from "../components/TuitionRequest";
 
 const UserLayout = () => {
-  const auth = useSelector((state) => state.auth);
-  const { role, access } = auth;
+  const { role, access }  = useSelector((state) => state.auth);
   const [notifications, setNotifications] = useState([]);
   const [showSideBar, setShowSideBar] = useState(false);
   const [reqId, setReqId] = useState();

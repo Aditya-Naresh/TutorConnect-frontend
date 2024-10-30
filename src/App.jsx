@@ -31,6 +31,7 @@ import './app.css'
 import TimeSlotDetails from "./components/TimeSlotDetails.jsx";
 import CreateTimeSlots from "./pages/tutor/CreateTimeSlots.jsx";
 import TimeSlotDetailsPage from "./pages/TimeSlotDetailsPage.jsx";
+import SocialAuthUserAccount from "./pages/SocialAuthUserAccount.jsx";
 
 
 const App = () => {
@@ -55,6 +56,7 @@ const App = () => {
                   path="/reset-password/:uid/:token"
                   element={<ResetPassword />}
                 />
+                <Route path="/account" element={<SocialAuthUserAccount />} />
               </Route>
 
               <Route element={<PrivateRoute />}>
