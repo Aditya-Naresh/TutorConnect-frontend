@@ -17,7 +17,7 @@ const SubjectList = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosGet("/accounts/subject/", token);
+        const response = await axiosGet("accounts/subject/", token);
         setData(response.data);
       } catch (error) {
         console.log(error);
