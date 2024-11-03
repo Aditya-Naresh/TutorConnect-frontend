@@ -27,12 +27,11 @@ import Tutorlist from "./pages/student/Tutorlist.jsx";
 import Wallet from "./pages/Wallet.jsx";
 import BookTimeSlots from "./pages/student/BookTimeSlots.jsx";
 
-import './app.css'
-import TimeSlotDetails from "./components/TimeSlotDetails.jsx";
+import "./app.css";
 import CreateTimeSlots from "./pages/tutor/CreateTimeSlots.jsx";
 import TimeSlotDetailsPage from "./pages/TimeSlotDetailsPage.jsx";
 import SocialAuthUserAccount from "./pages/SocialAuthUserAccount.jsx";
-
+import Chat from "./pages/Chat.jsx";
 
 const App = () => {
   let persistor = persistStore(store);
@@ -43,7 +42,7 @@ const App = () => {
           <Router>
             <ToastContainer />
             <Routes>
-                <Route path="/home" element={<HomePage />} />
+              <Route path="/home" element={<HomePage />} />
               <Route element={<GuestLayout />}>
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
@@ -64,10 +63,18 @@ const App = () => {
                   <Route path="/" element={<Dashboard />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/timeslots" element={<CreateTimeSlots />} />
-                  <Route path="/tutorlist" element={<Tutorlist/>} />
-                  <Route path="/book-slots/:tutor_id" element={<BookTimeSlots/>} />
+                  <Route path="/tutorlist" element={<Tutorlist />} />
+                  <Route
+                    path="/book-slots/:tutor_id"
+                    element={<BookTimeSlots />}
+                  />
                   <Route path="/wallet" element={<Wallet />} />
-                  <Route path="/timeslot-details/:id" element={<TimeSlotDetailsPage />} />
+                  <Route
+                    path="/timeslot-details/:id"
+                    element={<TimeSlotDetailsPage />}
+                  />
+                  <Route path="/chat" element={<Chat />} />
+                  <Route path="/chat/:roomName" element={<Chat />} />
                 </Route>
               </Route>
 
@@ -77,7 +84,7 @@ const App = () => {
                     path="/user-management/:role"
                     element={<UserManagement />}
                   />
-                  <Route path="/approve-tutor" element={<ApproveTutor/>} />
+                  <Route path="/approve-tutor" element={<ApproveTutor />} />
                 </Route>
               </Route>
             </Routes>

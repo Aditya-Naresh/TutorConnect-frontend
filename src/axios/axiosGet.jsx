@@ -1,27 +1,28 @@
-import axios from 'axios'
-import React from 'react'
-
+import axios from "axios";
 
 const axiosGet = async (endpoint, token) => {
-    const BASE_URL = "http://127.0.0.1:8000/"
-    const config = {
-        headers:{
-            "Authorization": `Bearer ${token}`,
-        }
-    }
+  const BASE_URL = "http://127.0.0.1:8000/";
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
 
-    try {
-        const response = await axios.get(`${BASE_URL}${endpoint}`,  config)
-        return response
-        
-    } catch (error) {
-        console.log(error.response);
-        if(error.response.status === 404){
-            return {"message": "Not Found", "status":404}
-        }else {
-            return {"message": "Error", "status":error.status, "data":[]}
-        }
+  try {
+    const response = await axios.get(`${BASE_URL}${endpoint}`, config);
+    return {
+      data: response.data,
+      status: response.status,
+      message: "Success",
+    };
+  } catch (error) {
+    console.log(error.response);
+    if (error.response.status === 404) {
+      return { message: "Not Found", status: 404 };
+    } else {
+      return { message: "Error", status: error.status, data: [] };
     }
-}
+  }
+};
 
-export default axiosGet
+export default axiosGet;

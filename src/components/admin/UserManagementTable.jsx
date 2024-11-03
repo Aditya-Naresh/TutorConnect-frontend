@@ -9,12 +9,13 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import TablePagination from "@mui/material/TablePagination";
-import TextField from "@mui/material/TextField"; // Import TextField for search input
+import TextField from "@mui/material/TextField";
 import UnblockButton from "./UnblockButton";
 import BlockButton from "./BlockButton";
 import VerifiedIcon from '@mui/icons-material/Verified';
 import CancelIcon from '@mui/icons-material/Cancel';
 import UserDetails from "./UserDetails";
+import ChatButton from "../chatButton";
 
 const StyledTableCell = styled(TableCell)({
   "&.MuiTableCell-head": {
@@ -79,7 +80,7 @@ export default function CustomizedTables({ data, reRender, label, showCard }) {
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
           <TableRow>
-            <StyledTableCell colSpan={label === "Tutors" ? 7 : 5} align="center">
+            <StyledTableCell colSpan={label === "Tutors" ? 8 : 6} align="center">
               {label}
             </StyledTableCell>
           </TableRow>
@@ -91,10 +92,11 @@ export default function CustomizedTables({ data, reRender, label, showCard }) {
             {label === "Tutors" && (
               <>
                 <StyledTableCell align="right">Approved</StyledTableCell>
-                <StyledTableCell align="right">User Details</StyledTableCell>
+                <StyledTableCell align="center">User Details</StyledTableCell>
               </>
             )}
-            <StyledTableCell align="right">Action</StyledTableCell>
+            <StyledTableCell align="center">Action</StyledTableCell>
+            <StyledTableCell align="center">Chat</StyledTableCell> {/* New Chat Button Column */}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -103,15 +105,19 @@ export default function CustomizedTables({ data, reRender, label, showCard }) {
               <StyledTableCell component="th" scope="row">
                 {row.email}
               </StyledTableCell>
-              <StyledTableCell align="right">{row.first_name}</StyledTableCell>
-              <StyledTableCell align="right">{row.last_name}</StyledTableCell>
-              <StyledTableCell align="right">
+              <StyledTableCell align="center">{row.first_name}</StyledTableCell>
+              <StyledTableCell align="center">{row.last_name}</StyledTableCell>
+              <StyledTableCell align="center">
                 {row.auth_provider}
               </StyledTableCell>
               {label === "Tutors" && (
                 <>
-                  <StyledTableCell align="right">{row.is_approved ? <VerifiedIcon color="green"/> : <CancelIcon/>}</StyledTableCell>
-                  <StyledTableCell align="right"><UserDetails id={row.id}  showCard={showCard}/></StyledTableCell>
+                  <StyledTableCell align="center">
+                    {row.is_approved ? <VerifiedIcon color="green" /> : <CancelIcon />}
+                  </StyledTableCell>
+                  <StyledTableCell align="right">
+                    <UserDetails id={row.id} showCard={showCard} />
+                  </StyledTableCell>
                 </>
               )}
               <StyledTableCell align="right">
@@ -120,6 +126,9 @@ export default function CustomizedTables({ data, reRender, label, showCard }) {
                 ) : (
                   <BlockButton id={row.id} reRender={reRender} />
                 )}
+              </StyledTableCell>
+              <StyledTableCell align="right">
+                <ChatButton useremail={row.email}/> 
               </StyledTableCell>
             </StyledTableRow>
           ))}
