@@ -1,19 +1,12 @@
 import React from 'react';
 import { Button } from '@mui/material';
-import { useSelector } from 'react-redux';
-import { axiosPost } from '../axios';
 import { useNavigate } from 'react-router-dom';
 
-const ChatButton = ({useremail}) => {
-    const {email, access} = useSelector((state)=>state.auth)
+const ChatButton = ({user_id}) => {
     const navigate = useNavigate()
     const buttonClick = async () => {
-        const data = {
-            "participants" : [email, useremail]
-        }
-        const response = await axiosPost('chat/create/', data, access)
-        console.log("response", response.data.id);
-        navigate(`/chat/${response.data.id}`)
+        
+        navigate(`/chat/${user_id}`)
         
     }
   return (

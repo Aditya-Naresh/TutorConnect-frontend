@@ -12,8 +12,8 @@ import TablePagination from "@mui/material/TablePagination";
 import TextField from "@mui/material/TextField";
 import UnblockButton from "./UnblockButton";
 import BlockButton from "./BlockButton";
-import VerifiedIcon from '@mui/icons-material/Verified';
-import CancelIcon from '@mui/icons-material/Cancel';
+import VerifiedIcon from "@mui/icons-material/Verified";
+import CancelIcon from "@mui/icons-material/Cancel";
 import UserDetails from "./UserDetails";
 import ChatButton from "../chatButton";
 
@@ -56,9 +56,10 @@ export default function CustomizedTables({ data, reRender, label, showCard }) {
   };
 
   // Filter data based on search query
-  const filteredData = data.filter((row) =>
-    row.first_name.toLowerCase().includes(searchQuery) ||
-    row.last_name.toLowerCase().includes(searchQuery)
+  const filteredData = data.filter(
+    (row) =>
+      row.first_name.toLowerCase().includes(searchQuery) ||
+      row.last_name.toLowerCase().includes(searchQuery)
   );
 
   const paginatedData = filteredData.slice(
@@ -80,7 +81,10 @@ export default function CustomizedTables({ data, reRender, label, showCard }) {
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
           <TableRow>
-            <StyledTableCell colSpan={label === "Tutors" ? 8 : 6} align="center">
+            <StyledTableCell
+              colSpan={label === "Tutors" ? 8 : 6}
+              align="center"
+            >
               {label}
             </StyledTableCell>
           </TableRow>
@@ -96,7 +100,8 @@ export default function CustomizedTables({ data, reRender, label, showCard }) {
               </>
             )}
             <StyledTableCell align="center">Action</StyledTableCell>
-            <StyledTableCell align="center">Chat</StyledTableCell> {/* New Chat Button Column */}
+            <StyledTableCell align="center">Chat</StyledTableCell>{" "}
+            {/* New Chat Button Column */}
           </TableRow>
         </TableHead>
         <TableBody>
@@ -113,7 +118,11 @@ export default function CustomizedTables({ data, reRender, label, showCard }) {
               {label === "Tutors" && (
                 <>
                   <StyledTableCell align="center">
-                    {row.is_approved ? <VerifiedIcon color="green" /> : <CancelIcon />}
+                    {row.is_approved ? (
+                      <VerifiedIcon color="green" />
+                    ) : (
+                      <CancelIcon />
+                    )}
                   </StyledTableCell>
                   <StyledTableCell align="right">
                     <UserDetails id={row.id} showCard={showCard} />
@@ -128,7 +137,7 @@ export default function CustomizedTables({ data, reRender, label, showCard }) {
                 )}
               </StyledTableCell>
               <StyledTableCell align="right">
-                <ChatButton useremail={row.email}/> 
+                <ChatButton user_id={row.id} />
               </StyledTableCell>
             </StyledTableRow>
           ))}

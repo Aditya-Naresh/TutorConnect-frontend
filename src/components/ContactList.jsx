@@ -16,18 +16,22 @@ import { axiosGet } from "../axios";
 
 const ContactList = () => {
   const [contacts, setContacts] = useState([]);
-  const { full_name, access } = useSelector((state) => state.auth);
+  const { id, access } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-  const handleClick = (id) => {
-    navigate(`/chat/${id}`);
+  const handleClick = (contact) => {
+    const user_id = contact.user2.id === id ? contact.user1.id : contact.user2.id 
+    navigate(`/chat/${user_id}`);
   };
   const fetchData = async () => {
-    const response = await axiosGet("chat/chatlist/", access);
-    console.log("response: ", response);
-    setContacts(response.data);
+    const response = await axiosGet("chat/chat_users/", access);
+    console.log("response: ", response.status);
+    if(response.status === 200){
+      setContacts(response.data);
+    }
   };
+  
   useEffect(() => {
-    fetchData();
+    fetchData()
   }, []);
   return (
     <Box className="flex flex-col h-screen bg-gray-100 p-4">
@@ -48,12 +52,10 @@ const ContactList = () => {
                       variant="subtitle1"
                       className="text-gray-900 font-semibold"
                     >
-                      {contact.participants.find(
-                        (participant) => participant !== full_name
-                      )}
+                      {(contact.user2.id === id) ? contact.user1.full_name : contact.user2.full_name}
                     </Typography>
                   }
-                  onClick={(e) => handleClick(contact.id)}
+                  onClick={(e) => handleClick(contact)}
                 />
               </ListItem>
               <Divider variant="inset" component="li" />
