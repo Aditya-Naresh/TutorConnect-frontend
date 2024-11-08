@@ -12,7 +12,7 @@ import { toggleNotification } from "../redux/slices/notificationSlice";
 import TuitionRequest from "../components/TuitionRequest";
 
 const UserLayout = () => {
-  const { role, access }  = useSelector((state) => state.auth);
+  const { access } = useSelector((state) => state.auth);
   const [notifications, setNotifications] = useState([]);
   const [showSideBar, setShowSideBar] = useState(false);
   const [reqId, setReqId] = useState();
@@ -62,7 +62,10 @@ const UserLayout = () => {
         {/* Main Outlet / Content */}
         <div className="relative flex-1 flex flex-col lg:flex-row lg:justify-center lg:h-full">
           {/* SideBar Toggle for Mobile */}
-          <div onClick={handleSideBar} className="lg:hidden flex justify-between">
+          <div
+            onClick={handleSideBar}
+            className="lg:hidden flex justify-between"
+          >
             {showSideBar && (
               <div className="w-[60%] h-full absolute z-[10]">
                 <SideBar />
@@ -85,7 +88,10 @@ const UserLayout = () => {
           {/* Notifications & Profile Menu */}
           {showNotification && (
             <div className="origin-top-right absolute right-28 z-20 -mt-8 w-56 rounded-md ring-1 ring-black ring-opacity-5 bg-lime-200">
-              <Notifications notifications={notifications} setReqId={reqHandle} />
+              <Notifications
+                notifications={notifications}
+                setReqId={reqHandle}
+              />
             </div>
           )}
           {showProfileMenu && (

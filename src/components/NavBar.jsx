@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Logo from "./Logo";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { refreshAccessToken } from "../redux/slices/authSlice";
 import { FaBell, FaUser } from "react-icons/fa";
 import { FaMessage } from "react-icons/fa6";
@@ -9,48 +9,85 @@ import { FaMessage } from "react-icons/fa6";
 import { toggleNotification } from "../redux/slices/notificationSlice";
 import { toggleMenu } from "../redux/slices/profileSlice";
 import { fetchWalletDetails } from "../redux/thunk/walletThunk";
+import { Badge } from "@mui/material";
+import { fetchContactListData } from "../redux/thunk/chatThunk";
 
 const NavBarItems = () => {
-  const username = useSelector((state) => state.auth.full_name);
+  const {access, full_name} = useSelector((state) => state.auth);
+  const { unreadContactsCount } = useSelector((state) => state.chat);
+  const [messageCount, setMessageCount] = useState(0)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const moveToChat = () => {
     navigate("/chat");
   };
+  const { roomName } = useParams();
+
   useEffect(() => {
     dispatch(fetchWalletDetails());
   }, []);
+
+
+  useEffect(() => {
+    const socket = new WebSocket(`ws://localhost:8000/ws/chat-notifications/?token=${access}`);
+
+    socket.onmessage = function(event) {
+      const data = JSON.parse(event.data);
+      setMessageCount(data.message_notification);
+    
+      
+      
+    };
+
+    socket.onclose = function() {
+      console.error('WebSocket closed unexpectedly');
+    };
+
+    return () => socket.close();
+  }, [roomName]);
+
   return (
     <>
       <Link to={"/"}>
         <Logo />
       </Link>{" "}
       <div className="relative flex items-center text-white">
-        <FaMessage
-          size={30}
-          className="text-yellow-100 mr-4 cursor-pointer"
-          onClick={moveToChat}
-        />
+        <Badge
+          color="secondary"
+          badgeContent={messageCount}
+          invisible={messageCount == 0}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+        >
+          <FaMessage
+            size={30}
+            className="text-yellow-100 cursor-pointer"
+            onClick={moveToChat}
+          />
+        </Badge>
         <FaBell
           size={30}
-          className="text-yellow-500 mr-4"
+          className="text-yellow-500 ml-4"
           onClick={() => dispatch(toggleNotification())}
         />
         <FaUser
           size={30}
-          className="text-gray-500 mr-2 cursor-pointer"
+          className="text-gray-500 mr-2 ml-4 cursor-pointer"
           onClick={() => dispatch(toggleMenu())}
         />{" "}
         <span
           className="hidden md:block mr-4 cursor-pointer"
           onClick={() => dispatch(toggleMenu())}
         >
-          {username}
+          {full_name}
         </span>
       </div>
     </>
   );
 };
+
 const StudentNavBar = () => {
   return (
     <div className="bg-gradient-to-tr from-black via-emerald-900 to-green-700 sticky top-0 z-[20] mx-auto flex w-full items-center justify-between p-8 h-full">

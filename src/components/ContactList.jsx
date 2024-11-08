@@ -9,30 +9,40 @@ import {
   Paper,
   Divider,
   Box,
+  Badge,
 } from "@mui/material";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { axiosGet } from "../axios";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ContactList = () => {
-  const [contacts, setContacts] = useState([]);
   const { id, access } = useSelector((state) => state.auth);
+  const [contacts, setContacts] = useState([]);
   const navigate = useNavigate();
+  const {roomName} = useParams()
+
   const handleClick = (contact) => {
-    const user_id = contact.user2.id === id ? contact.user1.id : contact.user2.id 
+    const user_id =
+      contact.user2.id === id ? contact.user1.id : contact.user2.id;
     navigate(`/chat/${user_id}`);
   };
-  const fetchData = async () => {
-    const response = await axiosGet("chat/chat_users/", access);
-    console.log("response: ", response.status);
-    if(response.status === 200){
-      setContacts(response.data);
-    }
-  };
-  
+
   useEffect(() => {
-    fetchData()
-  }, []);
+    const socket = new WebSocket(
+      `ws://localhost:8000/ws/chat-notifications/?token=${access}`
+    );
+
+    socket.onmessage = function (event) {
+      const data = JSON.parse(event.data);
+      setContacts(data.data);
+    };
+
+    socket.onclose = function () {
+      console.error("WebSocket closed unexpectedly");
+    };
+
+    return () => socket.close();
+  }, [roomName]);
+
   return (
     <Box className="flex flex-col h-screen bg-gray-100 p-4">
       <Paper elevation={3} className="bg-white rounded-lg shadow-md p-4">
@@ -42,9 +52,23 @@ const ContactList = () => {
         <List className="space-y-2">
           {contacts.map((contact) => (
             <React.Fragment key={contact.id}>
-              <ListItem button className="hover:bg-gray-100 rounded-lg">
+              <ListItem
+                button
+                className="hover:bg-gray-100 rounded-lg"
+                onClick={() => handleClick(contact)}
+              >
                 <ListItemAvatar>
-                  <Avatar className="bg-blue-500">{contact.avatar}</Avatar>
+                  <Badge
+                    color="secondary"
+                    badgeContent={contact.unseen_count}
+                    invisible={!contact.unseen_count}
+                    anchorOrigin={{
+                      vertical: "top",
+                      horizontal: "right",
+                    }}
+                  >
+                    <Avatar className="bg-blue-500">{contact.avatar}</Avatar>
+                  </Badge>
                 </ListItemAvatar>
                 <ListItemText
                   primary={
@@ -52,10 +76,11 @@ const ContactList = () => {
                       variant="subtitle1"
                       className="text-gray-900 font-semibold"
                     >
-                      {(contact.user2.id === id) ? contact.user1.full_name : contact.user2.full_name}
+                      {contact.user2.id === id
+                        ? contact.user1.full_name
+                        : contact.user2.full_name}
                     </Typography>
                   }
-                  onClick={(e) => handleClick(contact)}
                 />
               </ListItem>
               <Divider variant="inset" component="li" />

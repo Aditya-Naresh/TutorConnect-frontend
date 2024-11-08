@@ -6,6 +6,7 @@ import profileReducer from './slices/profileSlice'
 import walletReducer from './slices/walletSlice'
 import signUpReducer from './slices/signUpSlice'
 import timeSlotReducer from'./slices/timeSlotSlice'
+import chatReducer from './slices/chatSlice'
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 
 const persistConfig = {
@@ -21,6 +22,7 @@ const reducer = combineReducers({
   profile: profileReducer,
   wallet: walletReducer,
   signup: signUpReducer,
+  chat: chatReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);
