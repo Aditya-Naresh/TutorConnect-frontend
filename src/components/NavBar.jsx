@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from "react";
 import Logo from "./Logo";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { refreshAccessToken } from "../redux/slices/authSlice";
 import { FaBell, FaUser } from "react-icons/fa";
 import { FaMessage } from "react-icons/fa6";
 
-import { toggleNotification } from "../redux/slices/notificationSlice";
+import { setNotificationCount, toggleNotification } from "../redux/slices/notificationSlice";
 import { toggleMenu } from "../redux/slices/profileSlice";
 import { fetchWalletDetails } from "../redux/thunk/walletThunk";
 import { Badge } from "@mui/material";
-import { fetchContactListData } from "../redux/thunk/chatThunk";
 
 const NavBarItems = () => {
-  const {access, full_name} = useSelector((state) => state.auth);
+  const { access, full_name } = useSelector((state) => state.auth);
   const { unreadContactsCount } = useSelector((state) => state.chat);
-  const [messageCount, setMessageCount] = useState(0)
+  const { count } = useSelector((state) => state.notifications);
+  const [messageCount, setMessageCount] = useState(0);
+  const NotificationSocketUrl = `ws://localhost:8000/ws/notifications/?token=${access}`;
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const moveToChat = () => {
@@ -25,26 +27,40 @@ const NavBarItems = () => {
 
   useEffect(() => {
     dispatch(fetchWalletDetails());
-  }, []);
-
+  }, [useLocation()]);
 
   useEffect(() => {
-    const socket = new WebSocket(`ws://localhost:8000/ws/chat-notifications/?token=${access}`);
+    const socket = new WebSocket(
+      `ws://localhost:8000/ws/chat-notifications/?token=${access}`
+    );
 
-    socket.onmessage = function(event) {
+    socket.onmessage = function (event) {
       const data = JSON.parse(event.data);
       setMessageCount(data.message_notification);
-    
-      
-      
     };
 
-    socket.onclose = function() {
-      console.error('WebSocket closed unexpectedly');
+    socket.onclose = function () {
+      console.error("WebSocket closed unexpectedly");
     };
 
     return () => socket.close();
-  }, [roomName]);
+  }, [roomName, access]);
+
+  useEffect(() => {
+    const socket = new WebSocket(NotificationSocketUrl)
+    socket.onmessage = function (event) {
+      const data = JSON.parse(event.data)
+
+      dispatch(
+        setNotificationCount(data.notifications ? data.notifications.length : 0)
+      );
+    }
+    socket.onclose = function () {
+      console.error("WebSocket closed unexpectedly");
+    };
+
+    return () => socket.close();
+  }, [roomName, NotificationSocketUrl, access])
 
   return (
     <>
@@ -67,11 +83,21 @@ const NavBarItems = () => {
             onClick={moveToChat}
           />
         </Badge>
-        <FaBell
-          size={30}
-          className="text-yellow-500 ml-4"
-          onClick={() => dispatch(toggleNotification())}
-        />
+        <Badge
+          color="error"
+          badgeContent={count}
+          invisible={count == 0}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
+        >
+          <FaBell
+            size={30}
+            className="text-yellow-500 ml-4"
+            onClick={() => dispatch(toggleNotification())}
+          />
+        </Badge>
         <FaUser
           size={30}
           className="text-gray-500 mr-2 ml-4 cursor-pointer"

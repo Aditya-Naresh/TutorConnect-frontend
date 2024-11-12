@@ -55,13 +55,13 @@ function ChatRoom() {
     if (roomName) {
       connectChat();
     }
-  }, [roomName]);
+  }, [roomName, access]);
 
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]);
+  }, [messages, access]);
 
   const sendMessage = () => {
     if (socket && newMessage.trim()) {

@@ -41,7 +41,7 @@ const ContactList = () => {
     };
 
     return () => socket.close();
-  }, [roomName]);
+  }, [roomName, access]);
 
   return (
     <Box className="flex flex-col h-screen bg-gray-100 p-4">

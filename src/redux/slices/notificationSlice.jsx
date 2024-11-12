@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 import { logOut } from "./authSlice";
 
 const initialState = {
-    enabled: false
+    enabled: false,
+    count : 0
 }
 const notificationSlice = createSlice({
     name: 'notifications',
@@ -10,6 +11,9 @@ const notificationSlice = createSlice({
     reducers:{
         toggleNotification: (state, action) =>{
             state.enabled = !state.enabled
+        },
+        setNotificationCount: (state, action) => {
+            state.count = action.payload
         }
     },
     extraReducers:(builder) => {
@@ -19,6 +23,6 @@ const notificationSlice = createSlice({
     }
 })
 
-export const {toggleNotification} = notificationSlice.actions
+export const {toggleNotification, setNotificationCount} = notificationSlice.actions
 
 export default notificationSlice.reducer
