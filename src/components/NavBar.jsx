@@ -13,8 +13,8 @@ import { Badge } from "@mui/material";
 
 const NavBarItems = () => {
   const { access, full_name } = useSelector((state) => state.auth);
-  const { unreadContactsCount } = useSelector((state) => state.chat);
   const { count } = useSelector((state) => state.notifications);
+  const {render} = useSelector((state) => state.timeSlot)
   const [messageCount, setMessageCount] = useState(0);
   const NotificationSocketUrl = `ws://localhost:8000/ws/notifications/?token=${access}`;
 
@@ -60,7 +60,7 @@ const NavBarItems = () => {
     };
 
     return () => socket.close();
-  }, [roomName, NotificationSocketUrl, access])
+  }, [roomName, NotificationSocketUrl, access, render])
 
   return (
     <>
@@ -94,7 +94,7 @@ const NavBarItems = () => {
         >
           <FaBell
             size={30}
-            className="text-yellow-500 ml-4"
+            className="text-yellow-500 ml-4 cursor-pointer"
             onClick={() => dispatch(toggleNotification())}
           />
         </Badge>

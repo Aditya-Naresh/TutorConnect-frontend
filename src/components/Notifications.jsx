@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   Typography,
-  Divider,
   List,
   ListItem,
   ListItemText,
@@ -15,9 +14,9 @@ import {
   FaRegCheckCircle,
   FaRegCalendarCheck,
   FaFileAlt,
-} from "react-icons/fa"; // Add icons for different types
-import { setNotificationCount } from "../redux/slices/notificationSlice";
-import { useNavigate } from "react-router-dom";
+} from "react-icons/fa";
+import { closeNotification, setNotificationCount } from "../redux/slices/notificationSlice";
+import NotificationModal from "./utils/NotificationModal";
 
 const NotificationIcons = {
   BOOKING: <FaRegCalendarCheck className="text-white text-2xl" />,
@@ -35,21 +34,19 @@ const NotificationColors = {
   REPORT: "bg-purple-500",
 };
 
-const TimeSlotNotifications = new Set(["BOOKING","UPDATE","CANCELLATION"])
-
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
+  const [selectedNotification, setSelectedNotification] = useState(null); // State for modal
   const { access } = useSelector((state) => state.auth);
   const socketUrl = `ws://localhost:8000/ws/notifications/?token=${access}`;
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+
   useEffect(() => {
     const socket = new WebSocket(socketUrl);
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
       setNotifications(data.notifications);
-      console.log("notification: ", data.notifications);
 
       dispatch(
         setNotificationCount(data.notifications ? data.notifications.length : 0)
@@ -72,20 +69,23 @@ const Notifications = () => {
     };
   }, [socketUrl]);
 
+  // Handler to open the modal with the selected notification details
+  const handleNotificationClick = (notification) => {
+    setSelectedNotification(notification);
+  };
 
-  const NotificationClick = (notification_id) => {
-    console.log("Clicked :", notification_id);
-    
-  }
+  // Handler to close the modal
+  const handleCloseModal = () => {
+    setSelectedNotification(null);
+  };
 
   return (
     <div className="max-w-4xl mx-auto mt-10 px-4">
-      {/* Title Section */}
       <div className="text-center mb-4 flex items-center justify-center -mt-8">
         <Typography variant="h6" className="text-indigo-600 font-semibold">
           Notifications
         </Typography>
-        <div className=" flex justify-center">
+        <div className="flex justify-center">
           <FaBell className="text-2xl text-indigo-600" />
         </div>
       </div>
@@ -101,7 +101,10 @@ const Notifications = () => {
             ) : (
               notifications.map((notification, index) => (
                 <div key={index}>
-                  <ListItem className="mb-2 border-b border-gray-300 cursor-pointer" onClick={() => NotificationClick(notification.id)}>
+                  <ListItem
+                    className="mb-2 border-b border-gray-300 cursor-pointer"
+                    onClick={() => handleNotificationClick(notification)} // Pass the full notification object
+                  >
                     <div className="flex items-center space-x-4">
                       <div
                         className={`w-12 h-12 rounded-full flex items-center justify-center ${
@@ -111,7 +114,6 @@ const Notifications = () => {
                         {NotificationIcons[notification.type]}
                       </div>
 
-                      {/* Notification Details */}
                       <div className="flex-grow">
                         <Typography
                           variant="body1"
@@ -137,6 +139,14 @@ const Notifications = () => {
           </List>
         </CardContent>
       </Card>
+
+      {/* Render Notification Modal */}
+      {selectedNotification && (
+        <NotificationModal
+          notification={selectedNotification}
+          onClose={handleCloseModal}
+        />
+      )}
     </div>
   );
 };

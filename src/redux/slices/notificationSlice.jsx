@@ -14,6 +14,9 @@ const notificationSlice = createSlice({
         },
         setNotificationCount: (state, action) => {
             state.count = action.payload
+        },
+        closeNotification:(state) => {
+            state.enabled = false
         }
     },
     extraReducers:(builder) => {
@@ -23,6 +26,6 @@ const notificationSlice = createSlice({
     }
 })
 
-export const {toggleNotification, setNotificationCount} = notificationSlice.actions
+export const {toggleNotification, setNotificationCount, closeNotification} = notificationSlice.actions
 
 export default notificationSlice.reducer

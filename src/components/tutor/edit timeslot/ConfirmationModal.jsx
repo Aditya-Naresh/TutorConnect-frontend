@@ -10,6 +10,7 @@ import { toast } from 'react-toastify';
 
 const ConfirmationModal = ({ open, actionType }) => {
   const dispatch = useDispatch()
+  const {id} = useSelector((state) => state.auth)
   const timeslot_id = useSelector((state) => state.timeSlot.event.id)
   const navigate = useNavigate()
   const handleClose = () => {
@@ -18,7 +19,8 @@ const ConfirmationModal = ({ open, actionType }) => {
 
   const onCancel = async () => {
     const data = {
-      "className" : "CANCELLED"
+      "className" : "CANCELLED",
+      "cancelled_by": id,
     }
     try {
       const response = await dispatch(updateTimeSlot({data:data, id:timeslot_id, actionType:"cancel"}))

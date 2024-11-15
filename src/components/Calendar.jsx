@@ -36,7 +36,7 @@ const Calendar = () => {
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState([]);
   const [fromDate, setFromDate] = useState(null);
-
+  const {count} = useSelector((state) => state.notifications)
   const fromDateChange = (newDate) => {
     setFromDate(newDate);
   };
@@ -85,7 +85,7 @@ const Calendar = () => {
 
   useEffect(() => {
     fetchEvents(url);
-  }, [render, access]);
+  }, [render, access, count]);
 
   // Modal
   const [open, setOpen] = useState(false);
