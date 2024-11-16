@@ -29,6 +29,7 @@ import {
   setOpenConfirmationModalOff,
   setSelectedSubject,
 } from "../redux/slices/timeSlotSlice";
+import ChatButton from "./ChatButton";
 
 const TimeSlotDetails = () => {
   const dispatch = useDispatch();
@@ -40,7 +41,7 @@ const TimeSlotDetails = () => {
     selectedSubject,
     render,
     subjectList = [],
-  } = useSelector((state) => state.timeSlot); 
+  } = useSelector((state) => state.timeSlot);
   const [error, setError] = useState(null);
   const { id } = useParams();
   const { role } = useSelector((state) => state.auth);
@@ -154,10 +155,15 @@ const TimeSlotDetails = () => {
           open={openConfirmationModal}
           actionType={actionType}
         />
-        {event.title === "BOOKED" && <CancelTimeSlot />}
-        {event.title === "AVAILABLE" && role === "TUTOR" && (
-          <DeleteButton />
+        {event.title === "BOOKED" && (
+          <DetailRow label="Chat" value={<ChatButton
+          user_id={role === "TUTOR" ? event.student : event.tutor}
+        />} />
         )}
+
+        {event.title === "BOOKED" && <CancelTimeSlot />}
+        {event.title === "AVAILABLE" && role === "TUTOR" && <DeleteButton />}
+
         <GoBackButton />
       </Stack>
     </Paper>

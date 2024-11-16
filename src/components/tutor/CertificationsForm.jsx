@@ -1,45 +1,27 @@
-import React from 'react';
-import { useForm, Controller } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
-import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
-import { addCertification } from '../../redux/slices/signUpSlice';
-import { axiosPatch, axiosPost } from '../../axios';
-import { Box, Button, TextField, Typography } from '@mui/material';
-import { FilePresent } from '@mui/icons-material';
+import React from "react";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { addCertification } from "../../redux/slices/signUpSlice";
+import { axiosPatch, axiosPost } from "../../axios";
+import { Box, Button, TextField, Typography } from "@mui/material";
 
 // Schema validation with yup
 const schema = yup.object().shape({
-  title: yup.string().required('Certificate title is required'),
-  image: yup
+  title: yup.string().required("Certificate title is required"),
+  file: yup
     .mixed()
-    .test('fileType', 'Only JPEG files are allowed', (value) => {
+    .test("fileType", "Only PDF files are allowed", (value) => {
       if (value && value[0]) {
         const fileType = value[0].type;
-        const fileName = value[0].name;
-        const fileExtension = fileName.split('.').pop().toLowerCase();
-        return (
-          fileType === 'image/jpeg' ||
-          fileType === 'image/jpg' ||
-          fileExtension === 'jpeg' ||
-          fileExtension === 'jpg'
-        );
+        return fileType === "application/pdf";
       }
       return false;
     })
-    .required('Certificate image is required'),
+    .required("Certificate file is required"),
 });
-
-// Utility function to convert image to Base64
-const convertToBase64 = (file) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = (error) => reject(error);
-  });
-};
 
 const CertificationsForm = ({ reRender, show }) => {
   const {
@@ -53,58 +35,82 @@ const CertificationsForm = ({ reRender, show }) => {
   });
 
   const dispatch = useDispatch();
+  const user_id = useSelector((state) => state.auth.id);
+  const token = useSelector((state) => state.auth.access);
 
+  // Helper function to convert file to base64
+  const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Handle submission for the form
   const onSubmit = async (data) => {
     try {
-      const base64Image = await convertToBase64(data.image[0]);
+      const file = data.file[0];
+
+      // Convert the file to base64 string
+      const base64File = await convertFileToBase64(file);
 
       const certificationData = {
         title: data.title,
-        image: base64Image,
+        fileName: file.name,
+        fileUrl: URL.createObjectURL(file),
+        fileBase64: base64File,
       };
 
+      // Add certification metadata to Redux
       dispatch(addCertification(certificationData));
-      toast.success('Certification added successfully!');
+      toast.success("Certification added successfully!");
       reset();
-      reRender("uploaded"); 
+      reRender("uploaded");
     } catch (error) {
-      console.error('Error converting image to Base64:', error);
-      toast.error('Failed to add certification.');
+      console.error("Error uploading file:", error);
+      toast.error("Failed to add certification.");
     }
   };
 
-  const user_id = useSelector((state) => state.auth.id)
-
-  const token = useSelector((state) => state.auth.access)
+  // Handle API submission for the form
   const onAccountSubmit = async (data) => {
-    const formData = new FormData()
-    formData.append('title', data.title)
-    formData.append('image', data.image[0])
-    
-    try {
-      const response = await axiosPost('accounts/certificates/', formData, token)
-      console.log(response);
-      
-      if( response.status === 201){
-        toast.success("certificate added")
-        await axiosPatch(`accounts/profile/${user_id}`,{"is_approved" : false, "is_submitted":true}, token)
-      }
-      reRender(`${response.data.id} added`)
-      toast.success("Certificate Added")
-      reset()
-      show(false)
-    } catch (error) {
-      console.log("err", error);
-    }
-  }
+    const formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("file", data.file[0]);
 
+    try {
+      const response = await axiosPost(
+        "accounts/certificates/",
+        formData,
+        token
+      );
+      if (response.status === 201) {
+        toast.success("Certificate added");
+        await axiosPatch(
+          `accounts/profile/${user_id}`,
+          { is_approved: false, is_submitted: true },
+          token
+        );
+      }
+      reRender(`${response.data.id} added`);
+      reset();
+      show(false);
+    } catch (error) {
+      console.error("Error adding certificate:", error);
+    }
+  };
+
+  // Unified form submit handler
   const handleFormSubmit = (data) => {
     if (token) {
-      onAccountSubmit(data);      
+      onAccountSubmit(data);
     } else {
       onSubmit(data);
     }
   };
+
   return (
     <Box
       component="form"
@@ -119,7 +125,6 @@ const CertificationsForm = ({ reRender, show }) => {
         borderRadius: 1,
         border: "2px solid",
         borderColor: "grey.300",
-        position: "relative",
       }}
     >
       <Box mb={3}>
@@ -141,28 +146,28 @@ const CertificationsForm = ({ reRender, show }) => {
       </Box>
       <Box mb={3}>
         <Controller
-          name="image"
+          name="file"
           control={control}
           render={({ field }) => (
             <Button
               variant="outlined"
               component="label"
               fullWidth
-              color={errors.image ? "error" : "primary"}
+              color={errors.file ? "error" : "primary"}
             >
-              Upload Certificate Image (JPEG only)
+              Upload Certificate (PDF only)
               <input
                 type="file"
-                accept="image/jpeg, image/jpg"
+                accept="application/pdf"
                 hidden
                 onChange={(e) => field.onChange(e.target.files)}
               />
             </Button>
           )}
         />
-        {errors.image && (
+        {errors.file && (
           <Typography color="error" variant="body2">
-            {errors.image.message}
+            {errors.file.message}
           </Typography>
         )}
       </Box>

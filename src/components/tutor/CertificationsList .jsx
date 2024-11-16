@@ -15,6 +15,7 @@ import { styled } from "@mui/system";
 import { BiTrash } from "react-icons/bi";
 import { axiosGet, axiosDelete } from "../../axios";
 import { toast } from "react-toastify";
+import { Document, Page } from "react-pdf";
 
 const StyledTableContainer = styled(TableContainer)({
   marginTop: 20,
@@ -59,6 +60,8 @@ const CertificationsList = ({ update }) => {
     }
   };
 
+  const isPDF = (url) => url.toLowerCase().endsWith(".pdf");
+
   return (
     <StyledTableContainer component={Paper}>
       <Typography variant="h6" color="primary" gutterBottom>
@@ -68,7 +71,7 @@ const CertificationsList = ({ update }) => {
         <TableHead>
           <TableRow>
             <StyledTableCell>Title</StyledTableCell>
-            <StyledTableCell>Image</StyledTableCell>
+            <StyledTableCell>Link</StyledTableCell>
             <StyledTableCell>Actions</StyledTableCell>
           </TableRow>
         </TableHead>
@@ -77,12 +80,7 @@ const CertificationsList = ({ update }) => {
             <TableRow key={cert.id}>
               <TableCell>{cert.title}</TableCell>
               <TableCell>
-                <a href={cert.image} target="_blank" rel="noopener noreferrer">
-                  <StyledImage
-                    src={cert.image}
-                    alt={cert.title || "Certification Image"}
-                  />
-                </a>{" "}
+                <a href={cert.file} className="text-amber-700">View Certificate</a>
               </TableCell>
               <TableCell>
                 <IconButton onClick={() => onDelete(cert.id)} color="secondary">

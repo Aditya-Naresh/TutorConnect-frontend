@@ -15,7 +15,7 @@ import BlockButton from "./BlockButton";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import CancelIcon from "@mui/icons-material/Cancel";
 import UserDetails from "./UserDetails";
-import ChatButton from "../chatButton";
+import ChatButton from "../ChatButton";
 
 const StyledTableCell = styled(TableCell)({
   "&.MuiTableCell-head": {
