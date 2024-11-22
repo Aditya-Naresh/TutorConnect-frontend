@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Logout from "./Logout";
-import { Link } from "react-router-dom";
-
+import { Link, useLocation } from "react-router-dom";
 const Menu = () => {
   return (
     <div
@@ -9,7 +8,6 @@ const Menu = () => {
       role="menu"
       aria-orientation="vertical"
       aria-labelledby="options-menu"
-
     >
       <Link
         to={"/profile"}

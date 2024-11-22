@@ -32,6 +32,7 @@ import CreateTimeSlots from "./pages/tutor/CreateTimeSlots.jsx";
 import TimeSlotDetailsPage from "./pages/TimeSlotDetailsPage.jsx";
 import SocialAuthUserAccount from "./pages/SocialAuthUserAccount.jsx";
 import Chat from "./pages/Chat.jsx";
+import CancellationPage from "./pages/admin/CancellationPage.jsx";
 
 const App = () => {
   let persistor = persistStore(store);
@@ -85,6 +86,7 @@ const App = () => {
                     element={<UserManagement />}
                   />
                   <Route path="/approve-tutor" element={<ApproveTutor />} />
+                  <Route path="/cancellations" element={<CancellationPage />} />
                 </Route>
               </Route>
             </Routes>

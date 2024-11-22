@@ -2,23 +2,26 @@ import { createSlice } from "@reduxjs/toolkit";
 import { logOut } from "./authSlice";
 
 const initialState = {
-    enabled: false
-}
+  enabled: false,
+};
 const profileSlice = createSlice({
-    name: 'profile',
-    initialState,
-    reducers:{
-        toggleMenu: (state, action) =>{
-            state.enabled = !state.enabled
-        }
+  name: "profile",
+  initialState,
+  reducers: {
+    toggleMenu: (state, action) => {
+      state.enabled = !state.enabled;
     },
-    extraReducers:(builder) => {
-        builder.addCase(logOut, (state) => {
-            return initialState
-        })
-    }
-})
+    closeMenu: (state, action) => {
+      state.enabled = false;
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addCase(logOut, (state) => {
+      return initialState;
+    });
+  },
+});
 
-export const {toggleMenu} = profileSlice.actions
+export const { toggleMenu, closeMenu } = profileSlice.actions;
 
-export default profileSlice.reducer
+export default profileSlice.reducer;

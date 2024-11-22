@@ -5,41 +5,54 @@ import { useForm } from "react-hook-form";
 import { axiosGet, axiosPatch } from "../axios";
 import { toast } from "react-toastify";
 
-const Profile = ({new_role}) => {
-  const role = useSelector((state) => state.auth.role);
-  const token = useSelector((state) => state.auth.access);
+const Profile = ({ new_role }) => {
+  const { role, access, id } = useSelector((state) => state.auth);
   const [showTutorProfile, setShowTutorProfile] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    setValue,
   } = useForm();
-
-  const user_id = useSelector((state) => state.auth.id);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axiosGet(`accounts/profile/${user_id}`, token);
+        const response = await axiosGet(`accounts/profile/${id}`, access);
+        console.log("useeffect:", response.data);
+
         reset(response.data);
       } catch (error) {
         console.log(error);
       }
     };
     fetchData();
-  }, [user_id, token, reset]);
+  }, [id, access, reset]);
 
   const onSubmit = async (data) => {
-    console.log(data);
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, value]) => {
+      if (key === "profile_pic") {
+        if(value && value[0] instanceof File){
+          formData.append(key, value[0]);
+        }
+      } else {
+        formData.append(key, value);
+      }
+    });
+
     try {
       const response = await axiosPatch(
-        `accounts/profile/${user_id}`,
-        data,
-        token
+        `accounts/profile/${id}`,
+        formData,
+        access,
+        { headers: { "Content-Type": "multipart/form-data" } }
       );
       console.log(response);
-      toast.success("User details updated");
+      if (response.status === 200) {
+        toast.success("User details updated");
+      }
     } catch (error) {
       console.log(error);
     }
@@ -47,7 +60,7 @@ const Profile = ({new_role}) => {
 
   return (
     <div className="relative">
-      {(role === "TUTOR" || new_role ) && (
+      {(role === "TUTOR" || new_role) && (
         <button
           onClick={() => setShowTutorProfile(!showTutorProfile)}
           className="bg-slate-500 text-white font-bold py-2 px-4 rounded hover:bg-slate-600 -mt-4 mb-1"
@@ -63,6 +76,7 @@ const Profile = ({new_role}) => {
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="relative max-w-[400px] w-full mx-auto bg-white p-8"
+          encType="multipart/form-data"
         >
           <h2 className="text-4xl font-bold text-center py-4">User Details</h2>
           <div className="flex flex-col mb-4">
@@ -124,6 +138,40 @@ const Profile = ({new_role}) => {
             {errors.last_name && (
               <p className="text-red-500 relative">
                 {errors.last_name.message}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col mb-4">
+            <label htmlFor="phone_number">Phone Number</label>
+            <input
+              {...register("phone_number", {
+                required: "Phone Number is required",
+                pattern: {
+                  value: /^\+?1?\d{9,15}$/,
+                  message:
+                    "Phone number must be in the format '+999999999'. Up to 15 digits allowed.",
+                },
+              })}
+              type="tel"
+              className="border relative bg-gray-100 p-2"
+            />
+            {errors.phone_number && (
+              <p className="text-red-500 relative">
+                {errors.phone_number.message}
+              </p>
+            )}
+          </div>
+          <div className="flex flex-col mb-4">
+            <label htmlFor="profile_pic">Profile Picture</label>
+            <input
+              {...register("profile_pic")}
+              type="file"
+              accept="image/*"
+              className="border relative bg-gray-100 p-2"
+            />
+            {errors.profile_pic && (
+              <p className="text-red-500 relative">
+                {errors.profile_pic.message}
               </p>
             )}
           </div>

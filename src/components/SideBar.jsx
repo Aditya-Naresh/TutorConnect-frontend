@@ -42,6 +42,8 @@ const AdminSideBar = () => {
     <SidebarContainer bgColor="bg-gradient-to-br from-black via-blue-900 to-rose-700">
       <SidebarLink to="/user-management/TUTOR" text="Tutors" borderColor="border-red-400" />
       <SidebarLink to="/user-management/STUDENT" text="Students" borderColor="border-red-400" />
+      <SidebarLink to="/cancellations" text="Cancellations" borderColor="border-red-400" />
+
     </SidebarContainer>
   );
 };

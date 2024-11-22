@@ -13,12 +13,13 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { SERVER } from "../server";
 
 const ContactList = () => {
   const { id, access } = useSelector((state) => state.auth);
   const [contacts, setContacts] = useState([]);
   const navigate = useNavigate();
-  const {roomName} = useParams()
+  const { roomName } = useParams();
 
   const handleClick = (contact) => {
     const user_id =
@@ -33,6 +34,8 @@ const ContactList = () => {
 
     socket.onmessage = function (event) {
       const data = JSON.parse(event.data);
+      console.log("contacts:", data);
+
       setContacts(data.data);
     };
 
@@ -67,7 +70,18 @@ const ContactList = () => {
                       horizontal: "right",
                     }}
                   >
-                    <Avatar className="bg-blue-500">{contact.avatar}</Avatar>
+                    <Avatar
+                      src={
+                        contact.user2.id == id
+                          ? `${SERVER}${contact.user1.profile_pic}`
+                          : `${SERVER}${contact.user2.profile_pic}`
+                      }
+                      className="bg-blue-500"
+                    >
+                      {contact.user2.id == id
+                        ? contact.user1.full_name[0]
+                        : contact.user2.full_name[0]}
+                    </Avatar>
                   </Badge>
                 </ListItemAvatar>
                 <ListItemText

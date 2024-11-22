@@ -16,6 +16,8 @@ import {
   TableRow,
   Paper,
 } from "@mui/material";
+import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+
 
 const TutorCard = ({
   id,
@@ -112,14 +114,13 @@ const TutorCard = ({
                     <TableCell>{cert.title}</TableCell>
                     <TableCell>
                       <a
-                        href={cert.image}
+                        href={cert.file}
                         target="_blank"
                         rel="noopener noreferrer"
+                        style={{ textDecoration: "none", color: "inherit" }}
                       >
-                        <img
-                          src={cert.image}
-                          alt={cert.title}
-                          style={{ maxWidth: 100 }}
+                        <InsertDriveFileIcon
+                          sx={{ fontSize: 24, verticalAlign: "middle" }}
                         />
                       </a>
                     </TableCell>
