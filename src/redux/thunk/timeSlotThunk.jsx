@@ -18,6 +18,8 @@ export const fetchTimeSlotDetails = createAsyncThunk(
       const response = await axiosGet(`timeslots/${id}`, access);
       if (response.status === 200) {
         dispatch(setEvent(response.data));
+        console.log("TimeSLot details:",response.data);
+        
         dispatch(setTimeSLotDetails({ field: "loading", value: false }));
       } else {
         dispatch(resetSlot());

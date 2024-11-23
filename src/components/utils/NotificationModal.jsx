@@ -61,6 +61,21 @@ const NotificationModal = ({ notification, onClose }) => {
     }
   };
 
+  const handleClose = async () => {
+    const data = {
+      is_read: true,
+    };
+    const response = await axiosPatch(
+      `notifications/update/${notification.id}`,
+      data,
+      access
+    );
+    if (response.status === 200) {
+      dispatch(setRender(`updated notification: ${notification.id}`));
+      onClose();
+      dispatch(closeNotification());
+    }
+  };
   return (
     <Modal open={!!notification} onClose={onClose}>
       <Box
@@ -110,8 +125,8 @@ const NotificationModal = ({ notification, onClose }) => {
         </div>
 
         {/* Go to Time Slot Button (conditional) */}
-        {TimeSlotNotifications.has(notification.type) && notification.link && (
-          <div className="mt-6 text-center">
+        <div className="mt-6 text-center">
+          {TimeSlotNotifications.has(notification.type) && notification.link ? (
             <Button
               variant="contained"
               color="primary"
@@ -120,8 +135,12 @@ const NotificationModal = ({ notification, onClose }) => {
             >
               Go to Time Slot
             </Button>
-          </div>
-        )}
+          ) : (
+            <Button variant="contained" color="error" onClick={handleClose}>
+              Close
+            </Button>
+          )}
+        </div>
 
         {/* Decorative Bottom Border */}
         <div className="mt-6 border-t-2 border-indigo-500 opacity-75"></div>

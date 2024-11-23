@@ -1,30 +1,31 @@
-a.AVAILABLE{
-    background-color: green;
-    border: 2px solid darkgreen;
-  
-  }
-  
-  a.CANCELLED{
-    background-color: red;
-    border: 2px solid darkred;
-  }
-  
-  a.BOOKED{
-    background-color: blue;
-    border: 2px solid rgb(2, 3, 80);
-  }
-  
- 
+a.AVAILABLE {
+  background-color: green;
+  border: 2px solid darkgreen;
+}
 
+a.CANCELLED {
+  background-color: red;
+  border: 2px solid darkred;
+}
 
-  .fc-event{
-    cursor: pointer;
-  }
+a.BOOKED {
+  background-color: blue;
+  border: 2px solid rgb(2, 3, 80);
+}
 
-  .fc {
-    height: 100%;
-  }
-  
-  .fc-view-harness {
-    height: 100% !important;
-  }
+a.REFUNDED {
+  background-color: yellowgreen;
+  border: 2px solid rgb(85, 136, 4);
+}
+
+.fc-event {
+  cursor: pointer;
+}
+
+.fc {
+  height: 100%;
+}
+
+.fc-view-harness {
+  height: 100% !important;
+}

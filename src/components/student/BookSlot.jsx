@@ -19,7 +19,8 @@ const BookSlot = ({slot_id, rate, selectedSubject}) => {
         const formData = {
             "className" : "BOOKED",
             "student" : auth.id,
-            "subject" : selectedSubject
+            "subject" : selectedSubject,
+            "rate": rate
         }
 
         try {

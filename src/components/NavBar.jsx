@@ -6,7 +6,10 @@ import { refreshAccessToken } from "../redux/slices/authSlice";
 import { FaBell, FaUser } from "react-icons/fa";
 import { FaMessage } from "react-icons/fa6";
 
-import { setNotificationCount, toggleNotification } from "../redux/slices/notificationSlice";
+import {
+  setNotificationCount,
+  toggleNotification,
+} from "../redux/slices/notificationSlice";
 import { toggleMenu } from "../redux/slices/profileSlice";
 import { fetchWalletDetails } from "../redux/thunk/walletThunk";
 import { Badge } from "@mui/material";
@@ -14,10 +17,10 @@ import { Badge } from "@mui/material";
 const NavBarItems = () => {
   const { access, full_name } = useSelector((state) => state.auth);
   const { count } = useSelector((state) => state.notifications);
-  const {render} = useSelector((state) => state.timeSlot)
+  const { render } = useSelector((state) => state.timeSlot);
   const [messageCount, setMessageCount] = useState(0);
   const NotificationSocketUrl = `ws://localhost:8000/ws/notifications/?token=${access}`;
-
+  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const moveToChat = () => {
@@ -27,7 +30,7 @@ const NavBarItems = () => {
 
   useEffect(() => {
     dispatch(fetchWalletDetails());
-  }, [useLocation()]);
+  }, [location]);
 
   useEffect(() => {
     const socket = new WebSocket(
@@ -44,23 +47,24 @@ const NavBarItems = () => {
     };
 
     return () => socket.close();
-  }, [roomName, access]);
+  }, [roomName, access, location]);
 
   useEffect(() => {
-    const socket = new WebSocket(NotificationSocketUrl)
+    const socket = new WebSocket(NotificationSocketUrl);
     socket.onmessage = function (event) {
-      const data = JSON.parse(event.data)
+      const data = JSON.parse(event.data);
+      console.log("Notifications:" , data);
 
       dispatch(
         setNotificationCount(data.notifications ? data.notifications.length : 0)
       );
-    }
+    };
     socket.onclose = function () {
       console.error("WebSocket closed unexpectedly");
     };
 
     return () => socket.close();
-  }, [roomName, NotificationSocketUrl, access, render])
+  }, [location, access, render, NotificationSocketUrl]);
 
   return (
     <>

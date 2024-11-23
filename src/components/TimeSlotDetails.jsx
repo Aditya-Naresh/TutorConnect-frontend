@@ -121,7 +121,13 @@ const TimeSlotDetails = () => {
         )}
 
         {role === "STUDENT" && (
-          <DetailRow label="Rate" value={`₹${event.rate}`} bold />
+          <DetailRow
+            label="Rate"
+            value={`₹${
+              event.title === "AVAILABLE" ? event.tutor_rate : event.rate
+            }`}
+            bold
+          />
         )}
 
         {role === "STUDENT" && event.title === "AVAILABLE" && (
@@ -156,9 +162,14 @@ const TimeSlotDetails = () => {
           actionType={actionType}
         />
         {event.title === "BOOKED" && (
-          <DetailRow label="Chat" value={<ChatButton
-          user_id={role === "TUTOR" ? event.student : event.tutor}
-        />} />
+          <DetailRow
+            label="Chat"
+            value={
+              <ChatButton
+                user_id={role === "TUTOR" ? event.student : event.tutor}
+              />
+            }
+          />
         )}
 
         {event.title === "BOOKED" && <CancelTimeSlot />}
