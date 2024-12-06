@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import {
   Table,
   TableBody,
@@ -10,88 +11,151 @@ import {
   Paper,
   IconButton,
   Typography,
+  Card,
+  CardContent,
+  CircularProgress,
+  Tooltip
 } from "@mui/material";
-import { styled } from "@mui/system";
-import { BiTrash } from "react-icons/bi";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { axiosGet, axiosDelete } from "../../axios";
-import { toast } from "react-toastify";
-import { Document, Page } from "react-pdf";
-
-const StyledTableContainer = styled(TableContainer)({
-  marginTop: 20,
-});
-
-const StyledTableCell = styled(TableCell)({
-  fontWeight: "bold",
-});
-
-const StyledImage = styled("img")({
-  maxHeight: 100,
-  objectFit: "cover",
-});
 
 const CertificationsList = ({ update }) => {
   const [certificates, setCertificates] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const token = useSelector((state) => state.auth.access);
-  const [render, setRender] = useState("");
 
   useEffect(() => {
     const fetchCertificates = async () => {
       try {
+        setIsLoading(true);
         const response = await axiosGet("accounts/certificates/", token);
         setCertificates(response.data);
       } catch (error) {
+        toast.error("Failed to fetch certificates");
         console.error("Error fetching certificates:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchCertificates();
-  }, [update, render]);
+  }, [update, token]);
 
-  const onDelete = async (id) => {
+  const handleDelete = async (id) => {
     try {
       const response = await axiosDelete(`accounts/certificates/${id}`, token);
       if (response.status === 204) {
-        toast.success("Deleted the certificate");
-        setRender(`Deleted ${id}`);
+        toast.success("Certificate deleted successfully");
+        setCertificates((prev) => prev.filter((cert) => cert.id !== id));
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Failed to delete certificate");
+      console.error("Error deleting certificate:", error);
     }
   };
 
-  const isPDF = (url) => url.toLowerCase().endsWith(".pdf");
+  if (isLoading) {
+    return (
+      <Card className="mt-6">
+        <CardContent>
+          <div className="flex items-center gap-2 mb-4">
+            <EmojiEventsIcon className="text-primary" />
+            <Typography variant="h6" component="h2">
+              Certifications
+            </Typography>
+          </div>
+          <Typography variant="body2" color="text.secondary" className="mb-6">
+            Manage your professional certifications and achievements
+          </Typography>
+          <div className="flex justify-center py-8">
+            <CircularProgress size={40} />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (certificates.length === 0) {
+    return (
+      <Card className="mt-6">
+        <CardContent>
+          <div className="flex items-center gap-2 mb-4">
+            <EmojiEventsIcon className="text-primary" />
+            <Typography variant="h6" component="h2">
+              Certifications
+            </Typography>
+          </div>
+          <Typography variant="body2" color="text.secondary" className="mb-6">
+            Manage your professional certifications and achievements
+          </Typography>
+          <div className="flex flex-col items-center justify-center py-8 text-center">
+            <EmojiEventsIcon className="text-gray-400 mb-4" sx={{ fontSize: 48 }} />
+            <Typography variant="h6" className="mb-2">
+              No Certificates Found
+            </Typography>
+            <Typography variant="body2" color="text.secondary" className="max-w-sm">
+              You haven't uploaded any certificates yet. Add your achievements to showcase your skills.
+            </Typography>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
-    <StyledTableContainer component={Paper}>
-      <Typography variant="h6" color="primary" gutterBottom>
-        Certifications
-      </Typography>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>Title</StyledTableCell>
-            <StyledTableCell>Link</StyledTableCell>
-            <StyledTableCell>Actions</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {certificates.map((cert) => (
-            <TableRow key={cert.id}>
-              <TableCell>{cert.title}</TableCell>
-              <TableCell>
-                <a href={cert.file} className="text-amber-700">View Certificate</a>
-              </TableCell>
-              <TableCell>
-                <IconButton onClick={() => onDelete(cert.id)} color="secondary">
-                  <BiTrash />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </StyledTableContainer>
+    <Card className="mt-6">
+      <CardContent>
+        <div className="flex items-center gap-2 mb-4">
+          <EmojiEventsIcon className="text-primary" />
+          <Typography variant="h6" component="h2">
+            Certifications
+          </Typography>
+        </div>
+        <Typography variant="body2" color="text.secondary" className="mb-6">
+          Manage your professional certifications and achievements
+        </Typography>
+        <TableContainer component={Paper} variant="outlined">
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell className="font-semibold">Title</TableCell>
+                <TableCell className="font-semibold">Certificate</TableCell>
+                <TableCell className="font-semibold w-[100px]">Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {certificates.map((cert) => (
+                <TableRow key={cert.id}>
+                  <TableCell>{cert.title}</TableCell>
+                  <TableCell>
+                    <a
+                      href={cert.file}
+                      className="text-blue-600 hover:text-blue-800 transition-colors"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      View Certificate
+                    </a>
+                  </TableCell>
+                  <TableCell>
+                    <Tooltip title="Delete Certificate">
+                      <IconButton
+                        size="small"
+                        onClick={() => handleDelete(cert.id)}
+                        className="hover:text-red-600"
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </CardContent>
+    </Card>
   );
 };
 

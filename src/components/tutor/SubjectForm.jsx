@@ -25,6 +25,7 @@ const SubjectForm = ({ reRender }) => {
   const token = useSelector((state) => state.auth.access);
   const onAccountSubmit = async (formData) => {
     const response = await axiosPost("accounts/subject/", formData, token);
+    reset()
     console.log(response.data);
     if (response.status === 201) {
       reRender(`${response.data.id} added`);

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import NavBar from "../components/NavBar";
 import SideBar from "../components/SideBar";
 import Footer from "../components/Footer";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +9,7 @@ import Menu from "../components/Menu";
 import { axiosGet } from "../axios";
 import { closeMenu } from "../redux/slices/profileSlice";
 import { closeNotification } from "../redux/slices/notificationSlice";
+import NavBar from "../components/navigation/NavBar";
 
 const UserLayout = () => {
   const { access } = useSelector((state) => state.auth);
