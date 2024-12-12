@@ -5,6 +5,7 @@ import { fetchWalletDetails } from '../../redux/thunk/walletThunk';
 import Logo from '../Logo';
 import { MessageIcon, NotificationIcon, UserIcon } from './NavBarIcons';
 import { useNotificationWebSocket, useChatWebSocket } from './WebSocketHandler';
+import LocationHeading from './LocationHeading';
 
 const NavBarItems = () => {
   const { access, full_name } = useSelector((state) => state.auth);
@@ -14,6 +15,8 @@ const NavBarItems = () => {
   const NotificationSocketUrl = `ws://localhost:8000/ws/notifications/?token=${access}`;
   
   const location = useLocation();
+  const heading = location.pathname.split("/")[1];
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { roomName } = useParams();
@@ -32,6 +35,7 @@ const NavBarItems = () => {
       <Link to="/">
         <Logo />
       </Link>
+      <LocationHeading location={heading} />
       <div className="relative flex items-center text-slate-900">
         <MessageIcon messageCount={messageCount} onClick={moveToChat} />
         <NotificationIcon count={count} />

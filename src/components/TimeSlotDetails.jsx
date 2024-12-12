@@ -152,7 +152,7 @@ const TimeSlotDetails = () => {
             )}
             <BookSlot
               slot_id={event.id}
-              rate={event.rate}
+              rate={event.tutor_rate}
               selectedSubject={selectedSubject}
             />
           </>

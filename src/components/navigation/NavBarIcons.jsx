@@ -7,9 +7,10 @@ import { toggleMenu } from '../../redux/slices/profileSlice';
 
 export const MessageIcon = ({ messageCount, onClick }) => (
   <Badge
-    color="secondary"
+    color="error"
     badgeContent={messageCount}
     invisible={messageCount == 0}
+    max={9}
     anchorOrigin={{
       vertical: "top",
       horizontal: "right",

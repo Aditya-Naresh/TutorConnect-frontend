@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import SideBar from "../components/SideBar";
 import Footer from "../components/Footer";
 import { useDispatch, useSelector } from "react-redux";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
@@ -10,6 +9,7 @@ import { axiosGet } from "../axios";
 import { closeMenu } from "../redux/slices/profileSlice";
 import { closeNotification } from "../redux/slices/notificationSlice";
 import NavBar from "../components/navigation/NavBar";
+import Sidebar from "../components/sidebar/Sidebar";
 
 const UserLayout = () => {
   const { access } = useSelector((state) => state.auth);
@@ -40,7 +40,7 @@ const UserLayout = () => {
       <div className="flex flex-1 lg:flex-row flex-col w-full h-auto bg-slate-50">
         {/* Sidebar */}
         <div className="relative hidden lg:block w-1/5 h-full">
-          <SideBar />
+          <Sidebar />
         </div>
 
         {/* Main Outlet / Content */}
@@ -52,7 +52,7 @@ const UserLayout = () => {
           >
             {showSideBar && (
               <div className="w-[60%] h-full absolute z-[10]">
-                <SideBar />
+                <Sidebar />
               </div>
             )}
             <div className="z-[20] ">
