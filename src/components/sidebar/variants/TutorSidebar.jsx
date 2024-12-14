@@ -11,7 +11,7 @@ const TutorSidebar = () => {
       </div>
       <SidebarLink 
         to="/" 
-        text="Upcoming Schedule" 
+        text="Upcoming Sessions" 
         borderColor="border-blue-400"
         icon={FaCalendarAlt}
       />

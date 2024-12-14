@@ -57,21 +57,23 @@ const Tutorlist = () => {
   };
 
   return (
-    <div className="tutor-list">
-      <h2 className="font-bold text-3xl lg:text-5xl flex justify-center">Tutors List</h2>
+    <div className="tutor-list w-full">
+      <h2 className="font-bold text-3xl lg:text-5xl flex justify-center m-4">
+        Tutors List
+      </h2>
       <div className="flex justify-center mb-4">
         <SearchBar onSearch={handleSearch} />
       </div>
-      <div className="flex justify-center h-72">
-        <Paper>
+      <div className="flex justify-center h-72 w-full">
+        <Paper className="w-full">
           <TableContainer>
             <Table>
               <TableHead>
-                <TableRow sx={{backgroundColor:"#b0f7d5",}}>
-                  <TableCell>Tutor</TableCell>
-                  <TableCell>Subjects</TableCell>
-                  <TableCell>Rate</TableCell>
-                  <TableCell>Actions</TableCell>
+                <TableRow className="!bg-teal-500">
+                  <TableCell className="!font-bold">Tutor</TableCell>
+                  <TableCell className="!font-bold">Subjects</TableCell>
+                  <TableCell className="!font-bold">Rate</TableCell>
+                  <TableCell colSpan={2} className="!font-bold" align="center">Actions</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -83,13 +85,15 @@ const Tutorlist = () => {
                         {tutor.first_name} {tutor.last_name}
                       </TableCell>
                       <TableCell>
-                        {tutor.subjects.map((subject) => subject.name).join(", ")}
+                        {tutor.subjects
+                          .map((subject) => subject.name)
+                          .join(", ")}
                       </TableCell>
                       <TableCell>{tutor.rate}</TableCell>
-                      <TableCell>
+                      <TableCell  colSpan={2} className="!font-bold" align="center">
                         <Button
                           variant="contained"
-                          color="primary"
+                          className="!bg-teal-600 !text-blue-100 hover:!bg-teal-700 !font-bold"
                           onClick={() => handleRequestTutor(tutor.id)}
                         >
                           Request Tutor

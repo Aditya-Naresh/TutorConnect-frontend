@@ -17,7 +17,7 @@ const SearchBar = ({ onSearch }) => {
         placeholder="Search by name or subject..."
         className="px-4 py-2 border border-gray-300 rounded-md mr-2"
       />
-      <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md">
+      <button type="submit" className="px-4 py-2 bg-teal-700 text-white rounded-md hover:bg-teal-800">
         Search
       </button>
     </form>
