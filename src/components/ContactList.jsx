@@ -47,7 +47,7 @@ const ContactList = () => {
   }, [roomName, access]);
 
   return (
-    <Box className="flex flex-col h-screen bg-gray-100 p-4">
+    <Box className="flex flex-col  bg-gray-100 p-4">
       <Paper elevation={3} className="bg-white rounded-lg shadow-md p-4">
         <Typography variant="h5" className="text-gray-800 mb-4">
           Contacts

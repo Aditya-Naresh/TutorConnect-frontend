@@ -8,7 +8,6 @@ import {
   TableRow,
   TablePagination,
   Paper,
-  IconButton,
 } from "@mui/material";
 import RefundButton from "./RefundButton";
 
@@ -35,23 +34,52 @@ const CancellationsTable = ({ cancelledTimeSlots }) => {
   );
 
   const formatDate = (datetime) => new Date(datetime).toLocaleDateString();
-  const formatTime = (datetime) => new Date(datetime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const formatTime = (datetime) =>
+    new Date(datetime).toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
   return (
     <div className="max-w-screen-lg mx-auto">
-      <TableContainer component={Paper} className="shadow-md rounded-lg overflow-hidden">
+      <Paper className="w-full flex justify-center p-4 shadow-md rounded-lg">
+        <h2 className="text-2xl font-semibold text-gray-800">
+          Cancelled Time Slots 
+        </h2>
+      </Paper>
+
+      <TableContainer
+        component={Paper}
+        className="shadow-md rounded-lg overflow-hidden"
+      >
         <Table>
           <TableHead className="bg-gray-300">
             <TableRow>
               <TableCell className="font-semibold text-gray-700">#</TableCell>
-              <TableCell className="font-semibold text-gray-700">Date</TableCell>
-              <TableCell className="font-semibold text-gray-700">Subject</TableCell>
-              <TableCell className="font-semibold text-gray-700">Tutor</TableCell>
-              <TableCell className="font-semibold text-gray-700">Student</TableCell>
-              <TableCell className="font-semibold text-gray-700">Start Time</TableCell>
-              <TableCell className="font-semibold text-gray-700">End Time</TableCell>
-              <TableCell className="font-semibold text-gray-700">Cancelled By</TableCell>
-              <TableCell className="font-semibold text-gray-700">Actions</TableCell>
+              <TableCell className="font-semibold text-gray-700">
+                Date
+              </TableCell>
+              <TableCell className="font-semibold text-gray-700">
+                Subject
+              </TableCell>
+              <TableCell className="font-semibold text-gray-700">
+                Tutor
+              </TableCell>
+              <TableCell className="font-semibold text-gray-700">
+                Student
+              </TableCell>
+              <TableCell className="font-semibold text-gray-700">
+                Start Time
+              </TableCell>
+              <TableCell className="font-semibold text-gray-700">
+                End Time
+              </TableCell>
+              <TableCell className="font-semibold text-gray-700">
+                Cancelled By
+              </TableCell>
+              <TableCell className="font-semibold text-gray-700">
+                Actions
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -66,7 +94,12 @@ const CancellationsTable = ({ cancelledTimeSlots }) => {
                 <TableCell>{formatTime(slot.end_time)}</TableCell>
                 <TableCell>{slot.cancelled_by}</TableCell>
                 <TableCell>
-                  <RefundButton walletId={slot.student_wallet} cancelled_by={slot.cancelled_by} rate={slot.rate} slot={slot.id}/>
+                  <RefundButton
+                    walletId={slot.student_wallet}
+                    cancelled_by={slot.cancelled_by}
+                    rate={slot.rate}
+                    slot={slot.id}
+                  />
                 </TableCell>
               </TableRow>
             ))}

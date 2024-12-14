@@ -5,7 +5,7 @@ import { FaCalendarAlt, FaClock, FaHistory } from 'react-icons/fa';
 
 const TutorSidebar = () => {
   return (
-    <SidebarContainer bgColor="bg-gradient-to-bl from-indigo-900 via-blue-800 to-blue-600">
+    <SidebarContainer bgColor="bg-gradient-to-br from-teal-900 via-teal-800 to-teal-600">
       <div className="mb-6 text-center">
         <h2 className="text-2xl font-bold text-white">Tutor Portal</h2>
       </div>

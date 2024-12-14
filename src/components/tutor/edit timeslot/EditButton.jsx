@@ -8,7 +8,7 @@ const EditButton = () => {
     dispatch(setEditSlotModalOn())
   }
   return (
-    <button className="border border-gray-500 text-gray-700 hover:bg-gray-200 font-semibold py-2 px-4 rounded" onClick={handleClick}>
+    <button className="border border-gray-500 text-gray-700 hover:bg-gray-300 font-semibold py-2 px-4 rounded" onClick={handleClick}>
       Edit Time
     </button>
   )

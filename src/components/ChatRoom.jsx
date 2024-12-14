@@ -12,6 +12,7 @@ function ChatRoom() {
   const { access, full_name, id } = useSelector((state) => state.auth);
 
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
 
   const connectChat = () => {
     const ws = new WebSocket(
@@ -59,16 +60,17 @@ function ChatRoom() {
 
   useEffect(() => {
     if (messagesEndRef.current) {
+      // Scroll the message container to the bottom when a new message is added
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages, access]);
+  }, [messages]);
 
   const sendMessage = () => {
     if (socket && newMessage.trim()) {
       const messageData = {
         type: "message",
         message: newMessage,
-        username:full_name,
+        username: full_name,
         user: id,
         chatID: roomName,
       };
@@ -77,18 +79,19 @@ function ChatRoom() {
     }
   };
 
-
-
   return (
-    <Box className="flex flex-col h-screen bg-gray-100 p-4">
+    <Box className="flex flex-col bg-gray-100 p-4">
       <Paper
         elevation={3}
-        className="flex-grow p-4 overflow-y-auto bg-white rounded-lg shadow-md"
+        className="flex-grow p-4 bg-white rounded-lg shadow-md"
       >
-        <Typography variant="h5" className="text-gray-800 mb-4">
+        <Typography variant="h5" className="text-gray-800 mb-4 flex justify-center">
           Messages
         </Typography>
-        <Box className="flex flex-col space-y-2">
+        <Box
+          ref={messagesContainerRef}
+          className="flex flex-col space-y-2 overflow-y-auto max-h-[400px]" // Set a fixed height for the messages container
+        >
           {messages.map((message, index) => (
             <MessageComponent message={message} key={message.id} id={id} />
           ))}
@@ -115,13 +118,11 @@ function ChatRoom() {
         />
         <Button
           variant="contained"
-          color="primary"
           onClick={sendMessage}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+          className="!bg-emerald-500 !text-white !px-4 !py-2 !rounded-lg hover:!bg-emerald-600"
         >
           Send
         </Button>
-       
       </Box>
     </Box>
   );

@@ -83,25 +83,24 @@ const TimeSlotDetails = () => {
   );
 
   const renderTimeSlotDetails = () => (
-    <Paper
-      elevation={3}
-      sx={{
-        padding: "20px",
-        borderRadius: "8px",
-        maxWidth: "600px",
-        mx: "auto",
-        mt: 4,
-      }}
-    >
-      <Typography variant="h5" fontWeight="bold" gutterBottom>
-        Time Slot Details
-      </Typography>
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+      <div className="bg-gradient-to-r from-teal-600 to-teal-700 p-6">
+        <Typography variant="h5" fontWeight="bold" gutterBottom>
+          Time Slot Details
+        </Typography>
+        <div className="mt-2">
+          <span
+            className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+              event.title === "AVAILABLE"
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }`}
+          >
+            {event.title}
+          </span>
+        </div>
+      </div>
       <Stack spacing={2}>
-        <DetailRow
-          label="Status"
-          value={event.title}
-          color={event.title === "AVAILABLE" ? "green" : "red"}
-        />
         {role === "TUTOR" && event.title !== "CANCELLED" && <EditButton />}
         <DetailRow
           label="Start Time"
@@ -167,21 +166,26 @@ const TimeSlotDetails = () => {
             value={
               <ChatButton
                 user_id={role === "TUTOR" ? event.student : event.tutor}
+                role={role}
               />
             }
           />
         )}
 
-        {event.title === "BOOKED" && <CancelTimeSlot />}
-        {event.title === "AVAILABLE" && role === "TUTOR" && <DeleteButton />}
+        {event.title === "BOOKED" && (
+          <DetailRow label="Cancellation" value={<CancelTimeSlot />} />
+        )}
+        {event.title === "AVAILABLE" && role === "TUTOR" && (
+          <DetailRow label="Delete Timeslot" value={<DeleteButton />} />
+        )}
 
         <GoBackButton />
       </Stack>
-    </Paper>
+    </div>
   );
 
   return (
-    <Box className="min-h-screen" sx={{ padding: 2 }}>
+    <Box className="container mx-auto px-4 py-8" sx={{ padding: 2 }}>
       {loading
         ? renderLoadingState()
         : error
@@ -192,11 +196,11 @@ const TimeSlotDetails = () => {
 };
 
 const DetailRow = ({ label, value, color, bold }) => (
-  <Grid container spacing={1} alignItems="center">
-    <Grid item xs={4}>
+  <Grid container spacing={1} alignContent="center">
+    <Grid item xs={4} textAlign="center">
       <Typography fontWeight="bold">{label}:</Typography>
     </Grid>
-    <Grid item xs={8}>
+    <Grid item xs={8} textAlign="center">
       <Typography
         sx={{ fontWeight: bold ? "bold" : "normal", color: color || "inherit" }}
       >

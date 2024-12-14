@@ -5,7 +5,6 @@ import { fetchWalletDetails } from '../../redux/thunk/walletThunk';
 import Logo from '../Logo';
 import { MessageIcon, NotificationIcon, UserIcon } from './NavBarIcons';
 import { useNotificationWebSocket, useChatWebSocket } from './WebSocketHandler';
-import LocationHeading from './LocationHeading';
 
 const NavBarItems = () => {
   const { access, full_name } = useSelector((state) => state.auth);
@@ -35,7 +34,7 @@ const NavBarItems = () => {
       <Link to="/">
         <Logo />
       </Link>
-      <LocationHeading location={heading} />
+     
       <div className="relative flex items-center text-slate-900">
         <MessageIcon messageCount={messageCount} onClick={moveToChat} />
         <NotificationIcon count={count} />

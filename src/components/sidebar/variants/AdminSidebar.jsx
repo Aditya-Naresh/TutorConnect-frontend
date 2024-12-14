@@ -5,7 +5,7 @@ import { FaChalkboardTeacher, FaUserGraduate, FaBan } from 'react-icons/fa';
 
 const AdminSidebar = () => {
   return (
-    <SidebarContainer bgColor="bg-gradient-to-br from-slate-900 via-purple-800 to-purple-600">
+    <SidebarContainer bgColor="bg-gradient-to-br from-teal-900 via-teal-800 to-teal-600">
       <div className="mb-6 text-center">
         <h2 className="text-2xl font-bold text-white">Admin Portal</h2>
       </div>

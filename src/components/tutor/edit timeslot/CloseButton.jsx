@@ -1,37 +1,26 @@
-import React from 'react'
-import Button from '@mui/material/Button'
-import CloseIcon from '@mui/icons-material/Close'
-import { useDispatch } from 'react-redux'
-import { setEditSlotModalOff } from '../../../redux/slices/timeSlotSlice'
+import React from 'react';
+import Button from '@mui/material/Button';
+import CloseIcon from '@mui/icons-material/Close';
+import { useDispatch } from 'react-redux';
+import { setEditSlotModalOff } from '../../../redux/slices/timeSlotSlice';
 
 const CloseButton = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+
   const handleClick = () => {
-    dispatch(setEditSlotModalOff())
-  }
+    dispatch(setEditSlotModalOff());
+  };
 
   return (
     <Button
       variant="contained"
       startIcon={<CloseIcon />}
       onClick={handleClick}
-      sx={{
-        backgroundColor: 'red', 
-        color: 'white', 
-        padding: '8px 16px', 
-        borderRadius: '4px', 
-        '&:hover': {
-          backgroundColor: 'darkred', 
-        },
-        '&:focus': {
-          ring: 4,
-          ringColor: 'rgba(255, 0, 0, 0.5)', 
-        },
-      }}
+      className="!bg-gray-500 !text-white !px-4 !py-2 !rounded-md hover:!bg-gray-700 focus:ring-4 focus:ring-gray-300"
     >
       Close
     </Button>
-  )
-}
+  );
+};
 
-export default CloseButton
+export default CloseButton;

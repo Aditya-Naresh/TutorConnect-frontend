@@ -16,6 +16,7 @@ import VerifiedIcon from "@mui/icons-material/Verified";
 import CancelIcon from "@mui/icons-material/Cancel";
 import UserDetails from "./UserDetails";
 import ChatButton from "../ChatButton";
+import { useSelector } from "react-redux";
 
 const StyledTableCell = styled(TableCell)({
   "&.MuiTableCell-head": {
@@ -39,7 +40,8 @@ const StyledTableRow = styled(TableRow)({
 export default function CustomizedTables({ data, reRender, label, showCard }) {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [searchQuery, setSearchQuery] = useState(""); // State for search query
+  const [searchQuery, setSearchQuery] = useState(""); 
+  const {role} = useSelector((state) => state.auth)
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -137,7 +139,7 @@ export default function CustomizedTables({ data, reRender, label, showCard }) {
                 )}
               </StyledTableCell>
               <StyledTableCell align="right">
-                <ChatButton user_id={row.id} />
+                <ChatButton user_id={row.id} role={role} />
               </StyledTableCell>
             </StyledTableRow>
           ))}
