@@ -18,10 +18,10 @@ const CancelTimeSlot = () => {
     <Button
       variant="contained"
       startIcon={<CancelIcon />}
-      className="!bg-orange-500 !text-white !rounded-md hover:!bg-orange-600 transition duration-200 w-48"
+      className="!bg-orange-500 !text-white !rounded-lg !shadow hover:!bg-orange-600 transition duration-200 w-48"
       onClick={handleClick}
     >
-      Cancel Time Slot
+      Cancel Booking
     </Button>
   );
 };

@@ -5,6 +5,7 @@ import { toast } from 'react-toastify'
 import { withdrawMoney } from '../../redux/thunk/walletThunk'
 import { useNavigate } from 'react-router-dom'
 import { setRender } from '../../redux/slices/timeSlotSlice'
+import { Button } from "@mui/material";
 
 const BookSlot = ({slot_id, rate, selectedSubject}) => {
     const auth = useSelector((state) => state.auth)
@@ -40,9 +41,9 @@ const BookSlot = ({slot_id, rate, selectedSubject}) => {
         }
     }
   return (
-    <button className='bg-green-700 text-white font-bold text-sm p-2'
+    <Button className='!bg-green-700 !text-white !font-bold  !rounded-lg !shadow hover:!bg-green-500 transition duration-200 w-48'
     onClick={handleBook}
-    >Book</button>
+    >Book</Button>
   )
 }
 

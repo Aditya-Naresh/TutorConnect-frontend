@@ -25,11 +25,9 @@ import {
   fetchSubjects,
   fetchTimeSlotDetails,
 } from "../redux/thunk/timeSlotThunk";
-import {
-  setOpenConfirmationModalOff,
-  setSelectedSubject,
-} from "../redux/slices/timeSlotSlice";
+import { setSelectedSubject } from "../redux/slices/timeSlotSlice";
 import ChatButton from "./ChatButton";
+import TimeSlotStatusBadge from "./tutor/TimeSlotStatusBadge";
 
 const TimeSlotDetails = () => {
   const dispatch = useDispatch();
@@ -85,19 +83,16 @@ const TimeSlotDetails = () => {
   const renderTimeSlotDetails = () => (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
       <div className="bg-gradient-to-r from-teal-600 to-teal-700 p-6">
-        <Typography variant="h5" fontWeight="bold" gutterBottom>
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          gutterBottom
+          textAlign="center"
+        >
           Time Slot Details
         </Typography>
         <div className="mt-2">
-          <span
-            className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-              event.title === "AVAILABLE"
-                ? "bg-green-100 text-green-800"
-                : "bg-red-100 text-red-800"
-            }`}
-          >
-            {event.title}
-          </span>
+          <TimeSlotStatusBadge title={event.title} />
         </div>
       </div>
       <Stack spacing={2}>
@@ -131,28 +126,38 @@ const TimeSlotDetails = () => {
 
         {role === "STUDENT" && event.title === "AVAILABLE" && (
           <>
-            {subjectList.length > 0 ? (
-              <FormControl fullWidth>
-                <InputLabel>Select Subject</InputLabel>
-                <Select
-                  value={selectedSubject}
-                  label="Select Subject"
-                  onChange={handleSubjectChange}
-                >
-                  {subjectList.map((subject) => (
-                    <MenuItem key={subject.id} value={subject.id}>
-                      {subject.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            ) : (
-              <CircularProgress />
-            )}
-            <BookSlot
-              slot_id={event.id}
-              rate={event.tutor_rate}
-              selectedSubject={selectedSubject}
+            <DetailRow
+              label="Select Subject"
+              value={
+                subjectList.length > 0 ? (
+                  <FormControl className="w-48">
+                    <InputLabel>Select Subject</InputLabel>
+                    <Select
+                      value={selectedSubject}
+                      label="Select Subject"
+                      onChange={handleSubjectChange}
+                    >
+                      {subjectList.map((subject) => (
+                        <MenuItem key={subject.id} value={subject.id}>
+                          {subject.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                ) : (
+                  <CircularProgress />
+                )
+              }
+            />
+            <DetailRow
+              label="Book This Slot"
+              value={
+                <BookSlot
+                  slot_id={event.id}
+                  rate={event.tutor_rate}
+                  selectedSubject={selectedSubject}
+                />
+              }
             />
           </>
         )}
