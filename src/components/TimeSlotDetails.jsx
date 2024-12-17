@@ -28,6 +28,8 @@ import {
 import { setSelectedSubject } from "../redux/slices/timeSlotSlice";
 import ChatButton from "./ChatButton";
 import TimeSlotStatusBadge from "./tutor/TimeSlotStatusBadge";
+import VideoButton from "./videocall/VideoButton";
+import { WEBSOCKETSERVER } from "../server";
 
 const TimeSlotDetails = () => {
   const dispatch = useDispatch();
@@ -178,7 +180,18 @@ const TimeSlotDetails = () => {
         )}
 
         {event.title === "BOOKED" && (
-          <DetailRow label="Cancellation" value={<CancelTimeSlot />} />
+          <>
+            <DetailRow label="Cancellation" value={<CancelTimeSlot />} />
+            <DetailRow
+              label="Join Session"
+              value={
+                <VideoButton
+                  target_user={role === "TUTOR" ? event.student : event.tutor}
+                  timeSlot={event.id}
+                />
+              }
+            />
+          </>
         )}
         {event.title === "AVAILABLE" && role === "TUTOR" && (
           <DetailRow label="Delete Timeslot" value={<DeleteButton />} />

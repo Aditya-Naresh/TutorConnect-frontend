@@ -31,7 +31,7 @@ export const NotificationIcon = ({ count }) => {
     <Badge
       color="error"
       badgeContent={count}
-      invisible={count === 0}
+      invisible={count == 0}
       anchorOrigin={{
         vertical: "top",
         horizontal: "right",

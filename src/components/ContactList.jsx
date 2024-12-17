@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { SERVER } from "../server";
+import { SERVER, WEBSOCKETSERVER } from "../server";
 
 const ContactList = () => {
   const { id, access } = useSelector((state) => state.auth);
@@ -29,7 +29,7 @@ const ContactList = () => {
 
   useEffect(() => {
     const socket = new WebSocket(
-      `ws://localhost:8000/ws/chat-notifications/?token=${access}`
+      `${WEBSOCKETSERVER}/chat-notifications/?token=${access}`
     );
 
     socket.onmessage = function (event) {

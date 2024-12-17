@@ -17,9 +17,7 @@ export const fetchTimeSlotDetails = createAsyncThunk(
       const access = getState().auth.access;
       const response = await axiosGet(`timeslots/${id}`, access);
       if (response.status === 200) {
-        dispatch(setEvent(response.data));
-        console.log("TimeSLot details:",response.data);
-        
+        dispatch(setEvent(response.data));        
         dispatch(setTimeSLotDetails({ field: "loading", value: false }));
       } else {
         dispatch(resetSlot());
@@ -42,7 +40,6 @@ export const fetchSubjects = createAsyncThunk(
         `timeslots/tutor-list/${event.tutor}`,
         access
       );
-      console.log("subjects", response.data[0]?.subjects);
       dispatch(setSubjectList(response.data[0]?.subjects || []));
     } catch (error) {
       console.error("Failed to fetch subjects:", error);
@@ -57,7 +54,6 @@ export const updateTimeSlot = createAsyncThunk(
     try {
       const access = getState().auth.access;
       const response = await axiosPatch(`timeslots/${id}`, data, access);
-      console.log("thunk:", response);
 
       if (response.status === 200) {
         dispatch(setRender(response.data));
