@@ -11,9 +11,9 @@ import { WEBSOCKETSERVER } from "../../server";
 import { useNavigate, useParams } from "react-router-dom";
 import { endCall } from "../../redux/slices/callSlice";
 
-const VideoCall = ({setStart, setEnd, showTime}) => {
+const VideoCall = () => {
   const dispatch = useDispatch();
-  const { isInCall, caller, receiver, ws } = useSelector((state) => state.call);
+  const { isInCall, caller, receiver, ws, caller_name, receiver_name } = useSelector((state) => state.call);
   const { id, access } = useSelector((state) => state.auth);
 
   const [localStream, setLocalStream] = useState(null);
@@ -99,7 +99,6 @@ const VideoCall = ({setStart, setEnd, showTime}) => {
         target_user: receiver,
       });
     }
-    setStart(Date.now())
   };
 
   const sendMessage = (message) => {
@@ -197,8 +196,6 @@ const VideoCall = ({setStart, setEnd, showTime}) => {
       }
       
       dispatch(endCall());
-      setEnd(Date.now())
-      showTime()
       navigate("/");
 
     } catch (error) {
@@ -212,7 +209,7 @@ const VideoCall = ({setStart, setEnd, showTime}) => {
         {/* Header Section */}
         <div className="text-center mb-6">
           <DialogTitle className="text-2xl font-semibold text-white">
-            Video Call with {caller === id ? receiver : caller}
+            Video Call with {caller == id ? receiver_name : caller_name}
           </DialogTitle>
           <p className="text-sm text-teal-400">
             In a video call. Press "End Call" to disconnect.

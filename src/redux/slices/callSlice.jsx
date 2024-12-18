@@ -7,7 +7,9 @@ const initialState = {
     isInCall: false,
     incomingCall: null,
     caller: null,
+    caller_name:null,
     receiver: null,
+    receiver_name:null,
     callEnded: false,
     isLoading: false,
     error: null,
@@ -24,7 +26,9 @@ const callSlice = createSlice({
     startCall: (state, action) => {
       state.isCalling = true;
       state.caller = action.payload.caller;
+      state.caller_name =action.payload.caller_name
       state.receiver = action.payload.receiver;
+      state.receiver_name = action.payload.receiver_name
       state.call = true;
       state.callWith = action.payload.receiver;
       state.isCallingProfile = action.payload.callerProfile;
@@ -35,7 +39,9 @@ const callSlice = createSlice({
       state.callWith = action.payload.from;
       state.callerImage = action.payload.callerImage;
       state.caller = action.payload.from;
+      state.caller_name = action.payload.from_name
       state.receiver = action.payload.receiver
+      state.receiver_name = action.payload.receiver_name
     },
     acceptCall: (state) => {
       state.isInCall = true;
@@ -65,7 +71,9 @@ const callSlice = createSlice({
       state.call = false;
       state.callWith = null;
       state.caller = null;
+      state.caller_name = null
       state.receiver = null;
+      state.receiver_name=null
     },
     setLoading: (state, action) => {
       state.isLoading = action.payload;

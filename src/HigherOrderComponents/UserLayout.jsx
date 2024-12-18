@@ -21,7 +21,7 @@ import IncomingCallNotification from "../components/videocall/IncomingCallNotifi
 import OutGoingCall from "../components/videocall/OutGoingCall";
 
 const UserLayout = () => {
-  const { access, id } = useSelector((state) => state.auth);
+  const { access, id, full_name } = useSelector((state) => state.auth);
   const [showSideBar, setShowSideBar] = useState(false);
   const dispatch = useDispatch();
   const location = useLocation();
@@ -74,9 +74,11 @@ const UserLayout = () => {
           dispatch(
             receiveCallRequest({
               from: data.from,
+              from_name:data.from_user_name,
               callerImage: data.profile_pic,
               timeSlot: data.timeSlot,
-              receiver: id
+              receiver: id,
+              receiver_name:full_name,
             })
           );
         }

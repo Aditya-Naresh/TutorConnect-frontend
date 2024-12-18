@@ -39,6 +39,7 @@ const IncomingCallNotification = () => {
       JSON.stringify({
         action: "accept_call",
         target_user: incomingCall.from,
+        target_user_name:incomingCall.from_user_name,
         timeSlot: incomingCall.timeSlot
       })
     );
