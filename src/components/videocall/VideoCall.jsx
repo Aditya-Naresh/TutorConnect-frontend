@@ -1,14 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogActions,
-  Button,
-} from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { WEBSOCKETSERVER } from "../../server";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { endCall } from "../../redux/slices/callSlice";
 
 const VideoCall = () => {
@@ -204,49 +198,85 @@ const VideoCall = () => {
   };
 
   return (
-    <Dialog open={isInCall} maxWidth="sm" fullWidth>
-      <DialogContent className="bg-teal-900 text-white p-6 rounded-lg">
-        {/* Header Section */}
-        <div className="text-center mb-6">
-          <DialogTitle className="text-2xl font-semibold text-white">
-            Video Call with {caller == id ? receiver_name : caller_name}
-          </DialogTitle>
-          <p className="text-sm text-teal-400">
-            In a video call. Press "End Call" to disconnect.
-          </p>
-        </div>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#1e293b",
+        borderRadius: "1rem",
+        overflow: "hidden",
+        width: "100%",
+        height: "100vh",
+        padding: "2rem",
+      }}
+    >
+      {/* Header Section */}
+      <Box sx={{ textAlign: "center", marginBottom: "2rem" }}>
+        <Typography variant="h5" sx={{ color: "white", fontWeight: "bold" }}>
+          Video Call with {caller === id ? receiver_name : caller_name}
+        </Typography>
+        <Typography variant="body2" sx={{ color: "#9ca3af" }}>
+          Connected • Press "End Call" to disconnect
+        </Typography>
+      </Box>
 
-        {/* Video Streams */}
-        <div className="flex flex-col items-center space-y-4">
-          {/* Local Video */}
-          <video
-            ref={localVideoRef}
-            autoPlay
-            muted
-            className="w-24 h-24 rounded-lg border border-teal-700"
-          />
-          {/* Remote Video */}
+      {/* Video Streams */}
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2rem" }}>
+        {/* Remote Video */}
+        <Box sx={{ position: "relative", width: "100%", aspectRatio: "16/9" }}>
           <video
             ref={remoteVideoRef}
             autoPlay
-            className="w-full max-w-xl h-80 rounded-lg border border-teal-700"
+            style={{
+              width: "100%",
+              height: "100%",
+              borderRadius: "1rem",
+              backgroundColor: "#374151",
+              objectFit: "cover",
+            }}
           />
-        </div>
-      </DialogContent>
+          {/* Local Video (Picture-in-Picture) */}
+          <Box sx={{ position: "absolute", bottom: "1rem", right: "1rem", width: "120px", aspectRatio: "16/9" }}>
+            <video
+              ref={localVideoRef}
+              autoPlay
+              muted
+              style={{
+                width: "100%",
+                height: "100%",
+                borderRadius: "1rem",
+                backgroundColor: "#4b5563",
+                objectFit: "cover",
+                border: "2px solid #6b7280",
+              }}
+            />
+          </Box>
+        </Box>
+      </Box>
 
       {/* Footer Section */}
-      <DialogActions className="bg-teal-900 flex justify-center p-4">
+      <Box sx={{ display: "flex", justifyContent: "center", marginTop: "2rem" }}>
         <Button
           onClick={endVideoCall}
           ref={endButtonRef}
-          variant="contained" 
-          color="error" 
-          className="!px-6 !py-2 !rounded-lg hover:!bg-red-600 !transition"
+          variant="contained"
+          color="error"
+          sx={{
+            backgroundColor: "#ef4444",
+            "&:hover": { backgroundColor: "#dc2626" },
+            paddingX: "2rem",
+            paddingY: "1rem",
+            borderRadius: "9999px",
+            fontWeight: "medium",
+            transition: "all 0.3s ease",
+          }}
         >
           End Call
         </Button>
-      </DialogActions>
-    </Dialog>
+      </Box>
+    </Box>
   );
 };
 

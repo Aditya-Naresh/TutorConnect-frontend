@@ -11,7 +11,7 @@ const Step2 = ({ setCurrentStep }) => {
 
   const handleDeleteCertification = (index) => {
     dispatch(removeCertification({ index }));
-    toast.info("Certification removed");
+    toast.info("Certification removed", {position:"top-center"});
   };
 
   const nextClick = () => {

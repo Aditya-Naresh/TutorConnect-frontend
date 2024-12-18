@@ -10,21 +10,25 @@ const WhiteBoard = () => {
   const [currentColor, setCurrentColor] = useState("black");
   const { timeSlotId } = useParams();
   const { access } = useSelector((state) => state.auth);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
 
-    // Resize canvas to fit the window
+    // Resize canvas to fit the window and handle device pixel ratio
     const resizeCanvas = () => {
-      canvas.width = window.innerWidth * devicePixelRatio;
-      canvas.height = window.innerHeight * devicePixelRatio;
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      canvas.width = width * devicePixelRatio;
+      canvas.height = height * devicePixelRatio;
       context.scale(devicePixelRatio, devicePixelRatio);
     };
 
     // Initialize canvas size
     resizeCanvas();
 
-    // Set up event listeners
+    // Set up event listeners for resizing
     window.addEventListener("resize", resizeCanvas);
 
     // Set up WebSocket connection
@@ -52,7 +56,7 @@ const WhiteBoard = () => {
         socketRef.current.close();
       }
     };
-  }, []);
+  }, [timeSlotId, access]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -60,19 +64,21 @@ const WhiteBoard = () => {
     let drawing = false;
     let lastX, lastY;
 
+    // Start drawing
     const startDrawing = (e) => {
       drawing = true;
       const rect = canvas.getBoundingClientRect();
-      lastX = e.clientX - rect.left;
-      lastY = e.clientY - rect.top;
+      lastX = (e.clientX - rect.left) * devicePixelRatio;
+      lastY = (e.clientY - rect.top) * devicePixelRatio;
     };
 
+    // Draw on the canvas
     const draw = (e) => {
       if (!drawing) return;
 
       const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const x = (e.clientX - rect.left) * devicePixelRatio;
+      const y = (e.clientY - rect.top) * devicePixelRatio;
 
       drawLocal(lastX, lastY, x, y, currentColor);
       sendDrawingData(lastX, lastY, x, y);
@@ -81,11 +87,12 @@ const WhiteBoard = () => {
       lastY = y;
     };
 
+    // Stop drawing
     const stopDrawing = () => {
       drawing = false;
     };
 
-    // Add event listeners
+    // Add event listeners for drawing actions
     canvas.addEventListener("mousedown", startDrawing);
     canvas.addEventListener("mousemove", draw);
     canvas.addEventListener("mouseup", stopDrawing);
@@ -100,6 +107,7 @@ const WhiteBoard = () => {
     };
   }, [currentColor]);
 
+  // Draw locally on the canvas
   const drawLocal = (x0, y0, x1, y1, color) => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
@@ -113,6 +121,7 @@ const WhiteBoard = () => {
     context.stroke();
   };
 
+  // Draw remotely (for other users' drawings)
   const drawRemote = (x0, y0, x1, y1, color) => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
@@ -126,6 +135,7 @@ const WhiteBoard = () => {
     context.stroke();
   };
 
+  // Send drawing data via WebSocket
   const sendDrawingData = (x0, y0, x1, y1) => {
     if (!socketRef.current) return;
 
@@ -140,6 +150,7 @@ const WhiteBoard = () => {
     );
   };
 
+  // Handle color change
   const handleColorChange = (color) => {
     setCurrentColor(color);
   };
