@@ -39,7 +39,7 @@ const UserManagement = () => {
         setData(response.data);
       } catch (error) {
         console.error(error);
-        toast.error("Error Fetching Data");
+        toast.error("Error Fetching Data", {position: "top-center"});
       }
     };
     fetchData();

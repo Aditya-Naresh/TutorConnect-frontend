@@ -30,7 +30,7 @@ const CreateTimeSlots = () => {
     e.preventDefault();
   
     if (!startTime || !endTime) {
-      toast.warning("You have to select both start time and end time.");
+      toast.warning("You have to select both start time and end time.",{position:"top-center"});
       return;
     }
   
@@ -48,7 +48,7 @@ const CreateTimeSlots = () => {
     
   
     if (end.isSameOrBefore(start)) {
-      toast.warning("End time must be after start time.");
+      toast.warning("End time must be after start time.",{position:"top-center"});
       return;
     }
   
@@ -68,10 +68,10 @@ const CreateTimeSlots = () => {
         auth.access
       );
       console.log(response);
-      toast.info(response.data.message);
+      toast.info(response.data.message,{position:"top-center"});
     } catch (error) {
       console.error("Error:", error);
-      toast.error("Failed to create time slots. Please try again.");
+      toast.error("Failed to create time slots. Please try again.", {position:"top-center"});
     }
   };
   

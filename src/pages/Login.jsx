@@ -24,17 +24,17 @@ const Login = () => {
       const response = await axios.post("http://127.0.0.1:8000/accounts/login/", data)
       if (response.status === 200) {
         dispatch(loginSuccess(response.data));
-        toast.success(`${response.data.full_name} has successfully logged in`);
+        toast.success(`${response.data.full_name} has successfully logged in`, {position: "top-center"});
         navigate('/')
         reset();
       } else {
-        toast.error("Login Failed. Please try again.");
+        toast.error("Login Failed. Please try again.",{position:"top-center"});
       }
     } catch (error) {
       if (error.response.status === 403) {
-        toast.error("Incorrect email or password. Please try again.");
+        toast.error("Incorrect email or password. Please try again.",{position:"top-center"});
       } else {
-        toast.error(error.response.data.detail);
+        toast.error(error.response.data.detail,{position:"top-center"});
       }
       console.log(error);
     

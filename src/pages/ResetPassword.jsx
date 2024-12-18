@@ -25,12 +25,12 @@ const ResetPassword = () => {
         try {
           const response = await axios.patch("http://127.0.0.1:8000/accounts/set-new-password/", formData)
           if (response.status === 200){
-            toast.success("Password reset successful")
+            toast.success("Password reset successful",{position:"top-center"})
             navigate('/login')
           }
         } catch (error) {
             console.log(error);
-            toast.error("Password reset failed")
+            toast.error("Password reset failed",{position:"top-center"})
         }
         reset()
       }

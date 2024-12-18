@@ -58,9 +58,9 @@ export const updateTimeSlot = createAsyncThunk(
       if (response.status === 200) {
         dispatch(setRender(response.data));
         if (actionType === "editTime") {
-          toast.info("Time updated");
+          toast.info("Time updated",{position:"top-center"});
         } else if (actionType === "cancel") {
-          toast.warning("Canceled the time slot booking");
+          toast.warning("Canceled the time slot booking",{position:"top-center"});
         }
       }
       return response.data;

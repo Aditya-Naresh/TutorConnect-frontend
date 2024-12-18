@@ -4,13 +4,14 @@ import {
   DialogContent,
   DialogTitle,
   DialogActions,
+  Button,
 } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { WEBSOCKETSERVER } from "../../server";
 import { useNavigate, useParams } from "react-router-dom";
 import { endCall } from "../../redux/slices/callSlice";
 
-const VideoCall = () => {
+const VideoCall = ({setStart, setEnd, showTime}) => {
   const dispatch = useDispatch();
   const { isInCall, caller, receiver, ws } = useSelector((state) => state.call);
   const { id, access } = useSelector((state) => state.auth);
@@ -98,6 +99,7 @@ const VideoCall = () => {
         target_user: receiver,
       });
     }
+    setStart(Date.now())
   };
 
   const sendMessage = (message) => {
@@ -165,6 +167,7 @@ const VideoCall = () => {
           target_user: id === caller ? receiver : caller,
         });
         callWs.current.close();
+        callWs.current = null;
       }
 
       if (remoteStream) {
@@ -187,13 +190,17 @@ const VideoCall = () => {
       }
 
       if (callWs.current) {
+        ref = { endButtonRef };
         callWs.current.onclose = () => {};
         callWs.current.close();
         callWs.current = null;
       }
-
+      
       dispatch(endCall());
+      setEnd(Date.now())
+      showTime()
       navigate("/");
+
     } catch (error) {
       console.error("Error ending video call: ", error);
     }
@@ -201,13 +208,13 @@ const VideoCall = () => {
 
   return (
     <Dialog open={isInCall} maxWidth="sm" fullWidth>
-      <DialogContent className="bg-gray-900 text-white p-6 rounded-lg">
+      <DialogContent className="bg-teal-900 text-white p-6 rounded-lg">
         {/* Header Section */}
         <div className="text-center mb-6">
           <DialogTitle className="text-2xl font-semibold text-white">
             Video Call with {caller === id ? receiver : caller}
           </DialogTitle>
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-teal-400">
             In a video call. Press "End Call" to disconnect.
           </p>
         </div>
@@ -232,13 +239,15 @@ const VideoCall = () => {
 
       {/* Footer Section */}
       <DialogActions className="bg-teal-900 flex justify-center p-4">
-        <button
+        <Button
           onClick={endVideoCall}
           ref={endButtonRef}
-          className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+          variant="contained" 
+          color="error" 
+          className="!px-6 !py-2 !rounded-lg hover:!bg-red-600 !transition"
         >
           End Call
-        </button>
+        </Button>
       </DialogActions>
     </Dialog>
   );

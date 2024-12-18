@@ -14,12 +14,12 @@ const EmailVerification = () => {
         }
         try {
             const response = await axios.post("http://127.0.0.1:8000/accounts/verify-email/", data)
-            toast.success(response.data.message)
+            toast.success(response.data.message,{position:"top-center"})
             navigate('/login')
         } catch (error) {
           console.log(error);
           
-            toast.error("Invalid confirmation link")
+            toast.error("Invalid confirmation link",{position:"top-center"})
         }
     }
   return (

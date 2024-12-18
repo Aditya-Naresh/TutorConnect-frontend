@@ -51,7 +51,7 @@ const Profile = ({ new_role }) => {
       );
       console.log(response);
       if (response.status === 200) {
-        toast.success("User details updated");
+        toast.success("User details updated",{position:"top-center"});
       }
     } catch (error) {
       console.log(error);
