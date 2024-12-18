@@ -5,7 +5,7 @@ import { PhoneDisabled } from "@mui/icons-material";
 import { declineCall } from "../../redux/slices/callSlice";
 
 const OutgoingCall = () => {
-  const { receiver, isCallingProfile, ws } = useSelector((state) => state.call);
+  const { receiver, isCallingProfile, ws, receiver_name } = useSelector((state) => state.call);
   const dispatch = useDispatch();
 
   const handleDecline = () => {
@@ -50,7 +50,7 @@ const OutgoingCall = () => {
                 color: "success.dark",
               }}
             >
-              {receiver}
+              {receiver_name}
             </Avatar>
           )}
 
@@ -81,7 +81,7 @@ const OutgoingCall = () => {
         {/* Call info */}
         <Box flex={1}>
           <Typography variant="subtitle1" color="text.primary" fontWeight="medium">
-            {receiver}
+            {receiver_name}
           </Typography>
           <Typography
             variant="body2"

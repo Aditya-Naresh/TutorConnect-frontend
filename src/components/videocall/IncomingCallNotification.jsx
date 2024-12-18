@@ -122,7 +122,7 @@ const IncomingCallNotification = () => {
         {/* Call info */}
         <Box flex={1}>
           <Typography variant="subtitle1" color="text.primary" fontWeight="medium">
-            {incomingCall?.from}
+            {incomingCall?.from_name}
           </Typography>
           <Typography
             variant="body2"
