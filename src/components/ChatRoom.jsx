@@ -12,6 +12,8 @@ import { useSelector } from "react-redux";
 import { UploadCloud, X } from "lucide-react";
 import MessageComponent from "./MessageComponent";
 import { WEBSOCKETSERVER } from "../server";
+import { axiosPost } from "../axios";
+import { toast } from "react-toastify";
 
 function ChatRoom() {
   const [messages, setMessages] = useState([]);
@@ -55,9 +57,8 @@ function ChatRoom() {
           if (!prevMessages.some((msg) => msg.id === newMessage.id)) {
             return [...prevMessages, newMessage];
           }
-          return prevMessages
+          return prevMessages;
         });
-
       }
     };
 
@@ -107,8 +108,39 @@ function ChatRoom() {
     }
   };
 
+  const sendAttachment = async () => {
+    const formData = new FormData();
+    formData.append("user", id);
+    formData.append("other_user", roomName);
+    formData.append("attachment", attachment.file);
+
+    try {
+      const response = await axiosPost("chat/attachments/", formData, access, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      if (response.status === 201) {
+        setAttachment(null);
+        console.log("Attachment sent successfully:", response.data);
+      } else {
+        toast.error("Failed to send attachment. Please try again.", {
+          position: "top-center",
+        });
+      }
+    } catch (error) {
+      console.error("Error sending attachment:", error);
+      toast.error("Failed to send attachment. Please try again.", {
+        position: "top-center",
+      });
+    }
+  };
+
   const sendMessage = () => {
-    if (socketRef.current && (newMessage.trim() || attachment)) {
+    if (attachment) {
+      sendAttachment();
+    }
+
+    if (socketRef.current && newMessage.trim()) {
       try {
         const messageData = {
           type: "message",
@@ -118,28 +150,10 @@ function ChatRoom() {
           chatID: roomName,
         };
 
-        if (attachment) {
-          const reader = new FileReader();
-          reader.onload = () => {
-            messageData.attachment = {
-              fileName: attachment.file.name,
-              fileType: attachment.file.type,
-              fileContent: reader.result.split(",")[1],
-            };
-            socketRef.current.send(JSON.stringify(messageData));
-          };
-          reader.readAsDataURL(attachment.file);
-        } else {
-          socketRef.current.send(JSON.stringify(messageData));
-        }
-
+        socketRef.current.send(JSON.stringify(messageData));
         setNewMessage("");
-        setAttachment(null);
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
-        }
       } catch (error) {
-        console.error("Error sending message: ", error);
+        console.error("Error sending message:", error);
       }
     }
   };
