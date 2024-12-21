@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { WEBSOCKETSERVER } from "../../server";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { endCall } from "../../redux/slices/callSlice";
+import { updateTimeSlot } from "../../redux/thunk/timeSlotThunk";
 
 const VideoCall = () => {
   const dispatch = useDispatch();
-  const { isInCall, caller, receiver, ws, caller_name, receiver_name } = useSelector((state) => state.call);
+  const { isInCall, caller, receiver, ws, caller_name, receiver_name } =
+    useSelector((state) => state.call);
   const { id, access } = useSelector((state) => state.auth);
 
   const [localStream, setLocalStream] = useState(null);
@@ -21,7 +23,7 @@ const VideoCall = () => {
   const messageQueue = useRef([]);
   const endButtonRef = useRef();
   const navigate = useNavigate();
-
+  const { timeSlotId } = useParams();
   useEffect(() => {
     if (isInCall) {
       startVideoCall();
@@ -188,10 +190,18 @@ const VideoCall = () => {
         callWs.current.close();
         callWs.current = null;
       }
-      
-      dispatch(endCall());
-      navigate("/");
 
+      dispatch(endCall());
+      dispatch(
+        updateTimeSlot({
+          id: timeSlotId,
+          data: {
+            className: "COMPLETED",
+          },
+          actionType: "completed",
+        })
+      );
+      navigate("/");
     } catch (error) {
       console.error("Error ending video call: ", error);
     }
@@ -212,7 +222,6 @@ const VideoCall = () => {
         padding: "2rem",
       }}
     >
-      {/* Header Section */}
       <Box sx={{ textAlign: "center", marginBottom: "2rem" }}>
         <Typography variant="h5" sx={{ color: "white", fontWeight: "bold" }}>
           Video Call with {caller === id ? receiver_name : caller_name}
@@ -222,8 +231,14 @@ const VideoCall = () => {
         </Typography>
       </Box>
 
-      {/* Video Streams */}
-      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "2rem" }}>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          gap: "2rem",
+        }}
+      >
         {/* Remote Video */}
         <Box sx={{ position: "relative", width: "100%", aspectRatio: "16/9" }}>
           <video
@@ -238,7 +253,15 @@ const VideoCall = () => {
             }}
           />
           {/* Local Video (Picture-in-Picture) */}
-          <Box sx={{ position: "absolute", bottom: "1rem", right: "1rem", width: "120px", aspectRatio: "16/9" }}>
+          <Box
+            sx={{
+              position: "absolute",
+              bottom: "1rem",
+              right: "1rem",
+              width: "120px",
+              aspectRatio: "16/9",
+            }}
+          >
             <video
               ref={localVideoRef}
               autoPlay
@@ -256,8 +279,9 @@ const VideoCall = () => {
         </Box>
       </Box>
 
-      {/* Footer Section */}
-      <Box sx={{ display: "flex", justifyContent: "center", marginTop: "2rem" }}>
+      <Box
+        sx={{ display: "flex", justifyContent: "center", marginTop: "2rem" }}
+      >
         <Button
           onClick={endVideoCall}
           ref={endButtonRef}

@@ -3,6 +3,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { SERVER } from "../server";
 
 const ResetPassword = () => {
     const {
@@ -23,7 +24,7 @@ const ResetPassword = () => {
             "token": token,
         }
         try {
-          const response = await axios.patch("http://127.0.0.1:8000/accounts/set-new-password/", formData)
+          const response = await axios.patch(`${SERVER}/accounts/set-new-password/`, formData)
           if (response.status === 200){
             toast.success("Password reset successful",{position:"top-center"})
             navigate('/login')

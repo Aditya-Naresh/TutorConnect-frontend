@@ -22,7 +22,7 @@ const TutorSidebar = () => {
         icon={FaClock}
       />
       <SidebarLink 
-        to="/user-management/TUTOR" 
+        to="/session-history" 
         text="Session History" 
         borderColor="border-blue-400"
         icon={FaHistory}

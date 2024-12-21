@@ -30,10 +30,10 @@ const BookSlot = ({slot_id, rate, selectedSubject}) => {
             if (response.status === 200){
                 dispatch(setRender(`Booked ${response.data.id}`))
                 dispatch(withdrawMoney({ amount: rate, time_slot: slot_id }));                
-                toast.info("Time Slot has been booked")
+                toast.info("Time Slot has been booked", {position:"top-center"})
                 navigate('/tutorlist')
             }else if (response.status === 404){
-                toast.error("Tutor or TimeSlot is unavailable please try another one")
+                toast.error("Tutor or TimeSlot is unavailable please try another one", {position:"top-center"})
                 navigate('/tutorlist')
             }
         } catch (error) {

@@ -2,9 +2,10 @@ import axios from 'axios'
 import React from 'react'
 import { useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
+import { SERVER } from '../../server'
 
 const UnblockButton = ({id, reRender}) => {
-    const url = `http://127.0.0.1:8000/useradmin/update-user/${id}`
+    const url = `${SERVER}/useradmin/update-user/${id}`
     const token = useSelector((state) => state.auth.access)
     const handleClick = async (e) => {
         e.preventDefault()

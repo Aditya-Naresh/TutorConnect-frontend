@@ -3,13 +3,16 @@ import Button from "@mui/material/Button";
 import { VideoCall } from "@mui/icons-material";
 import { useDispatch, useSelector } from "react-redux";
 import { startCall } from "../../redux/slices/callSlice";
+import { updateTimeSlot } from "../../redux/thunk/timeSlotThunk";
+import { useParams } from "react-router-dom";
 
 const VideoButton = ({ target_user, target_user_name, timeSlot }) => {
   const callWs = useSelector((state) => state.call.ws);
   const { id, profile_pic, full_name } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const receiver = target_user;
-  const receiver_name = target_user_name
+  const receiver_name = target_user_name;
+  const { timeSlotId } = useParams();
   // define calling function
   const startVideoCall = () => {
     if (callWs.readyState === WebSocket.OPEN) {
@@ -28,6 +31,15 @@ const VideoButton = ({ target_user, target_user_name, timeSlot }) => {
           callerProfile: profile_pic,
           receiver: receiver,
           receiver_name: receiver_name,
+        })
+      );
+      dispatch(
+        updateTimeSlot({
+          id: timeSlotId,
+          data: {
+            className: "ONGOING",
+          },
+          actionType: "ongoing",
         })
       );
     }

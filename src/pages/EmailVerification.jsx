@@ -2,6 +2,7 @@ import axios from "axios";
 import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
+import { SERVER } from "../server";
 
 const EmailVerification = () => {
     const navigate = useNavigate()
@@ -13,7 +14,7 @@ const EmailVerification = () => {
             "token": token
         }
         try {
-            const response = await axios.post("http://127.0.0.1:8000/accounts/verify-email/", data)
+            const response = await axios.post(`${SERVER}/accounts/verify-email/`, data)
             toast.success(response.data.message,{position:"top-center"})
             navigate('/login')
         } catch (error) {

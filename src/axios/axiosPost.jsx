@@ -1,9 +1,10 @@
 import axios from 'axios'
 import React from 'react'
+import { SERVER } from '../server'
 
 
 const axiosPost = async (endpoint, data, token) => {
-    const BASE_URL = "http://127.0.0.1:8000/"
+    const BASE_URL = `${SERVER}/`
     const config = {
         headers:{
             "Authorization": token? `Bearer ${token}` : null,

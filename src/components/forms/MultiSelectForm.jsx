@@ -23,7 +23,6 @@ export default function MultiSelectForm({
   setSelectedValue,
   selectedValue,
 }) {
-  const personName = ["Achu"];
   const handleChange = (event) => {
     const {
       target: { value },

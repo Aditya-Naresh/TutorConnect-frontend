@@ -14,7 +14,7 @@ const Step3 = ({setCurrentStep}) => {
 
   const nextClick = () => {
     if (subjects.length === 0) {
-      toast.error("You need to add atleast one certification");
+      toast.error("You need to add atleast one certification", {position:"top-center"});
       return;
     }
     setCurrentStep(4);

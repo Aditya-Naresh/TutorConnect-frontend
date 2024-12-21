@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { setWalletDetails } from '../slices/walletSlice';
 import { axiosPost } from '../../axios';
+import { SERVER } from '../../server';
 
 export const fetchWalletDetails = createAsyncThunk(
   'wallet/fetchDetails',
@@ -12,7 +13,7 @@ export const fetchWalletDetails = createAsyncThunk(
     }
 
     try {
-      const response = await axios.get('http://127.0.0.1:8000/wallet/retrieve-update/', {
+      const response = await axios.get(`${SERVER}/wallet/retrieve-update/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },

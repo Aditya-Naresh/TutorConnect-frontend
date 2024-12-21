@@ -30,7 +30,7 @@ const Calendar = () => {
     });
   };
 
-  const { access, role } = useSelector((state) => state.auth);
+  const { access, role, id } = useSelector((state) => state.auth);
   const [events, setEvents] = useState([]);
   const [status, setStatus] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -81,6 +81,10 @@ const Calendar = () => {
     url = `timeslots/tutor_timeslots/${tutor_id}`;
   } else if (role === "STUDENT") {
     url = "timeslots/student_timeslots/";
+  }else if(
+    window.location.href.includes("/session-history/")
+  ){
+    url =  `timeslots/history/${id}`
   }
 
   useEffect(() => {

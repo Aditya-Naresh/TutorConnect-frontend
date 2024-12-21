@@ -1,4 +1,4 @@
-        import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosDelete, axiosGet, axiosPatch } from "../../axios";
 import {
   resetSlot,
@@ -17,7 +17,7 @@ export const fetchTimeSlotDetails = createAsyncThunk(
       const access = getState().auth.access;
       const response = await axiosGet(`timeslots/${id}`, access);
       if (response.status === 200) {
-        dispatch(setEvent(response.data));        
+        dispatch(setEvent(response.data));
         dispatch(setTimeSLotDetails({ field: "loading", value: false }));
       } else {
         dispatch(resetSlot());
@@ -58,9 +58,15 @@ export const updateTimeSlot = createAsyncThunk(
       if (response.status === 200) {
         dispatch(setRender(response.data));
         if (actionType === "editTime") {
-          toast.info("Time updated",{position:"top-center"});
+          toast.info("Time updated", { position: "top-center" });
         } else if (actionType === "cancel") {
-          toast.warning("Canceled the time slot booking",{position:"top-center"});
+          toast.warning("Canceled the time slot booking", {
+            position: "top-center",
+          });
+        } else if (actionType === "ongoing") {
+          toast.info("Session has commenced", { position: "top-center" });
+        } else if (actionType === "completed") {
+          toast.info("Session has completed", { position: "top-center" });
         }
       }
       return response.data;
@@ -77,7 +83,7 @@ export const deleteTimeSlot = createAsyncThunk(
     try {
       const access = getState().auth.access;
       const response = await axiosDelete(`timeslots/${id}`, access);
-      return response
+      return response;
     } catch (error) {
       console.log("Deletion failed :", error);
       return rejectWithValue("Failed to delete the Time Slot");

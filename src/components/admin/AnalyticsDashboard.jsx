@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import AnalyticsCard from "./AnalyticsCard";
 import { Users, UserCheck, GraduationCap, Clock, CheckCircle } from "lucide-react";
+import { WEBSOCKETSERVER } from "../../server";
+import { useSelector } from "react-redux";
 
 const AnalyticsDashboard = () => {
   const [totalUsers, setTotalUsers] = useState(0);
@@ -8,8 +10,28 @@ const AnalyticsDashboard = () => {
   const [totalStudents, setTotalStudents] = useState(0);
   const [ongoingSessions, setOngoingSessions] = useState(0);
   const [completedSessions, setCompletedSessions] = useState(0);
-
- 
+  const {access} = useSelector(state => state.auth)
+  useEffect(() => {
+    const socket = new WebSocket(`${WEBSOCKETSERVER}/analytics/?token=${access}`);
+  
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      setTotalUsers(data.totalUsers);
+      setTotalTutors(data.totalTutors);
+      setTotalStudents(data.totalStudents);
+      setOngoingSessions(data.ongoingSessions);
+      setCompletedSessions(data.completedSessions);
+    };
+  
+    socket.onclose = () => {
+      console.log("WebSocket connection closed");
+    };
+  
+    return () => {
+      socket.close();
+    };
+  }, []);
+  
 
   return (
     <div className="space-y-8">

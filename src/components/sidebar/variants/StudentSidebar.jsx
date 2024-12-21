@@ -22,7 +22,7 @@ const StudentSidebar = () => {
         icon={FaUserGraduate}
       />
       <SidebarLink 
-        to="/user-management/TUTOR" 
+        to="/session-history" 
         text="Session History" 
         borderColor="border-emerald-400"
         icon={FaHistory}

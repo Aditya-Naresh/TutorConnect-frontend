@@ -15,8 +15,9 @@ import {
   FaRegCalendarCheck,
   FaFileAlt,
 } from "react-icons/fa";
-import { closeNotification, setNotificationCount } from "../redux/slices/notificationSlice";
+import { setNotificationCount } from "../redux/slices/notificationSlice";
 import NotificationModal from "./utils/NotificationModal";
+import { SERVER, WEBSOCKETSERVER } from "../server";
 
 const NotificationIcons = {
   BOOKING: <FaRegCalendarCheck className="text-white text-2xl" />,
@@ -38,7 +39,7 @@ const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [selectedNotification, setSelectedNotification] = useState(null); // State for modal
   const { access } = useSelector((state) => state.auth);
-  const socketUrl = `ws://localhost:8000/ws/notifications/?token=${access}`;
+  const socketUrl = `${WEBSOCKETSERVER}/notifications/?token=${access}`;
   const dispatch = useDispatch();
 
   useEffect(() => {

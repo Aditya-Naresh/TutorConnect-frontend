@@ -21,14 +21,14 @@ const WalletInfo = () => {
   const { access } = useSelector((state) => state.auth);
   const [transactions, setTransactions] = useState([]);
   const [error, setError] = useState(null);
-  const [page, setPage] = useState(0); // Pagination state
-  const rowsPerPage = 6; // Number of rows per page
+  const [page, setPage] = useState(0); 
+  const rowsPerPage = 5; 
 
   const fetchTransactions = async () => {
     try {
       const response = await axiosGet("wallet/transactions", access);
       setTransactions(response.data);
-      setError(null); // Reset error if fetch is successful
+      setError(null); 
     } catch (error) {
       setError("Failed to fetch transactions. Please try again later.");
       console.error(error);
@@ -39,7 +39,6 @@ const WalletInfo = () => {
     fetchTransactions();
   }, [access, balance]);
 
-  // Handle pagination page change
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
