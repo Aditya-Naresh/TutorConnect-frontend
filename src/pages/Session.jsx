@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React from "react";
 import VideoCall from "../components/videocall/VideoCall";
 import WhiteBoard from "../components/videocall/WhiteBoard";
 
 const Session = () => {
-  const [showWhiteboard, setShowWhiteboard] = useState(true);
-
   return (
-    <div className="flex flex-col h-screen">
-      <div className="flex flex-row h-screen">
+    <div className="flex flex-row h-screen w-full bg-gray-100">
+      {/* Video Call Section */}
+      <div className="w-1/2 h-full flex justify-start">
         <VideoCall />
-        {showWhiteboard && <WhiteBoard />}
+      </div>
+
+      {/* Whiteboard Section */}
+      <div className="w-1/2 h-full ">
+        <WhiteBoard />
       </div>
     </div>
   );

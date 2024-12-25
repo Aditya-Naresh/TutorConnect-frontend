@@ -7,41 +7,74 @@ export const useNotificationWebSocket = (NotificationSocketUrl, location, access
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const notificationSocket = new WebSocket(NotificationSocketUrl);
-    
-    notificationSocket.onmessage = function (event) {
-      const data = JSON.parse(event.data);
-      if (data.notifications){
-        dispatch(
-          setNotificationCount(data.notifications? data.notifications.length : 0)
-        );
+    let notificationSocket;
 
-      }
-    };
-    
-    notificationSocket.onclose = function (event) {
-      console.error("NotificationWebSocket closed unexpectedly", event);
+    const connectSocket = () => {
+      notificationSocket = new WebSocket(NotificationSocketUrl);
+
+      notificationSocket.onopen = () => {
+        console.log("Notification WebSocket connected");
+      };
+
+      notificationSocket.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        if (data.notifications) {
+          dispatch(setNotificationCount(data.notifications.length || 0));
+        }
+      };
+
+      notificationSocket.onclose = function (event) {
+        console.error("Notification WebSocket closed unexpectedly", event);
+        setTimeout(connectSocket, 5000); 
+      };
+
+      notificationSocket.onerror = (error) => {
+        console.error("WebSocket error:", error);
+      };
     };
 
-    return () => notificationSocket.close();
-  }, [location, access, render, NotificationSocketUrl, dispatch]);
+    connectSocket();
+
+    return () => {
+      if (notificationSocket) notificationSocket.close();
+    };
+  }, [NotificationSocketUrl, location, access, render, dispatch]);
 };
 
-export const useChatWebSocket = (access, roomName, location, setMessageCount) => {
+export const useChatWebSocket = (access, roomName, location, setMessageCount, render) => {
   useEffect(() => {
-    const socket = new WebSocket(
-      `${WEBSOCKETSERVER}/chat-notifications/?token=${access}`
-    );
+    let socket;
 
-    socket.onmessage = function (event) {
-      const data = JSON.parse(event.data);
-      setMessageCount(data.message_notification);
+    const connectSocket = () => {
+      socket = new WebSocket(
+        `${WEBSOCKETSERVER}/chat-notifications/?token=${access}`
+      );
+
+      socket.onopen = () => {
+        console.log("Chat WebSocket connected");
+      };
+
+      socket.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        if (data.message_notification !== undefined) {
+          setMessageCount(data.message_notification);
+        }
+      };
+
+      socket.onclose = function () {
+        console.error("Chat WebSocket closed unexpectedly");
+        setTimeout(connectSocket, 5000); 
+      };
+
+      socket.onerror = (error) => {
+        console.error("WebSocket error:", error);
+      };
     };
 
-    socket.onclose = function () {
-      console.error("ChatWebSocket closed unexpectedly");
-    };
+    connectSocket();
 
-    return () => socket.close();
-  }, [roomName, access, location, setMessageCount]);
+    return () => {
+      if (socket) socket.close();
+    };
+  }, [access, roomName, location, render, setMessageCount]);
 };

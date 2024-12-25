@@ -24,6 +24,7 @@ const VideoCall = () => {
   const endButtonRef = useRef();
   const navigate = useNavigate();
   const { timeSlotId } = useParams();
+
   useEffect(() => {
     if (isInCall) {
       startVideoCall();
@@ -39,7 +40,7 @@ const VideoCall = () => {
     );
 
     callWs.current.onopen = () => {
-      console.log("WebSocket connection opened.");
+      console.log("VideoCall WebSocket connection opened.");
       while (messageQueue.current.length > 0) {
         callWs.current.send(messageQueue.current.shift());
       }
@@ -52,6 +53,11 @@ const VideoCall = () => {
 
     callWs.current.onmessage = (message) =>
       handleSignalingData(JSON.parse(message.data));
+
+    callWs.current.onclose = (e) => {
+      console.log("WebSocket disconnected", e);
+      setTimeout(startVideoCall, 3000);
+    };
 
     const stream = await navigator.mediaDevices.getUserMedia({
       video: true,
@@ -98,11 +104,11 @@ const VideoCall = () => {
   };
 
   const sendMessage = (message) => {
-    const serialzedMessage = JSON.stringify(message);
+    const serializedMessage = JSON.stringify(message);
     if (callWs.current && callWs.current.readyState === WebSocket.OPEN) {
-      callWs.current.send(serialzedMessage);
+      callWs.current.send(serializedMessage);
     } else {
-      messageQueue.current.push(serialzedMessage);
+      messageQueue.current.push(serializedMessage);
     }
   };
 
@@ -118,25 +124,36 @@ const VideoCall = () => {
   const handleSignalingData = async (data) => {
     try {
       if (data.type === "OFFER") {
-        await peerConnection.current.setRemoteDescription(
-          new RTCSessionDescription(data.offer)
-        );
-        const answer = await peerConnection.current.createAnswer();
-        await peerConnection.current.setLocalDescription(answer);
-        sendMessage({ action: "answer", answer, target_user: caller });
+        if (peerConnection.current.signalingState === "stable") {
+          await peerConnection.current.setRemoteDescription(
+            new RTCSessionDescription(data.offer)
+          );
+          const answer = await peerConnection.current.createAnswer();
+          await peerConnection.current.setLocalDescription(answer);
 
-        while (iceCandidateQueue.current.length > 0) {
-          const candidate = iceCandidateQueue.current.shift();
-          await peerConnection.current.addIceCandidate(candidate);
+          sendMessage({ action: "answer", answer, target_user: caller });
+
+          while (iceCandidateQueue.current.length > 0) {
+            const candidate = iceCandidateQueue.current.shift();
+            await peerConnection.current.addIceCandidate(candidate);
+          }
+        } else {
+          console.log("RTCPeerConnection is not in the correct state");
         }
       } else if (data.type === "ANSWER") {
-        await peerConnection.current.setRemoteDescription(
-          new RTCSessionDescription(data.answer)
-        );
+        if (peerConnection.current.signalingState === "have-local-offer") {
+          await peerConnection.current.setRemoteDescription(
+            new RTCSessionDescription(data.answer)
+          );
 
-        while (iceCandidateQueue.current.length > 0) {
-          const candidate = iceCandidateQueue.current.shift();
-          await peerConnection.current.addIceCandidate(candidate);
+          while (iceCandidateQueue.current.length > 0) {
+            const candidate = iceCandidateQueue.current.shift();
+            await peerConnection.current.addIceCandidate(candidate);
+          }
+        } else {
+          console.log(
+            "RTCPeerConnection is not in the correct state for an answer."
+          );
         }
       } else if (data.type === "ICE_CANDIDATE") {
         const candidate = new RTCIceCandidate(data.candidate);
@@ -184,24 +201,17 @@ const VideoCall = () => {
         peerConnection.current = null;
       }
 
-      if (callWs.current) {
-        ref = { endButtonRef };
-        callWs.current.onclose = () => {};
-        callWs.current.close();
-        callWs.current = null;
-      }
-
       dispatch(endCall());
-      dispatch(
-        updateTimeSlot({
-          id: timeSlotId,
-          data: {
-            className: "COMPLETED",
-          },
-          actionType: "completed",
-        })
-      );
-      navigate("/");
+      // dispatch(
+      //   updateTimeSlot({
+      //     id: timeSlotId,
+      //     data: {
+      //       className: "COMPLETED",
+      //     },
+      //     actionType: "completed",
+      //   })
+      // );
+      // navigate("/");
     } catch (error) {
       console.error("Error ending video call: ", error);
     }
@@ -239,7 +249,6 @@ const VideoCall = () => {
           gap: "2rem",
         }}
       >
-        {/* Remote Video */}
         <Box sx={{ position: "relative", width: "100%", aspectRatio: "16/9" }}>
           <video
             ref={remoteVideoRef}
@@ -252,7 +261,6 @@ const VideoCall = () => {
               objectFit: "cover",
             }}
           />
-          {/* Local Video (Picture-in-Picture) */}
           <Box
             sx={{
               position: "absolute",

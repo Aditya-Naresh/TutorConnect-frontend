@@ -64,7 +64,7 @@ const Razorpayform = () => {
       bodyData.append("name", name);
 
       const { data } = await Axios({
-        url: `${server}/razorpay/start-payment/`,
+        url: `${SERVER}/razorpay/start-payment/`,
         method: "POST",
         headers: {
           Accept: "application/json",

@@ -3,6 +3,7 @@ import "./styles.css";
 import { WEBSOCKETSERVER } from "../../server";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import ClearScreenButton from "./ClearScreenButton";
 
 const WhiteBoard = () => {
   const canvasRef = useRef(null);
@@ -10,24 +11,14 @@ const WhiteBoard = () => {
   const [currentColor, setCurrentColor] = useState("black");
   const { timeSlotId } = useParams();
   const { access } = useSelector((state) => state.auth);
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
 
-    // Resize canvas to fit the window
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth * devicePixelRatio;
-      canvas.height = window.innerHeight * devicePixelRatio;
-      context.scale(devicePixelRatio, devicePixelRatio);
-    };
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
-    // Initialize canvas size
-    resizeCanvas();
-
-    // Set up event listeners
-    window.addEventListener("resize", resizeCanvas);
-
-    // Set up WebSocket connection
     socketRef.current = new WebSocket(
       `${WEBSOCKETSERVER}/whiteboard/${timeSlotId}/?token=${access}`
     );
@@ -38,7 +29,11 @@ const WhiteBoard = () => {
 
     socketRef.current.onmessage = (e) => {
       const data = JSON.parse(e.data);
-      drawRemote(data.x0, data.y0, data.x1, data.y1, data.color);
+      if (data.type === "draw") {
+        drawRemote(data.x0, data.y0, data.x1, data.y1, data.color);
+      } else if (data.type === "clear") {
+        clearCanvas(); 
+      }
     };
 
     socketRef.current.onerror = (e) => {
@@ -46,8 +41,6 @@ const WhiteBoard = () => {
     };
 
     return () => {
-      // Cleanup event listeners and WebSocket connection on component unmount
-      window.removeEventListener("resize", resizeCanvas);
       if (socketRef.current) {
         socketRef.current.close();
       }
@@ -63,17 +56,17 @@ const WhiteBoard = () => {
     const startDrawing = (e) => {
       drawing = true;
       const rect = canvas.getBoundingClientRect();
-      lastX = e.clientX - rect.left;
-      lastY = e.clientY - rect.top;
+      lastX = (e.clientX - rect.left) * (canvas.width / rect.width);
+      lastY = (e.clientY - rect.top) * (canvas.height / rect.height);
     };
 
     const draw = (e) => {
       if (!drawing) return;
 
       const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-
+      const x = (e.clientX - rect.left) * (canvas.width / rect.width);
+      const y = (e.clientY - rect.top) * (canvas.height / rect.height);
+    
       drawLocal(lastX, lastY, x, y, currentColor);
       sendDrawingData(lastX, lastY, x, y);
 
@@ -85,14 +78,12 @@ const WhiteBoard = () => {
       drawing = false;
     };
 
-    // Add event listeners
     canvas.addEventListener("mousedown", startDrawing);
     canvas.addEventListener("mousemove", draw);
     canvas.addEventListener("mouseup", stopDrawing);
     canvas.addEventListener("mouseleave", stopDrawing);
 
     return () => {
-      // Remove event listeners during cleanup
       canvas.removeEventListener("mousedown", startDrawing);
       canvas.removeEventListener("mousemove", draw);
       canvas.removeEventListener("mouseup", stopDrawing);
@@ -131,6 +122,7 @@ const WhiteBoard = () => {
 
     socketRef.current.send(
       JSON.stringify({
+        type: "draw",
         x0: x0 / canvasRef.current.width,
         y0: y0 / canvasRef.current.height,
         x1: x1 / canvasRef.current.width,
@@ -140,8 +132,24 @@ const WhiteBoard = () => {
     );
   };
 
+  const sendClearCanvas = () => {
+    if (!socketRef.current) return;
+
+    socketRef.current.send(
+      JSON.stringify({
+        type: "clear",
+      })
+    );
+  };
+
   const handleColorChange = (color) => {
     setCurrentColor(color);
+  };
+
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    context.clearRect(0, 0, canvas.width, canvas.height); 
   };
 
   return (
@@ -155,6 +163,12 @@ const WhiteBoard = () => {
             onClick={() => handleColorChange(color)}
           ></div>
         ))}
+      <ClearScreenButton
+        onClick={() => {
+          clearCanvas();
+          sendClearCanvas();
+        }}
+      />
       </div>
     </div>
   );

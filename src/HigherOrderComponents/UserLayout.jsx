@@ -26,9 +26,9 @@ const UserLayout = () => {
   const dispatch = useDispatch();
   const location = useLocation();
   const ws = useRef(null);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-  const call = useSelector((state) => state.call); 
+  const call = useSelector((state) => state.call);
 
   const handleSideBar = () => {
     setShowSideBar(!showSideBar);
@@ -42,70 +42,72 @@ const UserLayout = () => {
   // WebSocket for call notifications
   useEffect(() => {
     if (!id) return;
-    ws.current = new WebSocket(
-      `${WEBSOCKETSERVER}/call/notification/${id}/?token=${access}`
-    );
+    const connectSocket = () => {
+      ws.current = new WebSocket(
+        `${WEBSOCKETSERVER}/call/notification/${id}/?token=${access}`
+      );
 
-    ws.current.onopen = () => {
-      console.log("WebSocket connected to notification");
-    };
+      ws.current.onopen = () => {
+        console.log("WebSocket connected to call notification");
+      };
 
-    ws.current.onclose = (e) => {
-      console.log(e);
-      console.log("Notification WebSocket disconnected");
-    };
+      ws.current.onclose = (e) => {
+        console.log(e);
+        console.log("call Notification WebSocket disconnected");
+        setTimeout(connectSocket, 5000);
+      };
 
-    ws.current.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      console.log("data: ", data);
-      
-      if (data.type === "CALL_REQUEST" && data.from !== id) {
-        if (call.isInCall) {
-          console.log("incomingcall: " ,call.incomingCall);
-          
-          ws.current.send(
-            JSON.stringify({
-              action: "reject",
-              target_id: call.incomingCall,
-            })
-          );
-          dispatch(declineCall());
-        } else {
-          dispatch(
-            receiveCallRequest({
-              from: data.from,
-              from_name:data.from_user_name,
-              callerImage: data.profile_pic,
-              timeSlot: data.timeSlot,
-              receiver: id,
-              receiver_name:full_name,
-            })
-          );
+      ws.current.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log("data: ", data);
+
+        if (data.type === "CALL_REQUEST" && data.from !== id) {
+          if (call.isInCall) {
+            console.log("incomingcall: ", call.incomingCall);
+
+            ws.current.send(
+              JSON.stringify({
+                action: "reject",
+                target_id: call.incomingCall,
+              })
+            );
+            dispatch(declineCall());
+          } else {
+            dispatch(
+              receiveCallRequest({
+                from: data.from,
+                from_name: data.from_user_name,
+                callerImage: data.profile_pic,
+                timeSlot: data.timeSlot,
+                receiver: id,
+                receiver_name: full_name,
+              })
+            );
+          }
         }
-      }
 
-      if (data.type === "CALL_REJECTED") {
-        dispatch(declineCall());
-      }
+        if (data.type === "CALL_REJECTED") {
+          dispatch(declineCall());
+        }
 
-      if (data.type === "CALL_ABANDONED") {
-        dispatch(declineCall());
-      }
+        if (data.type === "CALL_ABANDONED") {
+          dispatch(declineCall());
+        }
 
-      if (data.type === "CALL_ACCEPTED") {
-        dispatch(acceptCall());
-        console.log("navigate to : session_room-", data.timeSlot );
-        navigate(`/session/${data.timeSlot}`)
-        
-      }
+        if (data.type === "CALL_ACCEPTED") {
+          dispatch(acceptCall());
+          console.log("navigate to : session_room-", data.timeSlot);
+          navigate(`/session/${data.timeSlot}`);
+        }
+      };
+
+      ws.current.onerror = (error) => {
+        console.error("CallNotificationWebSocket error: ", error);
+      };
+
+      dispatch(setWebSocket(ws.current));
     };
-
-    ws.current.onerror = (error) => {
-      console.error("CallNotificationWebSocket error: ", error);
-    };
-
-    dispatch(setWebSocket(ws.current));
-
+    connectSocket();
     return () => {
       dispatch(closeWebSocket());
     };
@@ -178,8 +180,7 @@ const UserLayout = () => {
       )}
 
       {/* Outgoing call Modal */}
-      {call.isCalling && <OutGoingCall/>}
-
+      {call.isCalling && <OutGoingCall />}
 
       {/* Footer */}
       <div className="w-full">
