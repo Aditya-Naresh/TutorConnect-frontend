@@ -1,11 +1,12 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { SERVER } from "../../server";
 
 export const signup = createAsyncThunk(
     'auth/signup',
     async (signupData, {rejectWithValue}) => {
         try {
-            const response = await axios.post("http://127.0.0.1:8000/accounts/signup/", signupData)
+            const response = await axios.post(`${SERVER}/accounts/signup/`, signupData)
             return response.data
         } catch (error) {
             

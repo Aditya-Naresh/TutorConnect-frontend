@@ -5,7 +5,7 @@ import { FaCalendarCheck, FaUserGraduate, FaHistory } from 'react-icons/fa';
 
 const StudentSidebar = () => {
   return (
-    <SidebarContainer bgColor="bg-gradient-to-bl from-emerald-900 via-emerald-700 to-emerald-500">
+    <SidebarContainer bgColor="bg-gradient-to-br from-teal-900 via-teal-700 to-teal-500">
       <div className="mb-6 text-center">
         <h2 className="text-2xl font-bold text-white">Student Portal</h2>
       </div>
@@ -22,7 +22,7 @@ const StudentSidebar = () => {
         icon={FaUserGraduate}
       />
       <SidebarLink 
-        to="/user-management/TUTOR" 
+        to="/session-history" 
         text="Session History" 
         borderColor="border-emerald-400"
         icon={FaHistory}

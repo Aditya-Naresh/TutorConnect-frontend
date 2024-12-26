@@ -9,7 +9,7 @@ const Logout = () => {
     const navigate = useNavigate()
     const handleLogout = () => {
         dispatch(logOut())
-        toast("User Logged Out")
+        toast("User Logged Out", {position:"top-center"})
         navigate('/home')
     }
   return (

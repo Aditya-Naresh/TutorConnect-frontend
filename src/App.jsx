@@ -33,6 +33,8 @@ import TimeSlotDetailsPage from "./pages/TimeSlotDetailsPage.jsx";
 import SocialAuthUserAccount from "./pages/SocialAuthUserAccount.jsx";
 import Chat from "./pages/Chat.jsx";
 import CancellationPage from "./pages/admin/CancellationPage.jsx";
+import Session from "./pages/Session.jsx";
+import SessionHistory from "./pages/SessionHistory.jsx";
 
 const App = () => {
   let persistor = persistStore(store);
@@ -76,6 +78,8 @@ const App = () => {
                   />
                   <Route path="/chat" element={<Chat />} />
                   <Route path="/chat/:roomName" element={<Chat />} />
+                  <Route path="/session/:timeSlotId" element={<Session />} />
+                  <Route path="/session-history" element={<SessionHistory/>} />
                 </Route>
               </Route>
 

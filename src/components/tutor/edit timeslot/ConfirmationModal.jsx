@@ -80,7 +80,7 @@ const ConfirmationModal = ({ open, actionType }) => {
             variant="contained"
             startIcon={<CloseIcon />}
             onClick={handleClose}
-            className="!bg-gray-500 !text-white !px-4 !py-2 !rounded-md !hover:bg-gray-600"
+            className="!bg-gray-500 !text-white !px-4 !py-2 !rounded-md hover:!bg-gray-600"
           >
             Close
           </Button>
@@ -91,8 +91,8 @@ const ConfirmationModal = ({ open, actionType }) => {
             onClick={onConfirm}
             className={`!px-4 !py-2 !rounded-md !text-white ${
               actionType === 'delete'
-                ? '!bg-red-500 !hover:bg-red-600'
-                : '!bg-orange-500 !hover:bg-orange-600'
+                ? '!bg-red-500 hover:!bg-red-600'
+                : '!bg-orange-500 hover:!bg-orange-600'
             }`}
           >
             {actionType === 'delete' ? 'Delete' : 'Cancel'}

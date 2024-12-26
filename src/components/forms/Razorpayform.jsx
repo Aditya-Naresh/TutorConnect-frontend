@@ -4,11 +4,12 @@ import { Button, TextField, Typography, Container, Box } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { depositMoney } from "../../redux/thunk/walletThunk";
+import { SERVER } from "../../server";
 
 const Razorpayform = () => {
   const name = useSelector((state) => state.auth.full_name);
   const [amount, setAmount] = useState("");
-  const server = "http://127.0.0.1:8000";
+  
 
   const dispatch = useDispatch();
   const { balance } = useSelector((state) => state.wallet);
@@ -19,7 +20,7 @@ const Razorpayform = () => {
       bodyData.append("response", JSON.stringify(response));
 
       const res = await Axios({
-        url: `${server}/razorpay/handle-payment-success/`,
+        url: `${SERVER}/razorpay/handle-payment-success/`,
         method: "POST",
         data: bodyData,
         headers: {
@@ -63,7 +64,7 @@ const Razorpayform = () => {
       bodyData.append("name", name);
 
       const { data } = await Axios({
-        url: `${server}/razorpay/start-payment/`,
+        url: `${SERVER}/razorpay/start-payment/`,
         method: "POST",
         headers: {
           Accept: "application/json",

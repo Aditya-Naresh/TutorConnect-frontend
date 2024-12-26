@@ -1,0 +1,64 @@
+.whiteboard {
+  border: 1px solid #000;
+  display: block;
+  margin: 0 auto;
+  background-color: #fff;
+  cursor: crosshair;
+  touch-action: none;
+  max-width: 100%; /* Ensure it doesn't overflow */
+  max-height: 80vh; /* Set a max height */
+}
+
+.colors {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.color {
+  width: 40px;
+  height: 40px;
+  margin: 0 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.color:hover {
+  transform: scale(1.1);
+}
+
+.color.black {
+  background-color: black;
+}
+
+.color.red {
+  background-color: red;
+}
+
+.color.green {
+  background-color: green;
+}
+
+.color.blue {
+  background-color: blue;
+}
+
+.color.yellow {
+  background-color: yellow;
+}
+
+@media (max-width: 768px) {
+  .whiteboard {
+    width: 100%;
+    height: 80vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .color {
+    width: 30px;
+    height: 30px;
+  }
+}

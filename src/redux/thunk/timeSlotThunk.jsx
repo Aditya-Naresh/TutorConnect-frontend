@@ -1,4 +1,4 @@
-        import { createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk } from "@reduxjs/toolkit";
 import { axiosDelete, axiosGet, axiosPatch } from "../../axios";
 import {
   resetSlot,
@@ -18,8 +18,6 @@ export const fetchTimeSlotDetails = createAsyncThunk(
       const response = await axiosGet(`timeslots/${id}`, access);
       if (response.status === 200) {
         dispatch(setEvent(response.data));
-        console.log("TimeSLot details:",response.data);
-        
         dispatch(setTimeSLotDetails({ field: "loading", value: false }));
       } else {
         dispatch(resetSlot());
@@ -42,7 +40,6 @@ export const fetchSubjects = createAsyncThunk(
         `timeslots/tutor-list/${event.tutor}`,
         access
       );
-      console.log("subjects", response.data[0]?.subjects);
       dispatch(setSubjectList(response.data[0]?.subjects || []));
     } catch (error) {
       console.error("Failed to fetch subjects:", error);
@@ -57,14 +54,19 @@ export const updateTimeSlot = createAsyncThunk(
     try {
       const access = getState().auth.access;
       const response = await axiosPatch(`timeslots/${id}`, data, access);
-      console.log("thunk:", response);
 
       if (response.status === 200) {
         dispatch(setRender(response.data));
         if (actionType === "editTime") {
-          toast.info("Time updated");
+          toast.info("Time updated", { position: "top-center" });
         } else if (actionType === "cancel") {
-          toast.warning("Canceled the time slot booking");
+          toast.warning("Canceled the time slot booking", {
+            position: "top-center",
+          });
+        } else if (actionType === "ongoing") {
+          toast.info("Session has commenced", { position: "top-center" });
+        } else if (actionType === "completed") {
+          toast.info("Session has completed", { position: "top-center" });
         }
       }
       return response.data;
@@ -81,7 +83,7 @@ export const deleteTimeSlot = createAsyncThunk(
     try {
       const access = getState().auth.access;
       const response = await axiosDelete(`timeslots/${id}`, access);
-      return response
+      return response;
     } catch (error) {
       console.log("Deletion failed :", error);
       return rejectWithValue("Failed to delete the Time Slot");

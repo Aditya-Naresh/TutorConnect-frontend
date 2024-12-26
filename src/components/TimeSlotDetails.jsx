@@ -25,11 +25,10 @@ import {
   fetchSubjects,
   fetchTimeSlotDetails,
 } from "../redux/thunk/timeSlotThunk";
-import {
-  setOpenConfirmationModalOff,
-  setSelectedSubject,
-} from "../redux/slices/timeSlotSlice";
+import { setSelectedSubject } from "../redux/slices/timeSlotSlice";
 import ChatButton from "./ChatButton";
+import TimeSlotStatusBadge from "./tutor/TimeSlotStatusBadge";
+import VideoButton from "./videocall/VideoButton";
 
 const TimeSlotDetails = () => {
   const dispatch = useDispatch();
@@ -45,6 +44,8 @@ const TimeSlotDetails = () => {
   const [error, setError] = useState(null);
   const { id } = useParams();
   const { role } = useSelector((state) => state.auth);
+  const [isVideoCallEnabled, setIsVideoCallEnabled] = useState(false)
+  const [isCancellationEnabled, setIsCancellationEnabled] = useState(true)
 
   useEffect(() => {
     dispatch(fetchTimeSlotDetails(id));
@@ -53,6 +54,20 @@ const TimeSlotDetails = () => {
   useEffect(() => {
     if (event) {
       dispatch(fetchSubjects());
+      const now = dayjs()
+      const start = dayjs(event.start)
+      const end = dayjs(event.end)
+      if (now.isBetween(start, end, null, "[)")) {
+        setIsVideoCallEnabled(true); // Enable button
+      } else {
+        setIsVideoCallEnabled(false); // Disable button
+      }
+
+      if (now.isAfter(start) || now.isSame(start)){
+        setIsCancellationEnabled(false)
+      }else{
+        setIsCancellationEnabled(true)
+      }
     }
   }, [event]);
 
@@ -83,25 +98,21 @@ const TimeSlotDetails = () => {
   );
 
   const renderTimeSlotDetails = () => (
-    <Paper
-      elevation={3}
-      sx={{
-        padding: "20px",
-        borderRadius: "8px",
-        maxWidth: "600px",
-        mx: "auto",
-        mt: 4,
-      }}
-    >
-      <Typography variant="h5" fontWeight="bold" gutterBottom>
-        Time Slot Details
-      </Typography>
+    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+      <div className="bg-gradient-to-r from-teal-600 to-teal-700 p-6">
+        <Typography
+          variant="h5"
+          fontWeight="bold"
+          gutterBottom
+          textAlign="center"
+        >
+          Time Slot Details
+        </Typography>
+        <div className="mt-2">
+          <TimeSlotStatusBadge title={event.title} />
+        </div>
+      </div>
       <Stack spacing={2}>
-        <DetailRow
-          label="Status"
-          value={event.title}
-          color={event.title === "AVAILABLE" ? "green" : "red"}
-        />
         {role === "TUTOR" && event.title !== "CANCELLED" && <EditButton />}
         <DetailRow
           label="Start Time"
@@ -132,28 +143,38 @@ const TimeSlotDetails = () => {
 
         {role === "STUDENT" && event.title === "AVAILABLE" && (
           <>
-            {subjectList.length > 0 ? (
-              <FormControl fullWidth>
-                <InputLabel>Select Subject</InputLabel>
-                <Select
-                  value={selectedSubject}
-                  label="Select Subject"
-                  onChange={handleSubjectChange}
-                >
-                  {subjectList.map((subject) => (
-                    <MenuItem key={subject.id} value={subject.id}>
-                      {subject.name}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            ) : (
-              <CircularProgress />
-            )}
-            <BookSlot
-              slot_id={event.id}
-              rate={event.tutor_rate}
-              selectedSubject={selectedSubject}
+            <DetailRow
+              label="Select Subject"
+              value={
+                subjectList.length > 0 ? (
+                  <FormControl className="w-48">
+                    <InputLabel>Select Subject</InputLabel>
+                    <Select
+                      value={selectedSubject}
+                      label="Select Subject"
+                      onChange={handleSubjectChange}
+                    >
+                      {subjectList.map((subject) => (
+                        <MenuItem key={subject.id} value={subject.id}>
+                          {subject.name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                ) : (
+                  <CircularProgress />
+                )
+              }
+            />
+            <DetailRow
+              label="Book This Slot"
+              value={
+                <BookSlot
+                  slot_id={event.id}
+                  rate={event.tutor_rate}
+                  selectedSubject={selectedSubject}
+                />
+              }
             />
           </>
         )}
@@ -161,27 +182,44 @@ const TimeSlotDetails = () => {
           open={openConfirmationModal}
           actionType={actionType}
         />
-        {event.title === "BOOKED" && (
+        
           <DetailRow
             label="Chat"
             value={
               <ChatButton
                 user_id={role === "TUTOR" ? event.student : event.tutor}
+                role={role}
               />
             }
           />
-        )}
+      
 
-        {event.title === "BOOKED" && <CancelTimeSlot />}
-        {event.title === "AVAILABLE" && role === "TUTOR" && <DeleteButton />}
+        
+       
+            <DetailRow label="Cancellation" value={<CancelTimeSlot  enabled={isCancellationEnabled}/>} />
+            <DetailRow
+              label="Join Session"
+              value={
+                <VideoButton
+                  target_user={role === "TUTOR" ? event.student : event.tutor}
+                  target_user_name={role === "TUTOR"? event.student_name : event.tutor_name}
+                  timeSlot={event.id}
+                  enabled={isVideoCallEnabled}
+                />
+              }
+            />
+       
+        {event.title === "AVAILABLE" && role === "TUTOR" && (
+          <DetailRow label="Delete Timeslot" value={<DeleteButton />} />
+        )}
 
         <GoBackButton />
       </Stack>
-    </Paper>
+    </div>
   );
 
   return (
-    <Box className="min-h-screen" sx={{ padding: 2 }}>
+    <Box className="container mx-auto px-4 py-8" sx={{ padding: 2 }}>
       {loading
         ? renderLoadingState()
         : error
@@ -192,11 +230,11 @@ const TimeSlotDetails = () => {
 };
 
 const DetailRow = ({ label, value, color, bold }) => (
-  <Grid container spacing={1} alignItems="center">
-    <Grid item xs={4}>
+  <Grid container spacing={1} alignContent="center">
+    <Grid item xs={4} textAlign="center">
       <Typography fontWeight="bold">{label}:</Typography>
     </Grid>
-    <Grid item xs={8}>
+    <Grid item xs={8} textAlign="center">
       <Typography
         sx={{ fontWeight: bold ? "bold" : "normal", color: color || "inherit" }}
       >

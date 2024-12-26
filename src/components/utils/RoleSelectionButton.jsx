@@ -23,7 +23,7 @@ const RoleSelectionButton = ({ label }) => {
       console.log(response);
       if (response.status === 200) {
         dispatch(updateRole(label));
-        toast.info("Complete filling the profile details");
+        toast.info("Complete filling the profile details",{position:"top-center"});
         navigate("/profile");
       }
     } catch (error) {

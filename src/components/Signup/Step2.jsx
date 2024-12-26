@@ -11,12 +11,14 @@ const Step2 = ({ setCurrentStep }) => {
 
   const handleDeleteCertification = (index) => {
     dispatch(removeCertification({ index }));
-    toast.info("Certification removed");
+    toast.info("Certification removed", { position: "top-center" });
   };
 
   const nextClick = () => {
     if (certifications.length === 0) {
-      toast.error("You need to add at least one certification");
+      toast.error("You need to add at least one certification", {
+        position: "top-center",
+      });
       return;
     }
     setCurrentStep(3);
@@ -37,7 +39,9 @@ const Step2 = ({ setCurrentStep }) => {
       {/* List of Certifications */}
       <div className="mt-6">
         {certifications.length === 0 ? (
-          <p className="text-center text-gray-500">No certifications added yet.</p>
+          <p className="text-center text-gray-500">
+            No certifications added yet.
+          </p>
         ) : (
           certifications.map((cert, index) => (
             <div

@@ -16,7 +16,7 @@ const DeleteButton = () => {
       variant="contained"
       startIcon={<DeleteIcon />}
       onClick={handleDelete}
-      className="!bg-red-500 !text-white !px-4 !py-2 !rounded-md !hover:bg-red-600 !focus:ring-4 !focus:ring-red-300 !shadow-md"
+      className="!bg-red-500 !text-white !px-4 !py-2 !rounded-md hover:!bg-red-600 focus:!ring-4 focus:!ring-red-300 !shadow-md"
       sx={{
         textTransform: 'none',
       }}

@@ -71,6 +71,23 @@ const Step1 = ({setCurrentStep , isTutor}) => {
                 <p className="text-red-500 relative">{errors.last_name.message}</p>
             )}
           </div>
+          <div className="flex flex-col mb-4">
+                <label htmlFor="phone">Phone Number</label>
+                <input
+                    {...register("phone", {
+                        required: "Phone Number is required",
+                        pattern: {
+                            value: /^[0-9]{10}$/,
+                            message: "Phone Number must be 10 digits",
+                        },
+                    })}
+                    type="text"
+                    className="border relative bg-gray-100 p-2"
+                />
+                {errors.phone && (
+                    <p className="text-red-500 relative">{errors.phone.message}</p>
+                )}
+            </div>
           <div className="flex flex-col ">
             <label htmlFor="password">Password</label>
             <input

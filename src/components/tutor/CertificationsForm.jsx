@@ -65,12 +65,14 @@ const CertificationsForm = ({ reRender, show }) => {
 
       // Add certification metadata to Redux
       dispatch(addCertification(certificationData));
-      toast.success("Certification added successfully!");
+      toast.success("Certification added successfully!", {
+        position: "top-center",
+      });
       reset();
-      reRender("uploaded");
+      // reRender("uploaded");
     } catch (error) {
       console.error("Error uploading file:", error);
-      toast.error("Failed to add certification.");
+      toast.error("Failed to add certification.", { position: "top-center" });
     }
   };
 

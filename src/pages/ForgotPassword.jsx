@@ -3,6 +3,7 @@ import React from 'react'
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { SERVER } from '../server';
 
 const ForgotPassword = () => {
     const {
@@ -17,13 +18,13 @@ const ForgotPassword = () => {
     
       const onSubmit = async (data) =>{
         try {
-            const response = await axios.post("http://127.0.0.1:8000/accounts/reset-password/", data)
+            const response = await axios.post(`${SERVER}/accounts/reset-password/`, data)
             if(response.status === 200){
-                toast.success("Password Reset Link has been sent to your mail")
+                toast.success("Password Reset Link has been sent to your mail",{position:"top-center"})
                 navigate('/login')
             }
         } catch (error) {
-            toast.error(error.response.data.message)
+            toast.error(error.response.data.message,{position:"top-center"})
             console.log(error.response.data.message);
         }finally{
             reset()

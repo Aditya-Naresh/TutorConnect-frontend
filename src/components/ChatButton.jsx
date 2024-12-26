@@ -1,26 +1,29 @@
-import React from 'react';
-import { Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 
-const ChatButton = ({ user_id }) => {
-    const navigate = useNavigate();
+const ChatButton = ({ user_id, role }) => {
+  const navigate = useNavigate();
 
-    const buttonClick = async () => {
-        navigate(`/chat/${user_id}`);
-    };
+  const buttonClick = async () => {
+    navigate(`/chat/${user_id}`);
+  };
 
-    return (
-        <div className="flex justify-center items-center">
-            <Button
-                variant="contained"
-                className="!px-4 !py-2 !bg-emerald-500 !text-white !rounded-lg !shadow hover:!bg-emerald-600 transition duration-200"
-                size="small"
-                onClick={buttonClick}
-            >
-                Chat
-            </Button>
-        </div>
-    );
+  return (
+    <Button
+      variant="contained"
+      className="!bg-emerald-500 !text-white !rounded-lg !shadow hover:!bg-emerald-600 transition duration-200 w-48"
+      onClick={buttonClick}
+      startIcon={<ChatBubbleOutlineIcon />}
+    >
+      {role === "ADMIN"
+        ? "Chat"
+        : role === "TUTOR"
+        ? "Chat with Student"
+        : "Chat with Tutor"}
+    </Button>
+  );
 };
 
 export default ChatButton;

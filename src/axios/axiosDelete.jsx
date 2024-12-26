@@ -1,9 +1,10 @@
 import axios from 'axios'
 import React from 'react'
+import { SERVER } from '../server'
 
 
 const axiosDelete = async (endpoint, token) => {
-    const BASE_URL = "http://127.0.0.1:8000/"
+    const BASE_URL = `${SERVER}/`
     const config = {
         headers:{
             "Authorization": `Bearer ${token}`,

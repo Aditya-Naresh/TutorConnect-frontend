@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 import TutorCard from "../../components/TutorCard";
+import { SERVER } from "../../server";
 
 const UserManagement = () => {
   const { role } = useParams();
@@ -25,8 +26,8 @@ const UserManagement = () => {
 
   const url =
     role === "TUTOR"
-      ? "http://127.0.0.1:8000/useradmin/tutor-list/"
-      : "http://127.0.0.1:8000/useradmin/student-list/";
+      ? `${SERVER}/useradmin/tutor-list/`
+      : `${SERVER}/useradmin/student-list/`;
 
   const label = role === "TUTOR" ? "Tutor" : "Student";
 
@@ -39,7 +40,7 @@ const UserManagement = () => {
         setData(response.data);
       } catch (error) {
         console.error(error);
-        toast.error("Error Fetching Data");
+        toast.error("Error Fetching Data", {position: "top-center"});
       }
     };
     fetchData();
