@@ -56,50 +56,54 @@ const VideoCall = () => {
 
     callWs.current.onclose = (e) => {
       console.log("WebSocket disconnected", e);
-      setTimeout(startVideoCall, 3000);
+      setTimeout(startVideoCall, 3000); // Retry connecting after a delay
     };
 
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    });
-    setLocalStream(stream);
-
-    if (localVideoRef.current) localVideoRef.current.srcObject = stream;
-
-    peerConnection.current = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-    });
-
-    stream
-      .getTracks()
-      .forEach((track) => peerConnection.current.addTrack(track, stream));
-
-    peerConnection.current.ontrack = (event) => {
-      const [remoteStream] = event.streams;
-      setRemoteStream(remoteStream);
-      if (remoteVideoRef.current)
-        remoteVideoRef.current.srcObject = remoteStream;
-    };
-
-    peerConnection.current.onicecandidate = (event) => {
-      if (event.candidate) {
-        if (callWs.current.readyState === WebSocket.OPEN) {
-          sendIceCandidate(event.candidate);
-        } else {
-          iceCandidateQueue.current.push(event.candidate);
-        }
-      }
-    };
-
-    if (caller === id) {
-      const offer = await peerConnection.current.createOffer();
-      await peerConnection.current.setLocalDescription(offer);
-      sendMessage({
-        action: "offer",
-        offer,
-        target_user: receiver,
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
       });
+      setLocalStream(stream);
+
+      if (localVideoRef.current) localVideoRef.current.srcObject = stream;
+
+      peerConnection.current = new RTCPeerConnection({
+        iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+      });
+
+      stream
+        .getTracks()
+        .forEach((track) => peerConnection.current.addTrack(track, stream));
+
+      peerConnection.current.ontrack = (event) => {
+        const [remoteStream] = event.streams;
+        setRemoteStream(remoteStream);
+        if (remoteVideoRef.current)
+          remoteVideoRef.current.srcObject = remoteStream;
+      };
+
+      peerConnection.current.onicecandidate = (event) => {
+        if (event.candidate) {
+          if (callWs.current.readyState === WebSocket.OPEN) {
+            sendIceCandidate(event.candidate);
+          } else {
+            iceCandidateQueue.current.push(event.candidate);
+          }
+        }
+      };
+
+      if (caller === id) {
+        const offer = await peerConnection.current.createOffer();
+        await peerConnection.current.setLocalDescription(offer);
+        sendMessage({
+          action: "offer",
+          offer,
+          target_user: receiver,
+        });
+      }
+    } catch (error) {
+      console.error("Error starting video call:", error);
     }
   };
 
@@ -202,16 +206,16 @@ const VideoCall = () => {
       }
 
       dispatch(endCall());
-      // dispatch(
-      //   updateTimeSlot({
-      //     id: timeSlotId,
-      //     data: {
-      //       className: "COMPLETED",
-      //     },
-      //     actionType: "completed",
-      //   })
-      // );
-      // navigate("/");
+      dispatch(
+        updateTimeSlot({
+          id: timeSlotId,
+          data: {
+            className: "COMPLETED",
+          },
+          actionType: "completed",
+        })
+      );
+      navigate("/");
     } catch (error) {
       console.error("Error ending video call: ", error);
     }

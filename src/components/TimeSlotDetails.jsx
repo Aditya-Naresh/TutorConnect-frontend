@@ -29,7 +29,6 @@ import { setSelectedSubject } from "../redux/slices/timeSlotSlice";
 import ChatButton from "./ChatButton";
 import TimeSlotStatusBadge from "./tutor/TimeSlotStatusBadge";
 import VideoButton from "./videocall/VideoButton";
-import { WEBSOCKETSERVER } from "../server";
 
 const TimeSlotDetails = () => {
   const dispatch = useDispatch();
@@ -45,6 +44,8 @@ const TimeSlotDetails = () => {
   const [error, setError] = useState(null);
   const { id } = useParams();
   const { role } = useSelector((state) => state.auth);
+  const [isVideoCallEnabled, setIsVideoCallEnabled] = useState(false)
+  const [isCancellationEnabled, setIsCancellationEnabled] = useState(true)
 
   useEffect(() => {
     dispatch(fetchTimeSlotDetails(id));
@@ -53,6 +54,20 @@ const TimeSlotDetails = () => {
   useEffect(() => {
     if (event) {
       dispatch(fetchSubjects());
+      const now = dayjs()
+      const start = dayjs(event.start)
+      const end = dayjs(event.end)
+      if (now.isBetween(start, end, null, "[)")) {
+        setIsVideoCallEnabled(true); // Enable button
+      } else {
+        setIsVideoCallEnabled(false); // Disable button
+      }
+
+      if (now.isAfter(start) || now.isSame(start)){
+        setIsCancellationEnabled(false)
+      }else{
+        setIsCancellationEnabled(true)
+      }
     }
   }, [event]);
 
@@ -167,7 +182,7 @@ const TimeSlotDetails = () => {
           open={openConfirmationModal}
           actionType={actionType}
         />
-        {event.title === "BOOKED" && (
+        
           <DetailRow
             label="Chat"
             value={
@@ -177,11 +192,11 @@ const TimeSlotDetails = () => {
               />
             }
           />
-        )}
+      
 
-        {event.title === "BOOKED" && (
-          <>
-            <DetailRow label="Cancellation" value={<CancelTimeSlot />} />
+        
+       
+            <DetailRow label="Cancellation" value={<CancelTimeSlot  enabled={isCancellationEnabled}/>} />
             <DetailRow
               label="Join Session"
               value={
@@ -189,11 +204,11 @@ const TimeSlotDetails = () => {
                   target_user={role === "TUTOR" ? event.student : event.tutor}
                   target_user_name={role === "TUTOR"? event.student_name : event.tutor_name}
                   timeSlot={event.id}
+                  enabled={isVideoCallEnabled}
                 />
               }
             />
-          </>
-        )}
+       
         {event.title === "AVAILABLE" && role === "TUTOR" && (
           <DetailRow label="Delete Timeslot" value={<DeleteButton />} />
         )}

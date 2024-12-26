@@ -7,7 +7,7 @@ import {
 } from "../../../redux/slices/timeSlotSlice";
 import { useDispatch } from "react-redux";
 
-const CancelTimeSlot = () => {
+const CancelTimeSlot = ({enabled}) => {
   const dispatch = useDispatch();
   const handleClick = () => {
     dispatch(setActionType("cancel"));
@@ -17,8 +17,16 @@ const CancelTimeSlot = () => {
   return (
     <Button
       variant="contained"
+      disabled={!enabled}
+      sx={{
+        backgroundColor: "orange",
+        color: "white",
+        "&:hover": {
+          backgroundColor: "darkorange",
+        },
+      }}
       startIcon={<CancelIcon />}
-      className="!bg-orange-500 !text-white !rounded-lg !shadow hover:!bg-orange-600 transition duration-200 w-48"
+      className="!rounded-lg w-48"
       onClick={handleClick}
     >
       Cancel Booking

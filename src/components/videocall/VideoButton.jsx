@@ -6,7 +6,7 @@ import { startCall } from "../../redux/slices/callSlice";
 import { updateTimeSlot } from "../../redux/thunk/timeSlotThunk";
 import { useParams } from "react-router-dom";
 
-const VideoButton = ({ target_user, target_user_name, timeSlot }) => {
+const VideoButton = ({ target_user, target_user_name, timeSlot, enabled }) => {
   const callWs = useSelector((state) => state.call.ws);
   const { id, profile_pic, full_name } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -50,6 +50,7 @@ const VideoButton = ({ target_user, target_user_name, timeSlot }) => {
       startIcon={<VideoCall />}
       onClick={() => startVideoCall()}
       className="!rounded-lg"
+      disabled={!enabled}
       sx={{
         backgroundColor: "teal",
         color: "white",
