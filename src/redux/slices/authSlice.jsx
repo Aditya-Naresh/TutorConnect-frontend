@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { SERVER } from "../../server";
 
 const initialState = {
   id: "",
@@ -47,7 +48,7 @@ export const refreshAccessToken = () => async (dispatch, getState) => {
   const refreshToken = getState().auth.refresh;
 
   try {
-    const response = await axios.post("http://127.0.0.1:8000/token/refresh/", {
+    const response = await axios.post(`${SERVER}/token/refresh/`, {
       refresh: refreshToken,
     });
 
