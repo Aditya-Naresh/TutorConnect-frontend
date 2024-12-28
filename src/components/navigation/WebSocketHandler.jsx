@@ -29,7 +29,7 @@ export const useNotificationWebSocket = (NotificationSocketUrl, location, access
       };
 
       notificationSocket.onerror = (error) => {
-        console.error("WebSocket error:", error);
+        console.error("Notification Socket error:", error);
       };
     };
 

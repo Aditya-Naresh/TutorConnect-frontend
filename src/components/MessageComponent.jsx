@@ -47,7 +47,7 @@ function MessageComponent({ message, id, attachment }) {
       return (
         <Box className="mt-2">
           <img 
-            src={`${SERVER}${attachment}`} 
+            src={`${attachment}`} 
             alt="Message attachment" 
             className="max-w-[300px] max-h-[300px] object-cover rounded-lg cursor-pointer"
             onClick={() => setOpenImageDialog(true)}
