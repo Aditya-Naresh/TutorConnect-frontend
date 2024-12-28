@@ -73,7 +73,7 @@ const Razorpayform = () => {
       });
 
       const options = {
-        key: "rzp_test_50Z1aonyfK3aZu",
+        key: "rzp_test_Jpzqb2ehOKln7F",
         amount: data.payment.amount,
         currency: "INR",
         name: "Org. Name",
