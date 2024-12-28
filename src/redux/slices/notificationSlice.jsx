@@ -21,7 +21,8 @@ const notificationSlice = createSlice({
     },
     extraReducers:(builder) => {
         builder.addCase(logOut, (state) => {
-            return initialState
+            state.enabled = false
+            state.count = 0
         })
     }
 })
