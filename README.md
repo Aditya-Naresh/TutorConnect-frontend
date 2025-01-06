@@ -63,7 +63,7 @@ tutorconnect/
 ├── package.json          # NPM package configuration
 ├── README.md             # Project README
 └── vite.config.js        # Vite configuration
-
+```
 
 ## Deployment
 
