@@ -204,7 +204,7 @@ const TimeSlotDetails = () => {
                   target_user={role === "TUTOR" ? event.student : event.tutor}
                   target_user_name={role === "TUTOR"? event.student_name : event.tutor_name}
                   timeSlot={event.id}
-                  enabled={isVideoCallEnabled}
+                  enabled={true}
                 />
               }
             />
