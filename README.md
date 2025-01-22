@@ -67,7 +67,7 @@ tutorconnect/
 
 ## Deployment
 
-The project is hosted on Vercel. You can visit the live application at [Tutor Connect on Vercel](https://tutor-connect-ruddy.vercel.app/).
+The project is hosted on Vercel. You can visit the live application at [Tutor Connect on Vercel](https://tutor-connect-aditya.vercel.app/).
 
 
 
