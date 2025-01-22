@@ -129,20 +129,22 @@ const VideoCall = () => {
     try {
       if (data.type === "OFFER") {
         if (peerConnection.current.signalingState === "stable") {
-          await peerConnection.current.setRemoteDescription(
-            new RTCSessionDescription(data.offer)
+          console.log(
+            "Already in stable state. Skipping redundant SDP setting."
           );
-          const answer = await peerConnection.current.createAnswer();
-          await peerConnection.current.setLocalDescription(answer);
+          return;
+        }
+        await peerConnection.current.setRemoteDescription(
+          new RTCSessionDescription(data.offer)
+        );
+        const answer = await peerConnection.current.createAnswer();
+        await peerConnection.current.setLocalDescription(answer);
 
-          sendMessage({ action: "answer", answer, target_user: caller });
+        sendMessage({ action: "answer", answer, target_user: caller });
 
-          while (iceCandidateQueue.current.length > 0) {
-            const candidate = iceCandidateQueue.current.shift();
-            await peerConnection.current.addIceCandidate(candidate);
-          }
-        } else {
-          console.log("RTCPeerConnection is not in the correct state");
+        while (iceCandidateQueue.current.length > 0) {
+          const candidate = iceCandidateQueue.current.shift();
+          await peerConnection.current.addIceCandidate(candidate);
         }
       } else if (data.type === "ANSWER") {
         if (peerConnection.current.signalingState === "have-local-offer") {
